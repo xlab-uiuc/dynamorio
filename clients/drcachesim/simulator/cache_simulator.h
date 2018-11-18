@@ -41,13 +41,15 @@
 #include "cache_simulator_create.h"
 #include "cache_stats.h"
 #include "cache.h"
+#include <map>
+#include <unordered_map>
 
 class cache_simulator_t : public simulator_t {
 public:
     // This constructor is used when the cache hierarchy is configured
     // using a set of knobs. It assumes a 2-level cache hierarchy with
     // private L1 data and instruction caches and a shared LLC.
-    cache_simulator_t(const cache_simulator_knobs_t &knobs);
+    cache_simulator_t(const cache_simulator_knobs_t &knobs, const tlb_simulator_knobs_t &tlb_knobs);
 
     // This constructor is used when the arbitrary cache hierarchy is
     // defined in a configuration file.
@@ -56,6 +58,8 @@ public:
     virtual ~cache_simulator_t();
     virtual bool
     process_memref(const memref_t &memref);
+    virtual std::pair<bool,bool>
+    process_memref(const memref_t &memref, bool changed);
     virtual bool
     print_results();
 
@@ -76,6 +80,25 @@ protected:
     // This is useful for implementing polymorphism correctly.
     cache_t **l1_icaches;
     cache_t **l1_dcaches;
+
+    //Artemiy: add TLB
+    analysis_tool_t * tlb_sim;
+
+    struct page_table_info_t {
+      unsigned int VA;
+      unsigned int PE1;
+      unsigned int PE2;
+      unsigned int PE3;
+      unsigned int PE4;
+      unsigned int PA;
+    };
+      
+    //Artemiy: add TLB
+    //typedef std::map<unsigned int, page_table_info_t> page_table_t;
+    typedef std::unordered_map<unsigned int, page_table_info_t> page_table_t;
+    page_table_t page_table;
+    std::vector<uint64_t> hit_statistics;
+    std::vector<uint64_t> miss_statistics;
 
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)

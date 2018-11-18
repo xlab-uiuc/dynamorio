@@ -101,6 +101,7 @@ get_cache_simulator_knobs()
     knobs->LL_size = op_LL_size.get_value();
     knobs->LL_assoc = op_LL_assoc.get_value();
     knobs->LL_miss_file = op_LL_miss_file.get_value();
+    knobs->pt_dump_filename = op_pt_dump_file.get_value(); //Artemiy
     knobs->replace_policy = op_replace_policy.get_value();
     knobs->data_prefetcher = op_data_prefetcher.get_value();
     knobs->skip_refs = op_skip_refs.get_value();
@@ -120,8 +121,27 @@ drmemtrace_analysis_tool_create()
         if (!config_file.empty()) {
             return cache_simulator_create(config_file);
         } else {
+            //Artemiy, read TLB params to tlb_knobs
+            tlb_simulator_knobs_t tlb_knobs;
+            tlb_knobs.num_cores = op_num_cores.get_value();
+            tlb_knobs.page_size = op_page_size.get_value();
+            tlb_knobs.TLB_L1I_entries = op_TLB_L1I_entries.get_value();
+            tlb_knobs.TLB_L1D_entries = op_TLB_L1D_entries.get_value();
+            tlb_knobs.TLB_L1I_assoc = op_TLB_L1I_assoc.get_value();
+            tlb_knobs.TLB_L1D_assoc = op_TLB_L1D_assoc.get_value();
+            tlb_knobs.TLB_L2_entries = op_TLB_L2_entries.get_value();
+            tlb_knobs.TLB_L2_assoc = op_TLB_L2_assoc.get_value();
+            tlb_knobs.TLB_replace_policy = op_TLB_replace_policy.get_value();
+            tlb_knobs.skip_refs = op_skip_refs.get_value();
+            tlb_knobs.warmup_refs = op_warmup_refs.get_value();
+            tlb_knobs.warmup_fraction = op_warmup_fraction.get_value();
+            tlb_knobs.sim_refs = op_sim_refs.get_value();
+            tlb_knobs.verbose = op_verbose.get_value();
+            tlb_knobs.cpu_scheduling = op_cpu_scheduling.get_value();
+
             cache_simulator_knobs_t *knobs = get_cache_simulator_knobs();
-            return cache_simulator_create(*knobs);
+            //Artemiy: pass tlb knobs to the cache simlator creator
+            return cache_simulator_create(*knobs, tlb_knobs);
         }
     } else if (op_simulator_type.get_value() == MISS_ANALYZER) {
         cache_simulator_knobs_t *knobs = get_cache_simulator_knobs();

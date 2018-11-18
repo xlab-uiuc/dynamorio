@@ -48,8 +48,12 @@ public:
     virtual ~tlb_simulator_t();
     virtual bool
     process_memref(const memref_t &memref);
+
     virtual bool
     print_results();
+
+    std::pair<bool,bool> 
+    process_memref(const memref_t &memref, bool changed); //Added by Artemiy
 
 protected:
     // Create a tlb_t object with a specific replacement policy.

@@ -85,6 +85,9 @@ public:
      */
     virtual bool
     process_memref(const memref_t &memref) = 0;
+
+    virtual std::pair<bool,bool>
+    process_memref(const memref_t &memref, bool changed) {return std::pair<bool,bool>(true, true);} ;
     /**
      * This routine reports the results of the trace analysis.
      * The return value indicates whether it was successful.

@@ -55,6 +55,9 @@ public:
     virtual bool
     process_memref(const memref_t &memref);
 
+    virtual std::pair<bool,bool>
+    process_memref(const memref_t &memref, bool changed);
+
 protected:
     // Initialize knobs. Success or failure is indicated by setting/resetting
     // the success variable.

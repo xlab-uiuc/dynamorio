@@ -30,6 +30,8 @@
  * DAMAGE.
  */
 
+#define PAGE_WALK_STAGES 4
+
 #include <assert.h>
 #include <iostream>
 #include <iomanip>
@@ -48,6 +50,9 @@ caching_device_stats_t::caching_device_stats_t(const std::string &miss_file,
     , warmup_enabled(warmup_enabled)
     , file(nullptr)
 {
+    hit_statistics.resize (PAGE_WALK_STAGES, 0);
+    miss_statistics.resize(PAGE_WALK_STAGES, 0);
+
     if (miss_file.empty()) {
         dump_misses = false;
     } else {
@@ -80,9 +85,42 @@ caching_device_stats_t::access(const memref_t &memref, bool hit)
 {
     // We assume we're single-threaded.
     // We're only computing miss rate so we just inc counters here.
-    if (hit)
+    if (hit) {
+        if (memref.data.type == TRACE_TYPE_PE1) {
+          hit_statistics[0]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_PE2) {
+          hit_statistics[1]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_PE3) {
+          hit_statistics[2]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_PE4) {
+          hit_statistics[3]++;
+          return;
+        } 
         num_hits++;
+    }
     else {
+        if (memref.data.type == TRACE_TYPE_PE1) {
+          miss_statistics[0]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_PE2) {
+          miss_statistics[1]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_PE3) {
+          miss_statistics[2]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_PE4) {
+          miss_statistics[3]++;
+          return;
+        } 
         num_misses++;
         if (dump_misses)
             dump_miss(memref);
@@ -135,6 +173,14 @@ caching_device_stats_t::print_counts(std::string prefix)
               << std::right << num_misses << std::endl;
     std::cerr << prefix << std::setw(18) << std::left << "Invalidations:" << std::setw(20)
               << std::right << num_inclusive_invalidates << std::endl;
+
+    for (uint i = 0; i < PAGE_WALK_STAGES; i++) {
+      std::cerr << prefix << std::setw(18) << std::left << "Hits PT level" << (i+1) << ":" << std::setw(20)
+                << std::right << hit_statistics[i] << std::endl;
+
+      std::cerr << prefix << std::setw(18) << std::left << "Misses PT level" << (i+1) << ":" << std::setw(20)
+                << std::right << miss_statistics[i] << std::endl;
+    }
 }
 
 void
@@ -189,6 +235,11 @@ caching_device_stats_t::reset()
     num_misses = 0;
     num_child_hits = 0;
     num_inclusive_invalidates = 0;
+
+    for (uint i = 0; i < PAGE_WALK_STAGES; i++) {
+      hit_statistics[i]  = 0;
+      miss_statistics[i] = 0;
+    }
 }
 
 void

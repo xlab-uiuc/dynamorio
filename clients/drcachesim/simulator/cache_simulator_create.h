@@ -37,6 +37,7 @@
 
 #include <string>
 #include "analysis_tool.h"
+#include "tlb_simulator_create.h"
 
 /**
  * @file drmemtrace/cache_simulator_create.h
@@ -67,6 +68,7 @@ struct cache_simulator_knobs_t {
         , sim_refs(1ULL << 63)
         , cpu_scheduling(false)
         , verbose(0)
+        , pt_dump_filename("")
     {
     }
     unsigned int num_cores;
@@ -86,11 +88,13 @@ struct cache_simulator_knobs_t {
     uint64_t sim_refs;
     bool cpu_scheduling;
     unsigned int verbose;
+    std::string pt_dump_filename;
 };
 
 /** Creates an instance of a cache simulator with a 2-level hierarchy. */
 analysis_tool_t *
-cache_simulator_create(const cache_simulator_knobs_t &knobs);
+//cache_simulator_create(const cache_simulator_knobs_t &knobs); //Artemiy
+cache_simulator_create(const cache_simulator_knobs_t &knobs, const tlb_simulator_knobs_t &tlb_knobs);
 
 /**
  * Creates an instance of a cache simulator using a cache hierarchy defined

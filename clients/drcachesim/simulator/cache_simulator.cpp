@@ -49,10 +49,13 @@
 #include "cache_simulator.h"
 #include "droption.h"
 
+#include <cstdio>
+#include <inttypes.h>
+
 analysis_tool_t *
-cache_simulator_create(const cache_simulator_knobs_t &knobs)
+cache_simulator_create(const cache_simulator_knobs_t &knobs, const tlb_simulator_knobs_t &tlb_knobs)
 {
-    return new cache_simulator_t(knobs);
+    return new cache_simulator_t(knobs, tlb_knobs);
 }
 
 analysis_tool_t *
@@ -61,7 +64,7 @@ cache_simulator_create(const std::string &config_file)
     return new cache_simulator_t(config_file);
 }
 
-cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_)
+cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, const tlb_simulator_knobs_t &tlb_knobs_)
     : simulator_t(knobs_.num_cores, knobs_.skip_refs, knobs_.warmup_refs,
                   knobs_.warmup_fraction, knobs_.sim_refs, knobs_.cpu_scheduling,
                   knobs_.verbose)
@@ -69,8 +72,42 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_)
     , l1_icaches(NULL)
     , l1_dcaches(NULL)
     , is_warmed_up(false)
+// use default tlb_knobs
+//    , tlb_knobs(tlb_knobs_)
 {
     // XXX i#1703: get defaults from hardware being run on.
+
+    //Artemiy - add TLB
+    tlb_sim = tlb_simulator_create(tlb_knobs_);
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result" 
+    //load page_table
+    FILE* page_table_file = fopen(knobs.pt_dump_filename.c_str(),"r");
+    //read page_table size (in records)
+    int page_table_record_num = 0;
+    fscanf(page_table_file, "%d\n", &page_table_record_num);
+    std::cerr << "Loading page table with " <<  page_table_record_num << " PT entries...\n";
+    //std::cout << page_table_file << "\n";
+    for (int i = 0; i < page_table_record_num; i++) {
+      page_table_info_t tmp;
+      //fscanf(page_table_file, "%" SCNd64 ",%" SCNd64 ",%" SCNd64 ",%" SCNd64 ",%" SCNd64 ",%" SCNd64 "\n", &(tmp.VA), &(tmp.PE1), &(tmp.PE2), &(tmp.PE3), &(tmp.PE4), &(tmp.PA));
+      fscanf(page_table_file, "%x,%x,%x,%x,%x,%x\n", &(tmp.VA), &(tmp.PE1), &(tmp.PE2), &(tmp.PE3), &(tmp.PE4), &(tmp.PA));
+      //debug
+      //std::cout << "VA: " << tmp.VA << ", PA: " << tmp.PA << "\n";
+      page_table.insert(std::make_pair(tmp.VA, tmp));
+    }
+    std::cerr << "Loaded " << page_table.size() << " unique PT entries.\n";
+    fclose(page_table_file);
+#pragma GCC diagnostic pop 
+
+//    for(page_table_t::const_iterator it = page_table.begin();
+//    it != page_table.end(); ++it)
+//    {
+//      std::cout << it->first << " " << it->second.VA << " " << it->second.PA << "\n";
+//    }
+
+    //*********************************************************
 
     // This configuration allows for one shared LLC only.
     cache_t *llc = create_cache(knobs.replace_policy);
@@ -289,9 +326,26 @@ cache_simulator_t::remaining_sim_refs() const
     return knobs.sim_refs;
 }
 
+std::pair<bool,bool>
+cache_simulator_t::process_memref(const memref_t &memref, bool changed) {
+return std::pair<bool,bool>(true,true);
+}
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
+    static uint64_t num_request = 0;
+    static uint64_t num_request_shifted = 0;
+    static uint64_t num_not_found = 0;
+    num_request++;
+    num_request_shifted++;
+
+    if ((num_request_shifted >> 15) > 0) {
+      num_request_shifted = 0;
+      print_results();
+    }
+      
+
     if (knobs.skip_refs > 0) {
         knobs.skip_refs--;
         return true;
@@ -334,52 +388,145 @@ cache_simulator_t::process_memref(const memref_t &memref)
         last_core = core;
     }
 
-    if (type_is_instr(memref.instr.type) ||
-        memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+    //Artemiy: add TLB
+    uint64_t addr;
+
+    uint64_t virtual_page_addr = 0;
+    uint64_t page_offset = 0;
+    uint64_t physical_page_addr = 0;
+    uint64_t instrs_type = 0;
+
+    if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+      addr = memref.instr.addr;
+      virtual_page_addr = memref.instr.addr >> 12;
+      page_offset = memref.instr.addr & ((1 << 12) - 1);
+      instrs_type = 1;
+    } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
+      addr = memref.data.addr;
+      virtual_page_addr = memref.data.addr >> 12;
+      page_offset = memref.data.addr & ((1 << 12) - 1);
+      instrs_type = 2;
+    }
+
+    memref_t new_memref = memref; 
+    page_table_t::iterator it = page_table.find(virtual_page_addr << 12);
+    // if found 
+    if (it != page_table.end()) {
+      
+      physical_page_addr = it->second.PA;
+
+      if (type_is_instr(new_memref.instr.type) || new_memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+        new_memref.instr.addr = physical_page_addr + page_offset;
+      } else if (new_memref.data.type == TRACE_TYPE_READ || new_memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(new_memref.data.type)) {
+        new_memref.data.addr  = physical_page_addr + page_offset;
+      }
+
+      //std::cerr << "Request \n"
+      //              << std::hex 
+      //              << "Addr " << addr << "\n"
+      //              << std::dec
+      //              << "num_requests : " << num_request << "\n" 
+      //            ;
+
+      //TLB request
+      std::pair<bool, bool> res = tlb_sim->process_memref(memref, true /*changeByArtemiy*/);
+      bool is_TLB_hit = res.second;
+
+      //std::cerr << "Done TLB check \n";
+
+      // process TLB miss
+      if (!is_TLB_hit) {
+        //std::cerr << "TLB miss \n";
+
+        // page walk
+        memref_t page_walk_memref; 
+
+        page_walk_memref.data.type = TRACE_TYPE_PE1;
+        page_walk_memref.data.addr = it->second.PE1  + (virtual_page_addr >> 27);
+        page_walk_memref.data.size = 1; 
+        l1_dcaches[core]->request(page_walk_memref);
+        //std::cerr << "Done walk PE1\n";
+
+        page_walk_memref.data.type = TRACE_TYPE_PE2;
+        page_walk_memref.data.addr = it->second.PE2  + ((virtual_page_addr >> 18) & ((1 << 9) - 1));
+        page_walk_memref.data.size = 1; 
+        l1_dcaches[core]->request(page_walk_memref);
+        //std::cerr << "Done walk PE2\n";
+
+        page_walk_memref.data.type = TRACE_TYPE_PE3;
+        page_walk_memref.data.addr = it->second.PE3  + ((virtual_page_addr >> 9)  & ((1 << 9) - 1));
+        page_walk_memref.data.size = 1; 
+        l1_dcaches[core]->request(page_walk_memref);
+        //std::cerr << "Done walk PE3\n";
+
+        page_walk_memref.data.type = TRACE_TYPE_PE4;
+        page_walk_memref.data.addr = it->second.PE4  +  (virtual_page_addr        & ((1 << 9) - 1));
+        page_walk_memref.data.size = 1; 
+        l1_dcaches[core]->request(page_walk_memref);
+        //std::cerr << "Done walk PE4\n";
+      }
+    } else { //(it != page_table.end()) 
+      num_not_found++;
+      //std::cerr << "Error: cannot find translation for \n"
+      //              << std::hex 
+      //              << "Type " << ((instrs_type == 1) ? "instr" : "data") << "\n"
+      //              << "Addr " << addr << "\n"
+      //              << "VAddr >> 12 : " << virtual_page_addr << "\n"
+      //              << "VAddr : " << (virtual_page_addr << 12) << "\n"
+      //              << std::dec
+      //              << "VAddr page_offset : " << page_offset << "\n"
+      //              << "num_requests : " << num_request << "\n" 
+      //              << "num_not_found : " << num_not_found << "\n" 
+      //              ;
+      return true;
+    }
+
+    if (type_is_instr(new_memref.instr.type) ||
+        new_memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
         if (knobs.verbose >= 3) {
-            std::cerr << "::" << memref.data.pid << "." << memref.data.tid << ":: "
-                      << " @" << (void *)memref.instr.addr << " instr x"
-                      << memref.instr.size << "\n";
+            std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                      << " @" << (void *)new_memref.instr.addr << " instr x"
+                      << new_memref.instr.size << "\n";
         }
-        l1_icaches[core]->request(memref);
-    } else if (memref.data.type == TRACE_TYPE_READ ||
-               memref.data.type == TRACE_TYPE_WRITE ||
+        l1_icaches[core]->request(new_memref);
+    } else if (new_memref.data.type == TRACE_TYPE_READ ||
+               new_memref.data.type == TRACE_TYPE_WRITE ||
                // We may potentially handle prefetches differently.
                // TRACE_TYPE_PREFETCH_INSTR is handled above.
-               type_is_prefetch(memref.data.type)) {
+               type_is_prefetch(new_memref.data.type)) {
         if (knobs.verbose >= 3) {
-            std::cerr << "::" << memref.data.pid << "." << memref.data.tid << ":: "
-                      << " @" << (void *)memref.data.pc << " "
-                      << trace_type_names[memref.data.type] << " "
-                      << (void *)memref.data.addr << " x" << memref.data.size << "\n";
+            std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                      << " @" << (void *)new_memref.data.pc << " "
+                      << trace_type_names[new_memref.data.type] << " "
+                      << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
         }
-        l1_dcaches[core]->request(memref);
-    } else if (memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
+        l1_dcaches[core]->request(new_memref);
+    } else if (new_memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
         if (knobs.verbose >= 3) {
-            std::cerr << "::" << memref.data.pid << "." << memref.data.tid << ":: "
-                      << " @" << (void *)memref.data.pc << " iflush "
-                      << (void *)memref.data.addr << " x" << memref.data.size << "\n";
+            std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                      << " @" << (void *)new_memref.data.pc << " iflush "
+                      << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
         }
-        l1_icaches[core]->flush(memref);
-    } else if (memref.flush.type == TRACE_TYPE_DATA_FLUSH) {
+        l1_icaches[core]->flush(new_memref);
+    } else if (new_memref.flush.type == TRACE_TYPE_DATA_FLUSH) {
         if (knobs.verbose >= 3) {
-            std::cerr << "::" << memref.data.pid << "." << memref.data.tid << ":: "
-                      << " @" << (void *)memref.data.pc << " dflush "
-                      << (void *)memref.data.addr << " x" << memref.data.size << "\n";
+            std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                      << " @" << (void *)new_memref.data.pc << " dflush "
+                      << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
         }
-        l1_dcaches[core]->flush(memref);
-    } else if (memref.exit.type == TRACE_TYPE_THREAD_EXIT) {
-        handle_thread_exit(memref.exit.tid);
+        l1_dcaches[core]->flush(new_memref);
+    } else if (new_memref.exit.type == TRACE_TYPE_THREAD_EXIT) {
+        handle_thread_exit(new_memref.exit.tid);
         last_thread = 0;
-    } else if (memref.marker.type == TRACE_TYPE_INSTR_NO_FETCH) {
+    } else if (new_memref.marker.type == TRACE_TYPE_INSTR_NO_FETCH) {
         // Just ignore.
         if (knobs.verbose >= 3) {
-            std::cerr << "::" << memref.data.pid << "." << memref.data.tid << ":: "
-                      << " @" << (void *)memref.instr.addr << " non-fetched instr x"
-                      << memref.instr.size << "\n";
+            std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                      << " @" << (void *)new_memref.instr.addr << " non-fetched instr x"
+                      << new_memref.instr.size << "\n";
         }
     } else {
-        error_string = "Unhandled memref type " + std::to_string(memref.data.type);
+        error_string = "Unhandled memref type " + std::to_string(new_memref.data.type);
         return false;
     }
 
@@ -443,6 +590,7 @@ cache_simulator_t::check_warmed_up()
 bool
 cache_simulator_t::print_results()
 {
+    tlb_sim->print_results();
     std::cerr << "Cache simulation results:\n";
     // Print core and associated L1 cache stats first.
     for (unsigned int i = 0; i < knobs.num_cores; i++) {

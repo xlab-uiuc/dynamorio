@@ -45,6 +45,9 @@ public:
     virtual void
     request(const memref_t &memref);
 
+    bool
+    request(const memref_t &memref, bool changed);
+
 protected:
     virtual void
     init_blocks();

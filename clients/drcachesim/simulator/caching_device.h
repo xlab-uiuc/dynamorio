@@ -61,6 +61,8 @@ public:
     virtual ~caching_device_t();
     virtual void
     request(const memref_t &memref);
+    virtual bool
+    request(const memref_t &memref, bool);
     virtual void
     invalidate(const addr_t tag);
 

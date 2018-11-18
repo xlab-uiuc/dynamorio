@@ -55,6 +55,11 @@ cache_t::init_blocks()
     }
 }
 
+bool
+cache_t::request(const memref_t &memref_ini, bool changed ) {
+return true;
+}
+
 void
 cache_t::request(const memref_t &memref_in)
 {

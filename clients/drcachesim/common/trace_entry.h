@@ -71,6 +71,11 @@ typedef enum {
     TRACE_TYPE_READ,  /**< A data load. */
     TRACE_TYPE_WRITE, /**< A data store. */
 
+    TRACE_TYPE_PE1,  /**< A data load. */
+    TRACE_TYPE_PE2,  /**< A data load. */
+    TRACE_TYPE_PE3,  /**< A data load. */
+    TRACE_TYPE_PE4,  /**< A data load. */
+
     TRACE_TYPE_PREFETCH, /**< A general prefetch to the level 1 data cache. */
     // X86 specific prefetch
     TRACE_TYPE_PREFETCHT0,  /**< An x86 prefetch to all levels of the cache. */
@@ -279,6 +284,11 @@ struct _trace_entry_t {
         // The length of each instr in the instr bundle
         unsigned char length[sizeof(addr_t)];
     };
+    //union {
+    addr_t phys_addr; // 4/8 bytes: mem ref addr, instr pc, tid, pid, marker val
+    //    // The length of each instr in the instr bundle
+    //    unsigned char length[sizeof(addr_t)];
+    //};
 } END_PACKED_STRUCTURE;
 typedef struct _trace_entry_t trace_entry_t;
 
@@ -346,6 +356,10 @@ struct _offline_entry_t {
             uint64_t addr : 61;
             uint64_t type : 3;
         } addr;
+        struct {
+            uint64_t addr : 61;
+            uint64_t type : 3;
+        } phys_addr;
         struct {
             // This describes the entire basic block.
             uint64_t modoffs : PC_MODOFFS_BITS;

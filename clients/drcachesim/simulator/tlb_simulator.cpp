@@ -44,6 +44,8 @@
 #include "tlb.h"
 #include "tlb_simulator.h"
 
+#include <utility> //Artemiy for procmem
+
 analysis_tool_t *
 tlb_simulator_create(const tlb_simulator_knobs_t &knobs)
 {
@@ -121,26 +123,31 @@ tlb_simulator_t::~tlb_simulator_t()
 }
 
 bool
-tlb_simulator_t::process_memref(const memref_t &memref)
+tlb_simulator_t::process_memref(const memref_t &memref) {
+return true;
+}
+
+std::pair<bool, bool>
+tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
 {
     if (knobs.skip_refs > 0) {
         knobs.skip_refs--;
-        return true;
+        return std::pair<bool, bool>(true, true);
     }
 
     // The references after warmup and simulated ones are dropped.
     if (knobs.warmup_refs == 0 && knobs.sim_refs == 0)
-        return true;
+        return std::pair<bool, bool>(true, true);
 
     // Both warmup and simulated references are simulated.
 
     if (!simulator_t::process_memref(memref))
-        return false;
+        return std::pair<bool, bool>(true, true);
 
     if (memref.marker.type == TRACE_TYPE_MARKER) {
         // We ignore markers before we ask core_for_thread, to avoid asking
         // too early on a timestamp marker.
-        return true;
+        return std::pair<bool, bool>(true, true);
     }
 
     // We use a static scheduling of threads to cores, as it is
@@ -155,10 +162,12 @@ tlb_simulator_t::process_memref(const memref_t &memref)
         last_core = core;
     }
 
+    bool found = false;
+
     if (type_is_instr(memref.instr.type))
-        itlbs[core]->request(memref);
+        found = itlbs[core]->request(memref, true);
     else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE)
-        dtlbs[core]->request(memref);
+        found = dtlbs[core]->request(memref, true);
     else if (memref.exit.type == TRACE_TYPE_THREAD_EXIT) {
         handle_thread_exit(memref.exit.tid);
         last_thread = 0;
@@ -170,7 +179,7 @@ tlb_simulator_t::process_memref(const memref_t &memref)
         // TLB simulator ignores prefetching, cache flushing, and markers
     } else {
         error_string = "Unhandled memref type " + std::to_string(memref.data.type);
-        return false;
+        return std::pair<bool, bool>(false, true);
     }
 
     if (knobs.verbose >= 3) {
@@ -194,7 +203,7 @@ tlb_simulator_t::process_memref(const memref_t &memref)
     } else {
         knobs.sim_refs--;
     }
-    return true;
+    return std::pair<bool, bool>(true, false);
 }
 
 bool
@@ -204,11 +213,11 @@ tlb_simulator_t::print_results()
     for (unsigned int i = 0; i < knobs.num_cores; i++) {
         print_core(i);
         if (thread_ever_counts[i] > 0) {
-            std::cerr << "  L1I stats:" << std::endl;
+            std::cerr << "  TLB-L1I stats:" << std::endl;
             itlbs[i]->get_stats()->print_stats("    ");
-            std::cerr << "  L1D stats:" << std::endl;
+            std::cerr << "  TLB-L1D stats:" << std::endl;
             dtlbs[i]->get_stats()->print_stats("    ");
-            std::cerr << "  LL stats:" << std::endl;
+            std::cerr << "  TLB-LL stats:" << std::endl;
             lltlbs[i]->get_stats()->print_stats("    ");
         }
     }

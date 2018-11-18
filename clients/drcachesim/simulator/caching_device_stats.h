@@ -36,6 +36,8 @@
 #ifndef _CACHING_DEVICE_STATS_H_
 #define _CACHING_DEVICE_STATS_H_ 1
 
+#include <vector>
+
 #include <string>
 #include <stdint.h>
 #ifdef HAS_ZLIB
@@ -89,6 +91,9 @@ protected:
 
     virtual void
     dump_miss(const memref_t &memref);
+
+    std::vector<int_least64_t> hit_statistics;
+    std::vector<int_least64_t> miss_statistics;
 
     int_least64_t num_hits;
     int_least64_t num_misses;

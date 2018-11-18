@@ -37,6 +37,8 @@
 #include "../common/utils.h"
 #include <assert.h>
 
+#include <iostream>
+
 caching_device_t::caching_device_t()
     : blocks(NULL)
     , stats(NULL)
@@ -94,6 +96,11 @@ caching_device_t::init(int associativity_, int block_size_, int num_blocks_,
     return true;
 }
 
+bool
+caching_device_t::request(const memref_t &memref_in, bool changed ) {
+return true;
+}
+
 void
 caching_device_t::request(const memref_t &memref_in)
 {
@@ -136,7 +143,6 @@ caching_device_t::request(const memref_t &memref_in)
                 break;
             }
         }
-
         if (way == associativity) {
             stats->access(memref, false /*miss*/);
             missed = true;
