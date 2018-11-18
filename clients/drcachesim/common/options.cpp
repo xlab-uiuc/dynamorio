@@ -188,6 +188,11 @@ droption_t<bytesize_t> op_trace_after_instrs(
     "executions are observed.  At that point, regular tracing is put into place.  Use "
     "-max_trace_size to set a limit on the subsequent trace length.");
 
+droption_t<std::string> op_enabler_filename(
+    DROPTION_SCOPE_CLIENT, "enabler_filename", "/tmp/default_file_enabler",
+    "Enabler file name",
+    "Specifies name of the file which should have 1 for tracer to start recording the trace");
+
 droption_t<bytesize_t> op_exit_after_tracing(
     DROPTION_SCOPE_CLIENT, "exit_after_tracing", 0,
     "Exit the process after tracing N references",

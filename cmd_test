@@ -1,0 +1,2 @@
+source /disk/memphis/data/s1470894/neuralwalkers/workloads/mcf/source.sh
+run_tracer -t drcachesim -offline -verbose 1 -enabler_filename /tmp/enabler_filename -trace_after_instrs 1 -- $MCF_DIR/mcf_base.amd64-m64-gcc42-nn $MCF_DIR/inp.in

@@ -1,4 +1,4 @@
-/* ******************************************************************************
+  /* ******************************************************************************
  * Copyright (c) 2011-2018 Google, Inc.  All rights reserved.
  * Copyright (c) 2010 Massachusetts Institute of Technology  All rights reserved.
  * ******************************************************************************/
@@ -421,7 +421,8 @@ memtrace(void *drcontext, bool skip_size_cap)
                  mem_ref += instru->sizeof_entry()) {
                 trace_type_t type = instru->get_entry_type(mem_ref);
                 if (type != TRACE_TYPE_THREAD && type != TRACE_TYPE_THREAD_EXIT &&
-                    type != TRACE_TYPE_PID) {
+                    type != TRACE_TYPE_PID 
+                    && type != TRACE_TYPE_INSTR_BUNDLE) {
                     addr_t virt = instru->get_entry_addr(mem_ref);
                     addr_t phys = physaddr.virtual2physical(virt);
                     DR_ASSERT(type != TRACE_TYPE_INSTR_BUNDLE);
@@ -1252,11 +1253,12 @@ event_kernel_xfer(void *drcontext, const dr_kernel_xfer_info_t *info)
  */
 
 static uint64 instr_count;
+static uint64 fine_grained_check_instr_count;
 static volatile bool tracing_enabled;
 static void *enable_tracing_lock;
 
 #ifdef X86_64
-#    define DELAYED_CHECK_INLINED 1
+//#    define DELAYED_CHECK_INLINED 1 //Artemiy disable inlining to go to 
 #else
 // XXX: we don't have the inlining implemented yet.
 #endif
@@ -1330,13 +1332,37 @@ hit_instr_count_threshold()
         DR_ASSERT(false);
 }
 
+
 #ifndef DELAYED_CHECK_INLINED
 static void
 check_instr_count_threshold(uint incby)
 {
+// Clean code:
+//    instr_count += incby;
+//    if (instr_count > op_trace_after_instrs.get_value())
+//        hit_instr_count_threshold();
+
+//Artemiy: dirty hack: replace existing instr counter comparison with threshold with checking a file
     instr_count += incby;
-    if (instr_count > op_trace_after_instrs.get_value())
+    fine_grained_check_instr_count += incby;
+//    NOTIFY(0, "Inside check_ %d %d\n", instr_count, fine_grained_check_instr_count);
+    uint shift_size = 24;
+    
+    if ((fine_grained_check_instr_count >> shift_size) > 0) {
+      fine_grained_check_instr_count = 0;
+      //check file
+      FILE* enabler_file = fopen(op_enabler_filename.get_value().c_str(),"r");
+      int enabler_file_status = 0;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result" 
+      fscanf(enabler_file, "%d", &enabler_file_status);
+#pragma GCC diagnostic pop 
+      if (enabler_file_status) {
         hit_instr_count_threshold();
+      }
+      fclose(enabler_file);
+      fine_grained_check_instr_count = fine_grained_check_instr_count >> shift_size;
+    }
 }
 #endif
 
@@ -1606,7 +1632,7 @@ event_exit(void)
 
     dr_mutex_destroy(mutex);
     drutil_exit();
-    if (op_trace_after_instrs.get_value() > 0)
+    if ( (op_trace_after_instrs.get_value() > 0) || 1)  //Artemiy
         exit_delay_instrumentation();
     drmgr_exit();
     func_trace_exit();

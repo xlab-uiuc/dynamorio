@@ -81,6 +81,7 @@ extern droption_t<unsigned int> op_virt2phys_freq;
 extern droption_t<bool> op_cpu_scheduling;
 extern droption_t<bytesize_t> op_max_trace_size;
 extern droption_t<bytesize_t> op_trace_after_instrs;
+extern droption_t<std::string> op_enabler_filename; //Artemiy: add file name for enabling tracing
 extern droption_t<bytesize_t> op_exit_after_tracing;
 extern droption_t<bool> op_online_instr_types;
 extern droption_t<std::string> op_replace_policy;
