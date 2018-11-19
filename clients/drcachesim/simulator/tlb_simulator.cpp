@@ -127,26 +127,35 @@ tlb_simulator_t::process_memref(const memref_t &memref) {
 return true;
 }
 
+
+// returns: first done
+// second: hit/miss
 std::pair<bool, bool>
 tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
 {
     if (knobs.skip_refs > 0) {
         knobs.skip_refs--;
+        std::cerr << "1 " << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
     }
 
     // The references after warmup and simulated ones are dropped.
-    if (knobs.warmup_refs == 0 && knobs.sim_refs == 0)
+    if (knobs.warmup_refs == 0 && knobs.sim_refs == 0) {
+        std::cerr << "2 " << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
+    }
 
     // Both warmup and simulated references are simulated.
 
-    if (!simulator_t::process_memref(memref))
+    if (!simulator_t::process_memref(memref)) {
+        std::cerr << "3 " << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
+    }
 
     if (memref.marker.type == TRACE_TYPE_MARKER) {
         // We ignore markers before we ask core_for_thread, to avoid asking
-        // too early on a timestamp marker.
+      // too early on a timestamp marker.
+        std::cerr << "4 " << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
     }
 
@@ -164,10 +173,16 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
 
     bool found = false;
 
-    if (type_is_instr(memref.instr.type))
+    if (type_is_instr(memref.instr.type)) {
+        //std::cerr << "Checking ITLB for addr " << std::hex << memref.instr.addr << std::dec << "...";
         found = itlbs[core]->request(memref, true);
-    else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE)
+        //std::cerr << "found: " << found << std::endl;
+    }
+    else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE) {
+        //std::cerr << "Checking DTLB for addr " << std::hex << memref.data.addr << std::dec << "...";
         found = dtlbs[core]->request(memref, true);
+        //std::cerr << "found: " << found << std::endl;
+    }
     else if (memref.exit.type == TRACE_TYPE_THREAD_EXIT) {
         handle_thread_exit(memref.exit.tid);
         last_thread = 0;
@@ -178,6 +193,7 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
                memref.marker.type == TRACE_TYPE_INSTR_NO_FETCH) {
         // TLB simulator ignores prefetching, cache flushing, and markers
     } else {
+        std::cout << __func__ << std::endl;
         error_string = "Unhandled memref type " + std::to_string(memref.data.type);
         return std::pair<bool, bool>(false, true);
     }
@@ -203,7 +219,7 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
     } else {
         knobs.sim_refs--;
     }
-    return std::pair<bool, bool>(true, false);
+    return std::pair<bool, bool>(true, found);
 }
 
 bool

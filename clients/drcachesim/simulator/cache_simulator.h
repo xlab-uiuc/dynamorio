@@ -85,17 +85,17 @@ protected:
     analysis_tool_t * tlb_sim;
 
     struct page_table_info_t {
-      unsigned int VA;
-      unsigned int PE1;
-      unsigned int PE2;
-      unsigned int PE3;
-      unsigned int PE4;
-      unsigned int PA;
+      long long unsigned int VA;
+      long long unsigned int PE1;
+      long long unsigned int PE2;
+      long long unsigned int PE3;
+      long long unsigned int PE4;
+      long long unsigned int PA;
     };
       
     //Artemiy: add TLB
     //typedef std::map<unsigned int, page_table_info_t> page_table_t;
-    typedef std::unordered_map<unsigned int, page_table_info_t> page_table_t;
+    typedef std::unordered_map<long long unsigned int, page_table_info_t> page_table_t;
     page_table_t page_table;
     std::vector<uint64_t> hit_statistics;
     std::vector<uint64_t> miss_statistics;
