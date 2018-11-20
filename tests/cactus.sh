@@ -26,7 +26,7 @@ trap sigint SIGINT
 
 # MAIN SETTINGS SECTION
 # Example:
-OUTPUT_DIR=/disk/local/traces/mcf
+OUTPUT_DIR=/disk/local/traces/cactus
 APPLICATION="$CACTUSADM_DIR/cactusADM_base.amd64-m64-gcc42-nn $CACTUSADM_DIR/benchADM.par"
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
