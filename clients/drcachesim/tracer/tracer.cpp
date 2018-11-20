@@ -59,6 +59,15 @@
 #include "../common/options.h"
 #include "../common/utils.h"
 
+#include <assert.h>
+
+#include <iostream>
+#include <sys/types.h>
+#include <signal.h>
+
+#include <ctime>
+#include <iostream>
+
 #ifdef ARM
 #    include "../../../core/unix/include/syscall_linux_arm.h" // for SYS_cacheflush
 #endif
@@ -510,6 +519,14 @@ memtrace(void *drcontext, bool skip_size_cap)
         if (!exited_process) {
             exited_process = true;
             dr_mutex_unlock(mutex);
+
+            std::cerr << "Tracer reached the target of " << op_exit_after_tracing.get_value() << " and will dump the page table by executing " << (std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str() << " ...";
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+            system((std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str());
+#pragma GCC diagnostic pop
+            std::cerr << "Done" << std::endl;
+
             // XXX i#2644: we would prefer detach_after_tracing rather than exiting
             // the process but that requires a client-triggered detach so for now
             // we settle for exiting.
@@ -954,6 +971,7 @@ instrument_instr(void *drcontext, void *tag, user_data_t *ud, instrlist_t *ilist
     return adjust;
 }
 
+static bool recording_enabled = false;
 /* For each memory reference app instr, we insert inline code to fill the buffer
  * with an instruction entry and memory reference entries.
  */
@@ -1322,7 +1340,22 @@ hit_instr_count_threshold()
     bool do_flush = false;
     dr_mutex_lock(enable_tracing_lock);
     if (!tracing_enabled) { // Already came here?
-        NOTIFY(0, "Hit delay threshold: enabling tracing.\n");
+        //NOTIFY(0, "Hit delay threshold: enabling tracing.\n");
+      
+        time_t rawtime;
+        struct tm * timeinfo;
+        char buffer[80];
+
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+
+        strftime(buffer,sizeof(buffer),"%d-%m-%Y %H:%M:%S",timeinfo);
+        std::string str(buffer);
+
+        std::cerr << std::endl;
+        std::cerr << "!!!!***ATTENTION***!!!!\t" << str << "\tStarting recording a trace" << std::endl;
+        std::cerr << std::endl;
+
         disable_delay_instrumentation();
         enable_tracing_instrumentation();
         do_flush = true;
@@ -1348,7 +1381,7 @@ check_instr_count_threshold(uint incby)
 //    NOTIFY(0, "Inside check_ %d %d\n", instr_count, fine_grained_check_instr_count);
     uint shift_size = 24;
     
-    if ((fine_grained_check_instr_count >> shift_size) > 0) {
+    if (!recording_enabled && (fine_grained_check_instr_count >> shift_size) > 0) {
       fine_grained_check_instr_count = 0;
       //check file
       FILE* enabler_file = fopen(op_enabler_filename.get_value().c_str(),"r");
@@ -1359,6 +1392,7 @@ check_instr_count_threshold(uint incby)
 #pragma GCC diagnostic pop 
       if (enabler_file_status) {
         hit_instr_count_threshold();
+        recording_enabled = true;
       }
       fclose(enabler_file);
       fine_grained_check_instr_count = fine_grained_check_instr_count >> shift_size;
@@ -1852,6 +1886,7 @@ drmemtrace_client_main(client_id_t id, int argc, const char *argv[])
     dr_log(NULL, DR_LOG_ALL, 1, "drcachesim client initializing\n");
 
     if (op_use_physical.get_value()) {
+        assert(0); //Artemiy: make sure we use virtual addresses 
         have_phys = physaddr.init();
         if (!have_phys)
             NOTIFY(0, "Unable to open pagemap: using virtual addresses.\n");

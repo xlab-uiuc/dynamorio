@@ -191,9 +191,9 @@ droption_t<bytesize_t> op_trace_after_instrs(
 droption_t<std::string> op_enabler_filename(
     DROPTION_SCOPE_CLIENT, "enabler_filename", "/tmp/default_file_enabler",
     "Enabler file name",
-    "Specifies name of the file which should have 1 for tracer to start recording the trace");
+    "Specifies name of the file which should have 1 for tracer to start recording a trace");
 
-droption_t<bytesize_t> op_exit_after_tracing(
+droption_t<unsigned long long int> op_exit_after_tracing(
     DROPTION_SCOPE_CLIENT, "exit_after_tracing", 0,
     "Exit the process after tracing N references",
     "If non-zero, after tracing the specified number of references, the process is "

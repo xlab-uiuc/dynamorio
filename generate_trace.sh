@@ -1,7 +1,5 @@
 #!/bin/bash 
 
-source $TRACER_DIR/source.sh
-
 kill_descendant_processes() {
     local pid="$1"
     local and_self="${2:-false}"
@@ -15,14 +13,13 @@ kill_descendant_processes() {
         kill -INT "$pid"
     fi
 }
-
 sigint()
 {
    echo "signal INT received, script ending"
    kill_descendant_processes $$
    exit 0
 }
-trap sigint USR1
+trap sigint SIGINT
 
 APPLICATION=""
 READ_THE_REST=0
@@ -52,20 +49,30 @@ do
 done
 
 if [ -d "$OUTPUT_DIR" ]; then
-  echo "Seems that directory already exist. Please rename/remove it."
-  return 1
+  echo "Error: Seems that output directory $OUTPUT_DIR already exists. Please rename/remove it."
+  exit 1
 fi
 
-mkdir -p $OUTPUT_DIR
 echo "APPLICATION             = ${APPLICATION}"
 echo "OUTPUT_DIR              = ${OUTPUT_DIR}"
 echo "ENABLE_FILE             = ${ENABLE_FILE}"
 
-echo "run_tracer -t drcachesim -offline -outdir $OUTPUT_DIR -verbose 1 -enabler_filename $ENABLE_FILE -trace_after_instrs 1 -use_physical1 -- $APPLICATION " > $OUTPUT_DIR/cmd
-cat $OUTPUT_DIR/cmd
-echo Running...
+echo "Start tracer..."
+mkdir -p $OUTPUT_DIR
+# launch tracer 
+$TRACER_DIR/build/bin64/drrun -t drcachesim                  \
+                              -offline                       \
+                              -outdir $OUTPUT_DIR            \
+                              -verbose 1                     \
+                              -enabler_filename $ENABLE_FILE \
+                              -trace_after_instrs 1          \
+                                                             \
+                              -exit_after_tracing 10000000000      \
+                              -- $APPLICATION                \
+                              & pid=$!
 
-run_tracer -t drcachesim -offline -outdir $OUTPUT_DIR -verbose 1 -enabler_filename $ENABLE_FILE -trace_after_instrs 1 -- $APPLICATION & pid=!$
+# enable page table dump
 echo $pid > /proc/page_tables
+echo "Page table dump module was attached to PID=$pid"
 
 wait
