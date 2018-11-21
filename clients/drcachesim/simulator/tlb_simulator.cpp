@@ -155,7 +155,7 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
     if (memref.marker.type == TRACE_TYPE_MARKER) {
         // We ignore markers before we ask core_for_thread, to avoid asking
       // too early on a timestamp marker.
-        std::cerr << "4 " << memref.data.addr << "...";
+        std::cerr << __FUNCTION__ << "memref.marker.type == TRACE_TYPE_MARKER" << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
     }
 
@@ -175,13 +175,17 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
 
     if (type_is_instr(memref.instr.type)) {
         //std::cerr << "Checking ITLB for addr " << std::hex << memref.instr.addr << std::dec << "...";
-        found = itlbs[core]->request(memref, true);
-        //std::cerr << "found: " << found << std::endl;
+        found = itlbs[core]->request(memref, true, true /* Artemiy change */ );
+        if (knobs.verbose >= 2) {
+          std::cerr << "found in ITLB: " << found << std::endl;
+        }
     }
     else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE) {
         //std::cerr << "Checking DTLB for addr " << std::hex << memref.data.addr << std::dec << "...";
-        found = dtlbs[core]->request(memref, true);
-        //std::cerr << "found: " << found << std::endl;
+        found = dtlbs[core]->request(memref, true, true /* Artemiy change */ );
+        if (knobs.verbose >= 2) {
+          std::cerr << "found in DTLB: " << found << std::endl;
+        }
     }
     else if (memref.exit.type == TRACE_TYPE_THREAD_EXIT) {
         handle_thread_exit(memref.exit.tid);
@@ -211,6 +215,7 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
         // reset tlb stats when warming up is completed
         if (knobs.warmup_refs == 0) {
             for (unsigned int i = 0; i < knobs.num_cores; i++) {
+                std::cerr << "Finished warmup of TLB" << std::endl;
                 itlbs[i]->get_stats()->reset();
                 dtlbs[i]->get_stats()->reset();
                 lltlbs[i]->get_stats()->reset();

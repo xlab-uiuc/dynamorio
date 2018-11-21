@@ -39,6 +39,15 @@
 
 #include <iostream>
 
+
+cache_result_t got_from_parent(cache_result_t cur) {
+  if (cur != NOT_FOUND) {
+    cur = static_cast<cache_result_t>(static_cast<int>(cur) + 1);
+  }
+  return cur;
+}
+
+
 caching_device_t::caching_device_t()
     : blocks(NULL)
     , stats(NULL)
@@ -62,11 +71,12 @@ caching_device_t::init(int associativity_, int block_size_, int num_blocks_,
                        prefetcher_t *prefetcher_, bool inclusive_,
                        const std::vector<caching_device_t *> &children_)
 {
-    if (!IS_POWER_OF_2(associativity_) || !IS_POWER_OF_2(block_size_) ||
-        !IS_POWER_OF_2(num_blocks_) ||
-        // Assuming caching device block size is at least 4 bytes
-        block_size_ < 4)
-        return false;
+    //if (!IS_POWER_OF_2(associativity_) || !IS_POWER_OF_2(block_size_) ||
+    //    !IS_POWER_OF_2(num_blocks_) ||
+    //    // Assuming caching device block size is at least 4 bytes
+    //    block_size_ < 4)
+    //    return false;
+    std::cerr << associativity_ << " " << num_blocks_;
     if (stats_ == NULL)
         return false; // A stats must be provided for perf: avoid conditional code
     else if (!*stats_)
@@ -79,7 +89,8 @@ caching_device_t::init(int associativity_, int block_size_, int num_blocks_,
     assoc_bits = compute_log2(associativity);
     block_size_bits = compute_log2(block_size);
     blocks_per_set_mask = blocks_per_set - 1;
-    if (assoc_bits == -1 || block_size_bits == -1 || !IS_POWER_OF_2(blocks_per_set))
+    //if (assoc_bits == -1 || block_size_bits == -1 || !IS_POWER_OF_2(blocks_per_set))
+    if (block_size_bits == -1 || !IS_POWER_OF_2(blocks_per_set))
         return false;
     parent = parent_;
     stats = stats_;
@@ -96,23 +107,33 @@ caching_device_t::init(int associativity_, int block_size_, int num_blocks_,
     return true;
 }
 
-bool
-caching_device_t::request(const memref_t &memref_in, bool changed ) {
-return true;
-}
 
 void
-caching_device_t::request(const memref_t &memref_in)
-{
+caching_device_t::request(const memref_t &memref_in) {
+  request(memref_in, true); 
+}
+
+bool
+caching_device_t::request(const memref_t &memref_in, bool changed1, bool changed2) {
+  // for TLB, its has its own impl
+  assert(0);
+}
+
+  // for cache
+cache_result_t
+caching_device_t::request(const memref_t &memref_in, bool changed ) {
     // Unfortunately we need to make a copy for our loop so we can pass
     // the right data struct to the parent and stats collectors.
     memref_t memref;
+    // std::cerr << "Received addr: " << std::hex << memref_in.data.addr << std::dec << std::endl; 
     // We support larger sizes to improve the IPC perf.
     // This means that one memref could touch multiple blocks.
     // We treat each block separately for statistics purposes.
     addr_t final_addr = memref_in.data.addr + memref_in.data.size - 1 /*avoid overflow*/;
     addr_t final_tag = compute_tag(final_addr);
     addr_t tag = compute_tag(memref_in.data.addr);
+
+    cache_result_t res = NOT_FOUND;
 
     // Optimization: check last tag if single-block
     if (tag == final_tag && tag == last_tag) {
@@ -123,7 +144,8 @@ caching_device_t::request(const memref_t &memref_in)
         if (parent != NULL)
             parent->stats->child_access(memref_in, true);
         access_update(last_block_idx, last_way);
-        return;
+        //std::cerr << "Left by short path" << std::endl; 
+        return res;
     }
 
     memref = memref_in;
@@ -138,6 +160,7 @@ caching_device_t::request(const memref_t &memref_in)
         for (way = 0; way < associativity; ++way) {
             if (get_caching_device_block(block_idx, way).tag == tag) {
                 stats->access(memref, true /*hit*/);
+                res = FOUND_L1;
                 if (parent != NULL)
                     parent->stats->child_access(memref, true);
                 break;
@@ -149,7 +172,8 @@ caching_device_t::request(const memref_t &memref_in)
             // If no parent we assume we get the data from main memory
             if (parent != NULL) {
                 parent->stats->child_access(memref, false);
-                parent->request(memref);
+                res = parent->request(memref, true /*Artemiy*/);
+                res = got_from_parent(res);
             }
 
             // FIXME i#1726: coherence policy
@@ -185,6 +209,7 @@ caching_device_t::request(const memref_t &memref_in)
         last_way = way;
         last_block_idx = block_idx;
     }
+    return res;
 }
 
 void
@@ -242,3 +267,4 @@ caching_device_t::invalidate(const addr_t tag)
         }
     }
 }
+

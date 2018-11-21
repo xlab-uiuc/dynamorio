@@ -126,4 +126,12 @@ typedef union _memref_t {
     struct _memref_marker_t marker;    /**< A marker holding metadata. */
 } memref_t;
 
+typedef enum {
+     NOT_FOUND
+   , FOUND_L1
+   , FOUND_L2
+   , FOUND_LLC
+   , WRONG
+} cache_result_t;
+
 #endif /* _MEMREF_H_ */

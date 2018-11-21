@@ -71,8 +71,8 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     , knobs(knobs_)
     , l1_icaches(NULL)
     , l1_dcaches(NULL)
+    , l2_caches(NULL)
     , is_warmed_up(false)
-// use default tlb_knobs
 //    , tlb_knobs(tlb_knobs_)
 {
     // XXX i#1703: get defaults from hardware being run on.
@@ -132,13 +132,19 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
         return;
     }
 
-    std::string cache_name = "LL";
+    std::string cache_name = "LLC";
     all_caches[cache_name] = llc;
     llcaches[cache_name] = llc;
 
     l1_icaches = new cache_t *[knobs.num_cores];
     l1_dcaches = new cache_t *[knobs.num_cores];
+    l2_caches =  new cache_t *[knobs.num_cores];
     for (unsigned int i = 0; i < knobs.num_cores; i++) {
+        l2_caches[i] = create_cache(knobs.replace_policy);
+        if (l2_caches[i] == NULL) {
+            success = false;
+            return;
+        }
         l1_icaches[i] = create_cache(knobs.replace_policy);
         if (l1_icaches[i] == NULL) {
             success = false;
@@ -150,22 +156,27 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
             return;
         }
 
-        if (!l1_icaches[i]->init(knobs.L1I_assoc, (int)knobs.line_size,
-                                 (int)knobs.L1I_size, llc,
+        if (!l2_caches[i]->init (knobs.L2_assoc, (int)knobs.line_size,
+                                 (int)knobs.L2_size, llc,
+                                 new cache_stats_t("", warmup_enabled)) || 
+            !l1_icaches[i]->init(knobs.L1I_assoc, (int)knobs.line_size,
+                                 (int)knobs.L1I_size, l2_caches[i],
                                  new cache_stats_t("", warmup_enabled)) ||
             !l1_dcaches[i]->init(knobs.L1D_assoc, (int)knobs.line_size,
-                                 (int)knobs.L1D_size, llc,
+                                 (int)knobs.L1D_size, l2_caches[i],
                                  new cache_stats_t("", warmup_enabled),
                                  knobs.data_prefetcher == PREFETCH_POLICY_NEXTLINE
                                      ? new prefetcher_t((int)knobs.line_size)
                                      : nullptr)) {
-            error_string = "Usage error: failed to initialize L1 caches.  Ensure sizes "
+            error_string = "Usage error: failed to initialize L1 and L2 caches.  Ensure sizes "
                            "and associativity are powers of 2 "
                            "and that the total sizes are multiples of the line size.";
             success = false;
             return;
         }
 
+        cache_name = "L2_Cache_" + std::to_string(i);
+        all_caches[cache_name] = l2_caches[i];
         cache_name = "L1_I_Cache_" + std::to_string(i);
         all_caches[cache_name] = l1_icaches[i];
         cache_name = "L1_D_Cache_" + std::to_string(i);
@@ -316,6 +327,9 @@ cache_simulator_t::~cache_simulator_t()
     if (l1_dcaches != NULL) {
         delete[] l1_dcaches;
     }
+    if (l2_caches != NULL) {
+        delete[] l2_caches;
+    }
 }
 
 uint64_t
@@ -329,16 +343,17 @@ cache_simulator_t::process_memref(const memref_t &memref, bool changed) {
 return std::pair<bool,bool>(true,true);
 }
 
+static uint64_t num_request = 0;
+static uint64_t num_not_found = 0;
+static uint64_t num_request_shifted = 0;
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
-    static uint64_t num_request = 0;
-    static uint64_t num_request_shifted = 0;
-    static uint64_t num_not_found = 0;
     num_request++;
     num_request_shifted++;
 
-    if ((num_request_shifted >> 20) > 0) {
+    if ((num_request_shifted >> 22) > 0) {
       num_request_shifted = 0;
       std::cerr << "Heartbeat. " << num_request << " memrequests processed.\n";
       print_results();
@@ -435,30 +450,35 @@ cache_simulator_t::process_memref(const memref_t &memref)
     //TLB request
     std::pair<bool, bool> res = tlb_sim->process_memref(memref, true /*changeByArtemiy*/);
     bool is_TLB_hit = res.second;
-    //std::cerr << "Done TLB check \n";
+    if (knobs.verbose >= 2) {
+      std::cerr << __FUNCTION__ << " Received TLB result: " << is_TLB_hit << std::endl;
+    }
 
     memref_t new_memref; 
+    new_memref = memref;
     new_memref.marker.type = memref.marker.type;
     new_memref.marker.pid = memref.marker.pid;
     new_memref.marker.tid = memref.marker.tid;
     page_table_t::iterator it = page_table.find(virtual_page_addr << 12);
-    //page_table_t::iterator it = page_table.begin();
     // if found 
-    if (it != page_table.end() || 1) {
+    if (it != page_table.end()) {
       
-      //physical_page_addr = it->second.PA;
+      physical_page_addr = it->second.PA;
 
       if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
         new_memref.instr.addr = physical_page_addr + page_offset;
-        //std::cerr << __FUNCTION__ << " found instr request" << std::endl;
       } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
         new_memref.data.addr  = physical_page_addr + page_offset;
-        //std::cerr << __FUNCTION__ << " found data request" << std::endl;
       }
 
       //std::cerr << "Request \n"
       //              << std::hex 
-      //              << "Addr " << addr << "\n"
+      //              << "Type " << ((instrs_type == 1) ? "instr" : "data") << std::endl 
+      //              << "Vddr " << addr <<  std::endl
+      //              << "VAddr >> 12 : " << virtual_page_addr << std::endl
+      //              << "VAddr page_addr : " << (virtual_page_addr << 12) << std::endl
+      //              << "PAddr page_addr : " << physical_page_addr << std::endl
+      //              << "PAddr page_addr : " << physical_page_addr + page_offset << std::endl
       //              << std::dec
       //              << "num_requests : " << num_request << "\n" 
       //            ;
@@ -466,7 +486,13 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
       // process TLB miss
       if (!is_TLB_hit) {
-        //std::cerr << "TLB miss \n";
+        if (knobs.verbose >= 2) {
+          std::cerr << "TLB miss \n";
+        }
+
+        // reset page walk results
+        page_walk_res.clear();
+
 
         // page walk
         memref_t page_walk_memref; 
@@ -474,46 +500,67 @@ cache_simulator_t::process_memref(const memref_t &memref)
         page_walk_memref.data.type = TRACE_TYPE_PE1;
         page_walk_memref.data.addr = it->second.PE1  + (virtual_page_addr >> 27);
         page_walk_memref.data.size = 1; 
-        l1_dcaches[core]->request(page_walk_memref);
-        //std::cerr << "Done walk PE1\n";
+        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+        if (knobs.verbose >= 2) {
+          std::cerr << "Done walk L1" << std::endl;
+        }
 
         page_walk_memref.data.type = TRACE_TYPE_PE2;
         page_walk_memref.data.addr = it->second.PE2  + ((virtual_page_addr >> 18) & ((1 << 9) - 1));
         page_walk_memref.data.size = 1; 
-        l1_dcaches[core]->request(page_walk_memref);
-        //std::cerr << "Done walk PE2\n";
+        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+        if (knobs.verbose >= 2) {
+          std::cerr << "Done walk L2" << std::endl;
+        }
 
         page_walk_memref.data.type = TRACE_TYPE_PE3;
         page_walk_memref.data.addr = it->second.PE3  + ((virtual_page_addr >> 9)  & ((1 << 9) - 1));
         page_walk_memref.data.size = 1; 
-        l1_dcaches[core]->request(page_walk_memref);
-        //std::cerr << "Done walk PE3\n";
+        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+        if (knobs.verbose >= 2) {
+          std::cerr << "Done walk L3" << std::endl;
+        }
 
         page_walk_memref.data.type = TRACE_TYPE_PE4;
         page_walk_memref.data.addr = it->second.PE4  +  (virtual_page_addr        & ((1 << 9) - 1));
         page_walk_memref.data.size = 1; 
-        l1_dcaches[core]->request(page_walk_memref);
-        //std::cerr << "Done walk PE4\n";
+        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+        if (knobs.verbose >= 2) {
+          std::cerr << "Done walk L4" << std::endl;
+        }
+
+        hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
+        if (it != hm_full_statistic.end()) {
+          it->second++;
+        } else {
+          hm_full_statistic.insert(std::make_pair(page_walk_res, 1));
+        }
       }
     } else { //(it != page_table.end()) 
       num_not_found++;
-      std::cerr << "Error: cannot find translation for \n"
-                    << std::hex 
-                    << "Type " << ((instrs_type == 1) ? "instr" : "data") << "\n"
-                    << "Addr " << addr << "\n"
-                    << "VAddr >> 12 : " << virtual_page_addr << "\n"
-                    << "VAddr : " << (virtual_page_addr << 12) << "\n"
-                    << std::dec
-                    << "VAddr page_offset : " << page_offset << "\n"
-                    << "num_requests : " << num_request << "\n" 
-                    << "num_not_found : " << num_not_found << "\n" 
-                    ;
+      if (knobs.verbose >= 2) {
+        std::cerr << "Error: cannot find translation for " << std::endl
+                      << std::hex 
+                      << "Type " << ((instrs_type == 1) ? "instr" : "data") << std::endl 
+                      << "Vddr " << addr <<  std::endl
+                      << "VAddr >> 12 : " << virtual_page_addr << std::endl
+                      << "VAddr page_addr : " << (virtual_page_addr << 12) << std::endl
+                      << std::dec
+                      << "VAddr page_offset : " << page_offset << std::endl
+                      << "num_requests : " << num_request << std::endl
+                      << "num_not_found : " << num_not_found <<  std::endl
+                      ;
+      }
       return true;
     }
 
     if (type_is_instr(new_memref.instr.type) ||
         new_memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+        if (knobs.verbose >= 2) {
+            std::cerr << "Go to L1I\n";
+        }
         if (knobs.verbose >= 3) {
+            std::cerr << "Go to L1I\n";
             std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
                       << " @" << (void *)new_memref.instr.addr << " instr x"
                       << new_memref.instr.size << "\n";
@@ -524,6 +571,9 @@ cache_simulator_t::process_memref(const memref_t &memref)
                // We may potentially handle prefetches differently.
                // TRACE_TYPE_PREFETCH_INSTR is handled above.
                type_is_prefetch(new_memref.data.type)) {
+        if (knobs.verbose >= 2) {
+            std::cerr << "Go to L1D\n";
+        }
         if (knobs.verbose >= 3) {
             std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
                       << " @" << (void *)new_memref.data.pc << " "
@@ -567,9 +617,11 @@ cache_simulator_t::process_memref(const memref_t &memref)
             cache_t *cache = cache_it.second;
             cache->get_stats()->reset();
         }
-        if (knobs.verbose >= 1) {
+        if (knobs.verbose >= 0) {
             std::cerr << "Cache simulation warmed up\n";
         }
+        //clear the hm_statistic_map
+        hm_full_statistic.clear(); 
     } else {
         knobs.sim_refs--;
     }
@@ -633,13 +685,14 @@ cache_simulator_t::print_results()
                 l1_icaches[i]->get_stats()->print_stats("    ");
                 std::cerr << "  L1D stats:" << std::endl;
                 l1_dcaches[i]->get_stats()->print_stats("    ");
+                std::cerr << "  L2 stats:" << std::endl;
+                l2_caches[i]->get_stats()->print_stats("    ");
             } else {
                 std::cerr << "  unified L1 stats:" << std::endl;
                 l1_icaches[i]->get_stats()->print_stats("    ");
             }
         }
     }
-
     // Print non-L1, non-LLC cache stats.
     for (auto &caches_it : other_caches) {
         std::cerr << caches_it.first << " stats:" << std::endl;
@@ -650,6 +703,27 @@ cache_simulator_t::print_results()
     for (auto &caches_it : llcaches) {
         std::cerr << caches_it.first << " stats:" << std::endl;
         caches_it.second->get_stats()->print_stats("    ");
+    }
+    std::cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+    std::cerr << "num_requests : " << num_request << std::endl 
+              << "num_not_found : " << num_not_found << std::endl;
+
+    std::cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wwrite-strings" 
+    char *print_hm_stats[] =
+    {
+        "MEMORY"
+        , "L1"
+        , "L2"
+        , "LLC"
+    };
+#pragma GCC diagnostic pop 
+    for (hm_full_statistic_t::iterator it = hm_full_statistic.begin(); it != hm_full_statistic.end(); it++) {
+      for(unsigned int i = 0; i < it->first.size(); i++) {
+        std::cerr << print_hm_stats[it->first[i]] << ",";
+      }
+      std::cerr << "\t" << it->second << std::endl;
     }
 
     return true;

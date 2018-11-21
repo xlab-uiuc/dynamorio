@@ -50,8 +50,13 @@ public:
          bool inclusive = false, const std::vector<caching_device_t *> &children = {});
     virtual void
     request(const memref_t &memref);
+
     virtual bool
+    request(const memref_t &memref, bool changed1, bool changed2 );
+
+    virtual cache_result_t
     request(const memref_t &memref, bool changed );
+
     virtual void
     flush(const memref_t &memref);
 

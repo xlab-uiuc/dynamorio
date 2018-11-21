@@ -80,6 +80,7 @@ protected:
     // This is useful for implementing polymorphism correctly.
     cache_t **l1_icaches;
     cache_t **l1_dcaches;
+    cache_t **l2_caches;
 
     //Artemiy: add TLB
     analysis_tool_t * tlb_sim;
@@ -99,6 +100,12 @@ protected:
     page_table_t page_table;
     std::vector<uint64_t> hit_statistics;
     std::vector<uint64_t> miss_statistics;
+
+  
+    typedef std::vector<cache_result_t> page_walk_hm_result_t;
+    typedef std::map< page_walk_hm_result_t, uint64_t> hm_full_statistic_t;
+    hm_full_statistic_t hm_full_statistic;
+    page_walk_hm_result_t page_walk_res;
 
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)

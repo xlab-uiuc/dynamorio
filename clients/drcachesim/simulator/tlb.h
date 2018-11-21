@@ -40,13 +40,18 @@
 #include "tlb_entry.h"
 #include "tlb_stats.h"
 
+#include "caching_device.h"
+
 class tlb_t : public caching_device_t {
 public:
     virtual void
     request(const memref_t &memref);
 
-    bool
-    request(const memref_t &memref, bool changed);
+    virtual bool
+    request(const memref_t &memref, bool changed1, bool changed2);
+
+    virtual cache_result_t
+    request(const memref_t &memref_in, bool changed);
 
 protected:
     virtual void

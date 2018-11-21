@@ -83,6 +83,7 @@ caching_device_stats_t::~caching_device_stats_t()
 void
 caching_device_stats_t::access(const memref_t &memref, bool hit)
 {
+//    std::err << "Received " << hit << std::endl;
     // We assume we're single-threaded.
     // We're only computing miss rate so we just inc counters here.
     if (hit) {
@@ -122,6 +123,12 @@ caching_device_stats_t::access(const memref_t &memref, bool hit)
           return;
         } 
         num_misses++;
+        //static unsigned int count = 0;
+        //count++;
+        //if ((count >> 15) > 0) {
+        //   count = 0;        
+        //   std::cerr << "Received miss " << num_misses << std::endl;
+        //}
         if (dump_misses)
             dump_miss(memref);
     }

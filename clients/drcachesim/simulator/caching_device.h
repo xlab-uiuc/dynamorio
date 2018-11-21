@@ -59,10 +59,19 @@ public:
          caching_device_stats_t *stats, prefetcher_t *prefetcher = nullptr,
          bool inclusive = false, const std::vector<caching_device_t *> &children = {});
     virtual ~caching_device_t();
+
+    // default 
     virtual void
     request(const memref_t &memref);
+
+    // for TLB
     virtual bool
+    request(const memref_t &memref, bool, bool);
+
+    // for cache
+    virtual cache_result_t
     request(const memref_t &memref, bool);
+
     virtual void
     invalidate(const addr_t tag);
 
@@ -92,6 +101,7 @@ public:
         return double(loaded_blocks) / num_blocks;
     }
 
+
 protected:
     virtual void
     access_update(int block_idx, int way);
@@ -106,7 +116,8 @@ protected:
     inline int
     compute_block_idx(addr_t tag)
     {
-        return (tag & blocks_per_set_mask) << assoc_bits;
+        //return (tag & blocks_per_set_mask) << assoc_bits;
+        return (tag & blocks_per_set_mask) * associativity;
     }
     inline caching_device_block_t &
     get_caching_device_block(int block_idx, int way)

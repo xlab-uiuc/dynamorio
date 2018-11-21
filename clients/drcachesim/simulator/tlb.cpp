@@ -33,19 +33,29 @@
 #include "tlb.h"
 #include "../common/utils.h"
 #include <assert.h>
+#include <iostream>
+
 
 void
 tlb_t::init_blocks()
 {
+    std::cerr << "Initialising a TLB with size: " << num_blocks << std::endl;
     for (int i = 0; i < num_blocks; i++) {
         blocks[i] = new tlb_entry_t;
     }
     //Artemiy add reading PT files
 }
 
+cache_result_t
+tlb_t::request(const memref_t &memref_in, bool)
+{
+  assert(0);
+  }
+
 void
 tlb_t::request(const memref_t &memref_in)
 {
+    assert(0); //Artemiy default -- assert
     // XXX: any better way to derive caching_device_t::request?
     // Since pid is needed in a lot of places from the beginning to the end,
     // it might also not be a good way to write a lot of helper functions
@@ -130,7 +140,7 @@ tlb_t::request(const memref_t &memref_in)
 
 //Artemiy copypaste
 bool
-tlb_t::request(const memref_t &memref_in, bool changed)
+tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
 {
     // XXX: any better way to derive caching_device_t::request?
     // Since pid is needed in a lot of places from the beginning to the end,
@@ -160,6 +170,7 @@ tlb_t::request(const memref_t &memref_in, bool changed)
         if (parent != NULL)
             parent->get_stats()->child_access(memref_in, true);
         access_update(last_block_idx, last_way);
+        //std::cerr << "TLB hit short" << std::endl; 
         return true; //found
     }
 
@@ -178,6 +189,7 @@ tlb_t::request(const memref_t &memref_in, bool changed)
                 stats->access(memref, true /*hit*/);
                 if (parent != NULL)
                     parent->get_stats()->child_access(memref, true);
+                //std::cerr << "TLB hit by search" << std::endl; 
                 prepare_to_return = true; //found
                 break;
             }
@@ -189,14 +201,11 @@ tlb_t::request(const memref_t &memref_in, bool changed)
             bool result = false;
             if (parent != NULL) {
                 parent->get_stats()->child_access(memref, false);
-                result = parent->request(memref, true);
+                result = parent->request(memref, true, true /* changed */);
+                //Artemiy add return translation not found in the TLBs
+                //std::cerr << "TLB get result from parent " << result << std::endl; 
+                prepare_to_return = result;
             }
-            if (!result)
-            {
-              //Artemiy add return translation not found in the TLBs
-              prepare_to_return = false;
-            }
-
             // XXX: do we need to handle TLB coherency?
 
             way = replace_which_way(block_idx);
@@ -217,7 +226,9 @@ tlb_t::request(const memref_t &memref_in, bool changed)
         last_block_idx = block_idx;
         last_pid = pid;
 
+        //std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 
         return prepare_to_return;
     }
+    //std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 
     return prepare_to_return;
 }

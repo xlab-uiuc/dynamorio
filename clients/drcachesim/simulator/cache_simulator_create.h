@@ -54,10 +54,12 @@ struct cache_simulator_knobs_t {
         : num_cores(4)
         , line_size(64)
         , L1I_size(32 * 1024U)
-        , L1D_size(32 * 1024U)
+        , L1D_size(4 * 1024U)
         , L1I_assoc(8)
         , L1D_assoc(8)
-        , LL_size(8 * 1024 * 1024)
+        , L2_size(256 * 1024)
+        , L2_assoc(8)
+        , LL_size(16 * 1024 * 1024)
         , LL_assoc(16)
         , LL_miss_file("")
         , replace_policy("LRU")
@@ -77,6 +79,8 @@ struct cache_simulator_knobs_t {
     uint64_t L1D_size;
     unsigned int L1I_assoc;
     unsigned int L1D_assoc;
+    uint64_t L2_size;
+    unsigned int L2_assoc;
     uint64_t LL_size;
     unsigned int LL_assoc;
     std::string LL_miss_file;

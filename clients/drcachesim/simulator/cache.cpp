@@ -33,6 +33,7 @@
 #include "cache.h"
 #include "../common/utils.h"
 #include <assert.h>
+#include <iostream>
 
 bool
 cache_t::init(int associativity_, int line_size_, int total_size,
@@ -40,6 +41,7 @@ cache_t::init(int associativity_, int line_size_, int total_size,
               prefetcher_t *prefetcher_, bool inclusive_,
               const std::vector<caching_device_t *> &children_)
 {
+    std::cerr << "Initialising a cache with size: " << total_size << " with assoc: " << associativity_ << " with line size: " << line_size_ << std::endl;
     // convert total_size to num_blocks to fit for caching_device_t::init
     int num_lines = total_size / line_size_;
 
@@ -56,8 +58,13 @@ cache_t::init_blocks()
 }
 
 bool
-cache_t::request(const memref_t &memref_ini, bool changed ) {
-return true;
+cache_t::request(const memref_t &memref_in,  bool changed1, bool changed2 ) {
+  assert(0);
+}
+
+cache_result_t
+cache_t::request(const memref_t &memref_in, bool changed ) {
+  return caching_device_t::request(memref_in, true);
 }
 
 void
