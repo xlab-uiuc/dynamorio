@@ -36,7 +36,7 @@ echo 0 > $ENABLE_FILE
 
 $TRACER_DIR/generate_trace.sh --output_dir=$OUTPUT_DIR --enabler_file=$ENABLE_FILE $APPLICATION 2>&1 & pid=$!
 # wait for application to warm up
-sleep 60 
+sleep 700 
 
 #once the application is warmed up 
 echo 1 > $ENABLE_FILE 
