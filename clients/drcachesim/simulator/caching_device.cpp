@@ -76,7 +76,7 @@ caching_device_t::init(int associativity_, int block_size_, int num_blocks_,
     //    // Assuming caching device block size is at least 4 bytes
     //    block_size_ < 4)
     //    return false;
-    std::cerr << associativity_ << " " << num_blocks_;
+    // std::cerr << associativity_ << " " << num_blocks_;
     if (stats_ == NULL)
         return false; // A stats must be provided for perf: avoid conditional code
     else if (!*stats_)
