@@ -1,60 +1,42 @@
-# DynamoRIO
+1. Set up environment variables
+```bash
+source source.sh
+```
 
-![DynamoRIO logo](http://www.burningcutlery.com/images/dynamorio/drlogo.png)
+2. Install/Build the tracer
+```bash
+./install.sh
+```
 
-## About DynamoRIO
+3. Run the simulator 
+Example:
+```bash
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-DynamoRIO is a runtime code manipulation system that supports code
-transformations on any part of a program, while it executes. DynamoRIO
-exports an interface for building dynamic tools for a wide variety of uses:
-program analysis and understanding, profiling, instrumentation,
-optimization, translation, etc. Unlike many dynamic tool systems, DynamoRIO
-is not limited to insertion of callouts/trampolines and allows arbitrary
-modifications to application instructions via a powerful IA-32/AMD64/ARM/AArch64
-instruction manipulation library. DynamoRIO provides efficient,
-transparent, and comprehensive manipulation of unmodified applications
-running on stock operating systems (Windows, Linux, or Android) and commodity
-IA-32, AMD64, ARM, and AArch64 hardware.  Mac OSX support is in progress.
+# SETTTINGS
+TRACE_DIR=/disk/local/traces/mcf/
+OUTPUT_FILE=./mcf.res
 
-## Existing DynamoRIO-based tools
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Tools built on DynamoRIO and provided in our release package include:
-
-- The memory debugging tool [Dr. Memory](http://drmemory.org)
-- The multi-process cache simulator and memory address trace collection and
-  analysis platform [drcachesim](http://dynamorio.org/docs/page_drcachesim.html)
-- The legacy processor emulator
-  [drcpusim](http://dynamorio.org/docs/page_drcpusim.html)
-- The "strace for Windows" tool [drstrace](http://drmemory.org/strace_for_windows.html)
-- The code coverage tool [drcov](http://dynamorio.org/docs/page_drcov.html)
-- The library tracing tool [drltrace](https://github.com/DynamoRIO/drmemory/tree/master/drltrace)
-- The memory tracing tool [memtrace](https://github.com/DynamoRIO/dynamorio/blob/master/api/samples/memtrace_simple.c)
-- The basic block tracing tool [bbbuf](https://github.com/DynamoRIO/dynamorio/blob/master/api/samples/bbbuf.c)
-- The instruction counting tool [inscount](https://github.com/DynamoRIO/dynamorio/blob/master/api/samples/inscount.cpp)
-
-## Building your own custom tools
-
-DynamoRIO's powerful API abstracts away the details of the underlying
-infrastructure and allows the tool builder to concentrate on analyzing or
-modifying the application's runtime code stream.  API documentation is
-included in the release package and can also be [browsed
-online](http://dynamorio.org/docs/).  [Slides from our past tutorials are
-also available](https://github.com/DynamoRIO/dynamorio/wiki/Downloads).
-
-## Downloading DynamoRIO
-
-DynamoRIO is available free of charge as a [binary package for both Windows
-and Linux](https://github.com/DynamoRIO/dynamorio/wiki/Downloads).
-DynamoRIO's [source code is
-available](https://github.com/DynamoRIO/dynamorio) under a [BSD
-license](https://github.com/DynamoRIO/dynamorio/blob/master/License.txt).
-
-## Obtaining Help
-
-Use the [discussion list](http://groups.google.com/group/DynamoRIO-Users)
-to ask questions.
-
-To report a bug, use the [issue
-tracker](https://github.com/DynamoRIO/dynamorio/issues).
-
-See also [the DynamoRIO home page](http://dynamorio.org/): [http://dynamorio.org/](http://dynamorio.org/)
+TRACE=$(find $TRACE_DIR -maxdepth 1 -name "drmemtrace*" -type d)
+$SIMULATOR_DIR/build/bin64/drrun -t drcachesim \
+                    -indir $TRACE \
+                    -pt_dump_file $TRACE_DIR/pt_dump \
+                    -warmup_refs     300000000                   \
+                    -TLB_L1I_entries 64                          \
+                    -TLB_L1I_assoc   8                           \
+                    -TLB_L1D_entries 64                          \
+                    -TLB_L1D_assoc   8                           \
+                    -TLB_L2_entries  1024                        \
+                    -TLB_L1D_assoc   8                           \
+                    -L1I_size  $(( 32 * 1024 ))                  \
+                    -L1I_assoc 8                                 \
+                    -L1D_size  $(( 32 * 1024 ))                  \
+                    -L1D_assoc 8                                 \
+                    -L2_size   $(( 256 * 1024 ))                 \
+                    -L2_assoc  8                                 \
+                    -LL_size   $(( 16 * 1024 * 1024 ))           \
+                    -LL_assoc  16                                \
+                    > $OUTPUT_FILE 2>&1 & pid=$! &
+```
