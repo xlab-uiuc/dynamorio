@@ -356,11 +356,11 @@ cache_simulator_t::process_memref(const memref_t &memref)
     if ((num_request_shifted >> 22) > 0) {
       num_request_shifted = 0;
       std::cerr << "Heartbeat. " << num_request << " memrequests processed.\n";
-      print_results();
-      std::cerr << std::endl;
-      std::cerr << std::endl;
-      std::cerr << std::endl;
-      std::cerr << std::endl;
+      //print_results();
+      //std::cerr << std::endl;
+      //std::cerr << std::endl;
+      //std::cerr << std::endl;
+      //std::cerr << std::endl;
     }
 
       
