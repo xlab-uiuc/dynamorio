@@ -120,6 +120,48 @@ static size_t max_buf_size;
 
 static drvector_t scratch_reserve_vec;
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/file.h>
+#include <fcntl.h>
+
+/*! Try to get lock. Return its file descriptor or -1 if failed.
+ *
+ *  @param lockName Name of file used as lock (i.e. '/var/lock/myLock').
+ *  @return File descriptor of lock file, or -1 if failed.
+ */
+
+#include <unistd.h>
+
+static unsigned int microseconds = 500000;
+static char const * lockFilename = "/tmp/dumppagetable.lock";
+
+int tryGetLock( char const *lockName )
+{
+    mode_t m = umask( 0 );
+    int fd = open( lockName, O_RDWR|O_CREAT, 0666 );
+    umask( m );
+    if( fd >= 0 && flock( fd, LOCK_EX | LOCK_NB ) < 0 )
+    {
+        close( fd );
+        fd = -1;
+    }
+    return fd;
+}
+
+/*! Release the lock obtained with tryGetLock( lockName ).
+ *
+ *  @param fd File descriptor of lock returned by tryGetLock( lockName ).
+ *  @param lockName Name of file used as lock (i.e. '/var/lock/myLock').
+ */
+void releaseLock( int fd, char const *lockName )
+{
+    if( fd < 0 )
+        return;
+    remove( lockName );
+    close( fd );
+}
+
 /* thread private buffer and counter */
 typedef struct {
     byte *seg_base;
@@ -523,7 +565,16 @@ memtrace(void *drcontext, bool skip_size_cap)
             std::cerr << "Tracer reached the target of " << op_exit_after_tracing.get_value() << " and will dump the page table by executing " << (std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str() << " ...";
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result"
+            int lockResult = tryGetLock(lockFilename); 
+            while (lockResult < 0) {
+              usleep(microseconds);
+              lockResult = tryGetLock(lockFilename); 
+              std::cerr << "Page dump module is busy and locked. I am waiting for " << lockFilename << " to be released." << std::endl;
+            }
+            std::cerr << "Page table dump module was attached to PID=" << std::to_string(getpid()) << std::endl;
+            system((std::string("echo ") + std::to_string(getpid()) + " > /proc/page_tables").c_str());
             system((std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str());
+            releaseLock(lockResult, lockFilename); 
 #pragma GCC diagnostic pop
             std::cerr << "Done" << std::endl;
 

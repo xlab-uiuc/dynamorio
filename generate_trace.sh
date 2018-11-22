@@ -70,9 +70,10 @@ $TRACER_DIR/build/bin64/drrun -t drcachesim                  \
                               -exit_after_tracing 10000000000      \
                               -- $APPLICATION                \
                               & pid=$!
+                              #-exit_after_tracing 100000000      \
 
-# enable page table dump
-echo $pid > /proc/page_tables
-echo "Page table dump module was attached to PID=$pid"
+## enable page table dump
+#echo $pid > /proc/page_tables
+#echo "Page table dump module was attached to PID=$pid"
 
 wait
