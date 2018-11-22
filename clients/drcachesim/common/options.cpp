@@ -52,6 +52,14 @@ droption_t<std::string> op_ipc_name(
     "for each instance of the simulator being run at any one time.  On Windows, the name "
     "is limited to 247 characters.");
 
+droption_t<std::string> op_VM_name(
+    DROPTION_SCOPE_ALL, "VM_name", "", "VM name",
+    "Specify VM name for dump.");
+
+droption_t<std::string> op_VM_hookscript_path(
+    DROPTION_SCOPE_ALL, "VM_hookscript", "", "VM hook script",
+    "Specify VM hook script for dump, should write the dump to stdout. Will write the dump to ourdir/vm_pt_dump_raw.");
+
 droption_t<std::string> op_outdir(
     DROPTION_SCOPE_ALL, "outdir", ".", "Target directory for offline trace files",
     "For the offline analysis mode (when -offline is requested), specifies the path "
