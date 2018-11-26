@@ -135,6 +135,7 @@ static drvector_t scratch_reserve_vec;
 
 static unsigned int microseconds = 500000;
 static char const * lockFilename = "/tmp/dumppagetable.lock";
+static char const * lockFilename2 = "/tmp/checkEnableFile.lock";
 
 int tryGetLock( char const *lockName )
 {
@@ -1028,7 +1029,6 @@ instrument_instr(void *drcontext, void *tag, user_data_t *ud, instrlist_t *ilist
     return adjust;
 }
 
-static bool recording_enabled = false;
 /* For each memory reference app instr, we insert inline code to fill the buffer
  * with an instruction entry and memory reference entries.
  */
@@ -1435,24 +1435,25 @@ check_instr_count_threshold(uint incby)
 //Artemiy: dirty hack: replace existing instr counter comparison with threshold with checking a file
     instr_count += incby;
     fine_grained_check_instr_count += incby;
-//    NOTIFY(0, "Inside check_ %d %d\n", instr_count, fine_grained_check_instr_count);
-    uint shift_size = 24;
+    uint shift_size = 26;
     
-    if (!recording_enabled && (fine_grained_check_instr_count >> shift_size) > 0) {
+    if ((fine_grained_check_instr_count >> shift_size) > 0) {
       fine_grained_check_instr_count = 0;
       //check file
-      FILE* enabler_file = fopen(op_enabler_filename.get_value().c_str(),"r");
-      int enabler_file_status = 0;
+      int lockResult = tryGetLock(lockFilename2); 
+      if (lockResult >= 0) {
+        FILE* enabler_file = fopen(op_enabler_filename.get_value().c_str(),"r");
+        int enabler_file_status = 0;
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result" 
-      fscanf(enabler_file, "%d", &enabler_file_status);
+        fscanf(enabler_file, "%d", &enabler_file_status);
 #pragma GCC diagnostic pop 
-      if (enabler_file_status) {
-        hit_instr_count_threshold();
-        recording_enabled = true;
+        if (enabler_file_status) {
+          hit_instr_count_threshold();
+        }
+        fclose(enabler_file);
+        releaseLock(lockResult, lockFilename2); 
       }
-      fclose(enabler_file);
-      fine_grained_check_instr_count = fine_grained_check_instr_count >> shift_size;
     }
 }
 #endif
