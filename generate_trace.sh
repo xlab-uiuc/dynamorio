@@ -67,7 +67,7 @@ $TRACER_DIR/build/bin64/drrun -t drcachesim                  \
                               -enabler_filename $ENABLE_FILE \
                               -trace_after_instrs 1          \
                                                              \
-                              -exit_after_tracing 10000000000      \
+                              -exit_after_tracing 2000000000      \
                               -- $APPLICATION                \
                               & pid=$!
                               #-exit_after_tracing 100000000      \
