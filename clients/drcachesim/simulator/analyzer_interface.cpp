@@ -104,6 +104,8 @@ get_cache_simulator_knobs()
     knobs->LL_assoc = op_LL_assoc.get_value();
     knobs->LL_miss_file = op_LL_miss_file.get_value();
     knobs->pt_dump_filename = op_pt_dump_file.get_value(); //Artemiy
+    knobs->pt_ranges_file = op_pt_ranges_file.get_value(); //Artemiy
+    knobs->num_ranges = op_num_ranges.get_value(); //Artemiy
     knobs->replace_policy = op_replace_policy.get_value();
     knobs->data_prefetcher = op_data_prefetcher.get_value();
     knobs->skip_refs = op_skip_refs.get_value();

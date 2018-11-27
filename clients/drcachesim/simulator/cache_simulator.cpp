@@ -102,7 +102,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
 // load ranges
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result" 
-    FILE* range_file = fopen(knobs.pt_ranges_filename.c_str(),"r");
+    FILE* range_file = fopen(knobs.pt_ranges_file.c_str(),"r");
     int range_record_num = 0;
     fscanf(range_file, "%d\n", &range_record_num);
     std::cerr << "Loading range with " <<  range_record_num << "total range entries...\n";
@@ -467,7 +467,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
       //std::cerr << __FUNCTION__ << " should be data request" << std::endl;
     }
 
-    uint64_t virtual_full_page_addr = virtual_page_addr << 12
+    uint64_t virtual_full_page_addr = virtual_page_addr << 12;
 
     //TLB request
     std::pair<bool, bool> res = tlb_sim->process_memref(memref, true /*changeByArtemiy*/);
