@@ -81,7 +81,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     tlb_sim = tlb_simulator_create(tlb_knobs_);
 
     std::cout << "Initialising PT from file: " << knobs.pt_dump_filename.c_str() << std::endl;
-
+// load page table
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result" 
     //load page_table
@@ -98,6 +98,23 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     std::cerr << "Loaded " << page_table.size() << " unique PT entries.\n";
     fclose(page_table_file);
 #pragma GCC diagnostic pop 
+
+// load ranges
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result" 
+    FILE* range_file = fopen(knobs.pt_ranges_filename.c_str(),"r");
+    int range_record_num = 0;
+    fscanf(range_file, "%d\n", &range_record_num);
+    std::cerr << "Loading range with " <<  range_record_num << "total range entries...\n";
+    for (int i = 0; i < range_record_num; i++) {
+      range_info_t tmp;
+      fscanf(range_file, "%llx,%llx\n", &(tmp.l_bound), &(tmp.h_bound));
+      range_table.push_back(tmp);
+    }
+    std::cerr << "Loaded " << range_table.size() << " unique ranges.\n";
+    fclose(range_file);
+#pragma GCC diagnostic pop 
+
 
 //    for(page_table_t::const_iterator it = page_table.begin();
 //    it != page_table.end(); ++it)
@@ -347,6 +364,9 @@ static uint64_t num_request = 0;
 static uint64_t num_not_found = 0;
 static uint64_t num_request_shifted = 0;
 
+static uint64_t num_range_found = 0;
+static uint64_t num_range_not_found = 0;
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
@@ -447,6 +467,8 @@ cache_simulator_t::process_memref(const memref_t &memref)
       //std::cerr << __FUNCTION__ << " should be data request" << std::endl;
     }
 
+    uint64_t virtual_full_page_addr = virtual_page_addr << 12
+
     //TLB request
     std::pair<bool, bool> res = tlb_sim->process_memref(memref, true /*changeByArtemiy*/);
     bool is_TLB_hit = res.second;
@@ -459,7 +481,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
     new_memref.marker.type = memref.marker.type;
     new_memref.marker.pid = memref.marker.pid;
     new_memref.marker.tid = memref.marker.tid;
-    page_table_t::iterator it = page_table.find(virtual_page_addr << 12);
+    page_table_t::iterator it = page_table.find(virtual_full_page_addr);
     // if found 
     if (it != page_table.end()) {
       
@@ -490,6 +512,14 @@ cache_simulator_t::process_memref(const memref_t &memref)
           std::cerr << "TLB miss \n";
         }
 
+        bool range_found = false;
+        for (unsigned int i = 0; i < knobs.num_ranges; i++) {
+          if ((virtual_full_page_addr >= range_table[i].l_bound) && (virtual_full_page_addr <= range_table[i].l_bound)) {
+            range_found = true;
+            break;
+          }
+        }
+            
         // reset page walk results
         page_walk_res.clear();
 
@@ -527,6 +557,14 @@ cache_simulator_t::process_memref(const memref_t &memref)
         page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
         if (knobs.verbose >= 2) {
           std::cerr << "Done walk L4" << std::endl;
+        }
+
+        if (range_found) {
+          page_walk_res.push_back(RANGE_HIT);
+            num_range_found++;
+        } else {
+          page_walk_res.push_back(RANGE_MISS);
+            num_range_not_found++;
         }
 
         hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
@@ -709,6 +747,10 @@ cache_simulator_t::print_results()
               << "num_not_found : " << num_not_found << std::endl;
 
     std::cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+    std::cerr << "num_range_found : "     << num_range_found << std::endl 
+              << "num_range_not_found : " << num_range_not_found << std::endl;
+    std::cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wwrite-strings" 
     char *print_hm_stats[] =
@@ -717,6 +759,9 @@ cache_simulator_t::print_results()
         , "L1"
         , "L2"
         , "LLC"
+        , "WRONG"
+        , "RANGE_HIT"
+        , "RANGE_MISS"
     };
 #pragma GCC diagnostic pop 
     for (hm_full_statistic_t::iterator it = hm_full_statistic.begin(); it != hm_full_statistic.end(); it++) {

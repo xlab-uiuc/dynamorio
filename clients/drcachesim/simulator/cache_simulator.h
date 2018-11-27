@@ -101,6 +101,12 @@ protected:
     std::vector<uint64_t> hit_statistics;
     std::vector<uint64_t> miss_statistics;
 
+    struct range_info_t {
+      long long unsigned int l_bound;
+      long long unsigned int h_bound;
+    };
+    typedef std::vector<range_info_t> range_table_t;
+    range_table_t range_table;
   
     typedef std::vector<cache_result_t> page_walk_hm_result_t;
     typedef std::map< page_walk_hm_result_t, uint64_t> hm_full_statistic_t;

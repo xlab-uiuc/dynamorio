@@ -140,6 +140,15 @@ droption_t<std::string> op_pt_dump_file(
     "Path for loading page table from",
     "");
 
+droption_t<std::string> op_pt_ranges_file(
+    DROPTION_SCOPE_FRONTEND, "pt_ranges_file", "",
+    "Path for loading ranges from",
+    "");
+
+droption_t<unsigned int> op_num_ranges(
+    DROPTION_SCOPE_FRONTEND, "num_ranges", 10, "",
+    "Number of ranges.");
+
 droption_t<bool> op_L0_filter(
     DROPTION_SCOPE_CLIENT, "L0_filter", false,
     "Filter out zero-level hits during tracing",
