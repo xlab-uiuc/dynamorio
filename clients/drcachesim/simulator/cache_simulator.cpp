@@ -110,6 +110,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
       range_info_t tmp;
       fscanf(range_file, "%llx,%llx\n", &(tmp.l_bound), &(tmp.h_bound));
       range_table.push_back(tmp);
+      std::cerr << "Added " << tmp.l_bound << " " << tmp.h_bound << std::endl;
     }
     std::cerr << "Loaded " << range_table.size() << " unique ranges.\n";
     fclose(range_file);
@@ -514,7 +515,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
         bool range_found = false;
         for (unsigned int i = 0; i < knobs.num_ranges; i++) {
-          if ((virtual_full_page_addr >= range_table[i].l_bound) && (virtual_full_page_addr <= range_table[i].l_bound)) {
+          if ( (virtual_full_page_addr >= range_table[i].l_bound) && (virtual_full_page_addr < range_table[i].h_bound) ) {
             range_found = true;
             break;
           }
