@@ -9,11 +9,13 @@ data = np.sort(data)
 prev = None
 regions = []
 region_size = 0
+cur = data[0]
 for i in range(len(data)):
   if prev is not None:
     if prev != data[i] - 1:
-      regions.append((data[i], region_size))
+      regions.append((cur, region_size))
       region_size = 0
+      cur = data[i]
   prev = data[i]
   region_size += 1
 
