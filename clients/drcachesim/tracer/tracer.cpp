@@ -60,6 +60,7 @@
 #include "../common/utils.h"
 
 #include <assert.h>
+#include <sys/types.h>
 
 #include <iostream>
 #include <sys/types.h>
@@ -136,7 +137,7 @@ static drvector_t scratch_reserve_vec;
 static unsigned int microseconds = 500000;
 static char const * lockFilename = "/tmp/dumppagetable.lock";
 static char const * lockFilename2 = "/tmp/checkEnableFile.lock";
-static bool pageTableWasDumped = false;
+static std::vector<pid_t> pageTableWasDumpedPids;
 
 int tryGetLock( char const *lockName )
 {
@@ -571,18 +572,27 @@ memtrace(void *drcontext, bool skip_size_cap)
             while (lockResult < 0) {
               usleep(microseconds);
               lockResult = tryGetLock(lockFilename); 
-              std::cerr << "Page dump module is busy and locked. I am waiting for " << lockFilename << " to be released." << std::endl;
+              std::cerr << "Page dump module is busy and locked. I am waiting for "  << lockFilename << " to be released." << "My PID=" << getpid() << std::endl;
             }
-            if (!pageTableWasDumped) {
+            pid_t pid = getpid();
+            bool foundThatPid = false;
+            for (unsigned int i = 0; i < pageTableWasDumpedPids.size(); i++) {
+              if (pageTableWasDumpedPids[i] == pid) {
+                foundThatPid = true;
+                break;
+              }
+            }
+            if (!foundThatPid) {
               std::cerr << "Page table dump module was attached to PID=" << std::to_string(getpid()) << std::endl;
               system((std::string("echo ") + std::to_string(getpid()) + " > /proc/page_tables").c_str());
-              system((std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str());
+              system((std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw_" + std::to_string(getpid())).c_str());
+              std::cerr << (std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw_" + std::to_string(getpid())).c_str();
               
               if (op_VM_name.get_value() != "") {
                 system((std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str()) ;
                 std::cerr << (std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str();
               }
-              pageTableWasDumped = true;
+              pageTableWasDumpedPids.push_back(pid);
             }
             releaseLock(lockResult, lockFilename); 
 #pragma GCC diagnostic pop
