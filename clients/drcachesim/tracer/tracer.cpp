@@ -136,6 +136,7 @@ static drvector_t scratch_reserve_vec;
 static unsigned int microseconds = 500000;
 static char const * lockFilename = "/tmp/dumppagetable.lock";
 static char const * lockFilename2 = "/tmp/checkEnableFile.lock";
+static bool pageTableWasDumped = false;
 
 int tryGetLock( char const *lockName )
 {
@@ -572,15 +573,17 @@ memtrace(void *drcontext, bool skip_size_cap)
               lockResult = tryGetLock(lockFilename); 
               std::cerr << "Page dump module is busy and locked. I am waiting for " << lockFilename << " to be released." << std::endl;
             }
-            std::cerr << "Page table dump module was attached to PID=" << std::to_string(getpid()) << std::endl;
-            system((std::string("echo ") + std::to_string(getpid()) + " > /proc/page_tables").c_str());
-            system((std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str());
-            
-            if (op_VM_name.get_value() != "") {
-              system((std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str()) ;
-              std::cerr << (std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str();
+            if (!pageTableWasDumped) {
+              std::cerr << "Page table dump module was attached to PID=" << std::to_string(getpid()) << std::endl;
+              system((std::string("echo ") + std::to_string(getpid()) + " > /proc/page_tables").c_str());
+              system((std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str());
+              
+              if (op_VM_name.get_value() != "") {
+                system((std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str()) ;
+                std::cerr << (std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str();
+              }
+              pageTableWasDumped = true;
             }
-
             releaseLock(lockResult, lockFilename); 
 #pragma GCC diagnostic pop
             std::cerr << "Done" << std::endl;
