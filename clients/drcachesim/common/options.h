@@ -72,6 +72,8 @@ extern droption_t<unsigned int> op_L1I_assoc;
 extern droption_t<unsigned int> op_L1D_assoc;
 extern droption_t<unsigned int> op_L2_assoc;
 extern droption_t<unsigned int> op_num_ranges;
+extern droption_t<unsigned int> op_contention_L1;
+extern droption_t<unsigned int> op_contention_LLC;
 extern droption_t<bytesize_t> op_LL_size;
 extern droption_t<bytesize_t> op_L2_size;
 extern droption_t<unsigned int> op_LL_assoc;

@@ -149,6 +149,14 @@ droption_t<unsigned int> op_num_ranges(
     DROPTION_SCOPE_FRONTEND, "num_ranges", 10, "",
     "Number of ranges.");
 
+droption_t<unsigned int> op_contention_L1(
+    DROPTION_SCOPE_FRONTEND, "contention_L1", 0, "",
+    "Number of cont L1.");
+
+droption_t<unsigned int> op_contention_LLC(
+    DROPTION_SCOPE_FRONTEND, "contention_LLC", 0, "",
+    "Number of cont LLC.");
+
 droption_t<bool> op_L0_filter(
     DROPTION_SCOPE_CLIENT, "L0_filter", false,
     "Filter out zero-level hits during tracing",

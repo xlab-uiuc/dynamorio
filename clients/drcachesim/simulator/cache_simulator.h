@@ -81,6 +81,7 @@ protected:
     cache_t **l1_icaches;
     cache_t **l1_dcaches;
     cache_t **l2_caches;
+    cache_t  *llc1;
 
     //Artemiy: add TLB
     analysis_tool_t * tlb_sim;

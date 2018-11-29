@@ -50,8 +50,8 @@ caching_device_stats_t::caching_device_stats_t(const std::string &miss_file,
     , warmup_enabled(warmup_enabled)
     , file(nullptr)
 {
-    hit_statistics.resize (PAGE_WALK_STAGES, 0);
-    miss_statistics.resize(PAGE_WALK_STAGES, 0);
+    hit_statistics.resize (PAGE_WALK_STAGES + 2 /* for contention */, 0);
+    miss_statistics.resize(PAGE_WALK_STAGES + 2 /* for contention */, 0);
 
     if (miss_file.empty()) {
         dump_misses = false;
@@ -87,6 +87,14 @@ caching_device_stats_t::access(const memref_t &memref, bool hit)
     // We assume we're single-threaded.
     // We're only computing miss rate so we just inc counters here.
     if (hit) {
+        if (memref.data.type == TRACE_TYPE_CONT_L1) {
+          hit_statistics[4]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_CONT_LLC) {
+          hit_statistics[5]++;
+          return;
+        } 
         if (memref.data.type == TRACE_TYPE_PE1) {
           hit_statistics[0]++;
           return;
@@ -106,6 +114,14 @@ caching_device_stats_t::access(const memref_t &memref, bool hit)
         num_hits++;
     }
     else {
+        if (memref.data.type == TRACE_TYPE_CONT_L1) {
+          miss_statistics[4]++;
+          return;
+        } 
+        if (memref.data.type == TRACE_TYPE_CONT_LLC) {
+          miss_statistics[5]++;
+          return;
+        } 
         if (memref.data.type == TRACE_TYPE_PE1) {
           miss_statistics[0]++;
           return;

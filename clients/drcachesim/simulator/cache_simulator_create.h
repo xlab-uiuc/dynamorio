@@ -73,6 +73,8 @@ struct cache_simulator_knobs_t {
         , pt_dump_filename("")
         , pt_ranges_file("")
         , num_ranges(10)
+        , contention_L1(0)
+        , contention_LLC(0)
     {
     }
     unsigned int num_cores;
@@ -97,6 +99,8 @@ struct cache_simulator_knobs_t {
     std::string pt_dump_filename;
     std::string pt_ranges_file;
     unsigned int num_ranges;
+    unsigned int contention_L1;
+    unsigned int contention_LLC;
 };
 
 /** Creates an instance of a cache simulator with a 2-level hierarchy. */
