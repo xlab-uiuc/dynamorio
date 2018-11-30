@@ -577,6 +577,7 @@ memtrace(void *drcontext, bool skip_size_cap)
               std::cerr << "Page table dump module was attached to PID=" << std::to_string(getpid()) << std::endl;
               system((std::string("echo ") + std::to_string(getpid()) + " > /proc/page_tables").c_str());
               system((std::string("cat /proc/page_tables > ") + op_outdir.get_value().c_str() + "/pt_dump_raw").c_str());
+              system((std::string("cat /proc/" + std::to_string(getpid()) + "/maps > ") + op_outdir.get_value().c_str() + "/proc_maps").c_str());
               
               if (op_VM_name.get_value() != "") {
                 system((std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str()) ;
