@@ -35,27 +35,27 @@ for line in sys.stdin:
   if 'CR3' in line:
     CR3 = int(line.split()[2], 16)
   
-  if 'USR' in line:
-    if '-page' in line: 
-      for token_id, token in enumerate(tokens):  
-        if token in line:  
-          current_va[token_id] = readIndex(line);
-          current_path[token_id] = readPhysical(line);
-          # process huge pages - fill all remaining LSBs with 0s
-          #for i in range(token_id+1, len(current_va)):
-          #  current_va[i] = 0
-          break
-      if 'PT' in line:
-        #print str(convertToAddr(current_va)) + ',' + str(CR3) + ',' + ','.join(map(str,current_path))
-        #print str(readVirtual(line)) + ',' + str(CR3) + ',' + ','.join(map(str,current_path))
-        def make_hex(x):
-          return str(format(int(x), '#04x'))
-        print make_hex(readVirtual(line)) + ',' + make_hex(CR3) + ',' + ','.join(map(make_hex,current_path))
-      # debug
-      #print(line, token, current_va, bin(convertToAddr(current_va)))
-
+#  if 'USR' in line:
+  if '-page' in line: 
     for token_id, token in enumerate(tokens):  
-      if (token + ' entry') in line:  
+      if token in line:  
         current_va[token_id] = readIndex(line);
         current_path[token_id] = readPhysical(line);
-        break    
+        # process huge pages - fill all remaining LSBs with 0s
+        #for i in range(token_id+1, len(current_va)):
+        #  current_va[i] = 0
+        break
+    if 'PT' in line:
+      #print str(convertToAddr(current_va)) + ',' + str(CR3) + ',' + ','.join(map(str,current_path))
+      #print str(readVirtual(line)) + ',' + str(CR3) + ',' + ','.join(map(str,current_path))
+      def make_hex(x):
+        return str(format(int(x), '#04x'))
+      print make_hex(readVirtual(line)) + ',' + make_hex(CR3) + ',' + ','.join(map(make_hex,current_path))
+    # debug
+    #print(line, token, current_va, bin(convertToAddr(current_va)))
+
+  for token_id, token in enumerate(tokens):  
+    if (token + ' entry') in line:  
+      current_va[token_id] = readIndex(line);
+      current_path[token_id] = readPhysical(line);
+      break    
