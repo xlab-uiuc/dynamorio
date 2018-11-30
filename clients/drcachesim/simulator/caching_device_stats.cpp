@@ -197,7 +197,7 @@ caching_device_stats_t::print_counts(std::string prefix)
     std::cerr << prefix << std::setw(18) << std::left << "Invalidations:" << std::setw(20)
               << std::right << num_inclusive_invalidates << std::endl;
 
-    for (uint i = 0; i < PAGE_WALK_STAGES; i++) {
+    for (uint i = 0; i < PAGE_WALK_STAGES + 2; i++) {
       std::cerr << prefix << std::setw(18) << std::left << "Hits PT level" << (i+1) << ":" << std::setw(20)
                 << std::right << hit_statistics[i] << std::endl;
 

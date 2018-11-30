@@ -133,6 +133,7 @@ caching_device_t::request(const memref_t &memref_in, bool changed ) {
     addr_t final_tag = compute_tag(final_addr);
     addr_t tag = compute_tag(memref_in.data.addr);
 
+
     cache_result_t res = NOT_FOUND;
 
     // Optimization: check last tag if single-block

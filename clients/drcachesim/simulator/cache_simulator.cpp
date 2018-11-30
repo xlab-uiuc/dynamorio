@@ -107,18 +107,20 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
 // load ranges
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result" 
-    FILE* range_file = fopen(knobs.pt_ranges_file.c_str(),"r");
-    int range_record_num = 0;
-    fscanf(range_file, "%d\n", &range_record_num);
-    std::cerr << "Loading range with " <<  range_record_num << "total range entries...\n";
-    for (int i = 0; i < range_record_num; i++) {
-      range_info_t tmp;
-      fscanf(range_file, "%llx,%llx\n", &(tmp.l_bound), &(tmp.h_bound));
-      range_table.push_back(tmp);
-      std::cerr << "Added " << tmp.l_bound << " " << tmp.h_bound << std::endl;
+    if (knobs.pt_ranges_file != "") {
+      FILE* range_file = fopen(knobs.pt_ranges_file.c_str(),"r");
+      int range_record_num = 0;
+      fscanf(range_file, "%d\n", &range_record_num);
+      std::cerr << "Loading range with " <<  range_record_num << "total range entries...\n";
+      for (int i = 0; i < range_record_num; i++) {
+        range_info_t tmp;
+        fscanf(range_file, "%llx,%llx\n", &(tmp.l_bound), &(tmp.h_bound));
+        range_table.push_back(tmp);
+        std::cerr << "Added " << tmp.l_bound << " " << tmp.h_bound << std::endl;
+      }
+      std::cerr << "Loaded " << range_table.size() << " unique ranges.\n";
+      fclose(range_file);
     }
-    std::cerr << "Loaded " << range_table.size() << " unique ranges.\n";
-    fclose(range_file);
 #pragma GCC diagnostic pop 
 
 
@@ -520,11 +522,15 @@ cache_simulator_t::process_memref(const memref_t &memref)
         }
 
         bool range_found = false;
-        for (unsigned int i = 0; i < knobs.num_ranges; i++) {
-          if ( (virtual_full_page_addr >= range_table[i].l_bound) && (virtual_full_page_addr < range_table[i].h_bound) ) {
-            range_found = true;
-            break;
+        if (knobs.pt_ranges_file != "") {
+          for (unsigned int i = 0; i < knobs.num_ranges; i++) {
+            if ( (virtual_full_page_addr >= range_table[i].l_bound) && (virtual_full_page_addr < range_table[i].h_bound) ) {
+              range_found = true;
+              break;
+            }
           }
+        } else {
+          range_found = true;
         }
             
         // reset page walk results
@@ -599,6 +605,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
       return true;
     }
 
+    cache_result_t search_res;
     if (type_is_instr(new_memref.instr.type) ||
         new_memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
         if (knobs.verbose >= 2) {
@@ -625,7 +632,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
                       << trace_type_names[new_memref.data.type] << " "
                       << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
         }
-        l1_dcaches[core]->request(new_memref);
+        search_res = l1_dcaches[core]->request(new_memref, true /*Artemiy*/);
     } else if (new_memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
         if (knobs.verbose >= 3) {
             std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
@@ -662,28 +669,28 @@ cache_simulator_t::process_memref(const memref_t &memref)
       if (op_contention_L1.get_value() >= 100) {
         unsigned int i = 100;
         for(; i <= op_contention_L1.get_value(); i+=100) {
-          uint64_t raddr = rand() & (1L << 48);
+          addr_t raddr = rand() & ((1L << 48) - 1);
           memref_t page_walk_memref; 
           page_walk_memref.data.type = TRACE_TYPE_CONT_L1;
           page_walk_memref.data.addr = raddr;
           page_walk_memref.data.size = 1; 
-          l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
+          cache_result_t res = l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
           if (knobs.verbose >= 2) {
-            std::cerr << "Contention L1" << std::endl;
+            std::cerr << "Contention L1: res" << res << std::endl;
           }
         }
         int fraction_part = 100 - (i - op_contention_L1.get_value());
         if (fraction_part > 0) {
           int roll = rand() % 100; 
           if (fraction_part >= roll) {
-            uint64_t raddr = rand() & (1L << 48);
+            addr_t raddr = rand() & ((1L << 48) - 1);
             memref_t page_walk_memref; 
             page_walk_memref.data.type = TRACE_TYPE_CONT_L1;
             page_walk_memref.data.addr = raddr;
             page_walk_memref.data.size = 1; 
-            l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
+            cache_result_t res = l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
             if (knobs.verbose >= 2) {
-              std::cerr << "Contention L1 fraction" << std::endl;
+              std::cerr << "Contention L1: res" << res << std::endl;
             }
           }
         }
@@ -692,47 +699,48 @@ cache_simulator_t::process_memref(const memref_t &memref)
         if (fraction_part > 0) {
           int roll = rand() % 100; 
           if (fraction_part >= roll) {
-            uint64_t raddr = rand() & (1L << 48);
+            addr_t raddr = rand() & ((1L << 48) - 1);
             memref_t page_walk_memref; 
             page_walk_memref.data.type = TRACE_TYPE_CONT_L1;
             page_walk_memref.data.addr = raddr;
             page_walk_memref.data.size = 1; 
-            l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
+            cache_result_t res = l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
             if (knobs.verbose >= 2) {
-              std::cerr << "Contention L1 fraction" << std::endl;
+              std::cerr << "Contention L1: res" << res << std::endl;
             }
           }
         }
       }
     } //end if L1 contention
 
-    if (op_contention_LLC.get_value() != 0) {
+    if ((op_contention_LLC.get_value() != 0) && ((search_res == FOUND_LLC) || (search_res == NOT_FOUND))) {
+
       //LLC contention 
       if (op_contention_LLC.get_value() >= 100) {
         unsigned int i = 100;
         for(; i <= op_contention_LLC.get_value(); i+=100) {
-          uint64_t raddr = rand() & (1L << 48);
+          addr_t raddr = rand() & ((1L << 48) - 1);
           memref_t page_walk_memref; 
           page_walk_memref.data.type = TRACE_TYPE_CONT_LLC;
           page_walk_memref.data.addr = raddr;
           page_walk_memref.data.size = 1; 
-          llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
+          cache_result_t res = llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
           if (knobs.verbose >= 2) {
-            std::cerr << "Contention LLC" << std::endl;
+            std::cerr << "Contention LLC fraction: res " << res << std::endl;
           }
         }
         int fraction_part = 100 - (i - op_contention_LLC.get_value());
         if (fraction_part > 0) {
           int roll = rand() % 100; 
           if (fraction_part >= roll) {
-            uint64_t raddr = rand() & (1L << 48);
+            addr_t raddr = rand() & ((1L << 48) - 1);
             memref_t page_walk_memref; 
             page_walk_memref.data.type = TRACE_TYPE_CONT_LLC;
             page_walk_memref.data.addr = raddr;
             page_walk_memref.data.size = 1; 
-            llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
+            cache_result_t res = llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
             if (knobs.verbose >= 2) {
-              std::cerr << "Contention LLC fraction" << std::endl;
+              std::cerr << "Contention LLC fraction: res " << res << std::endl;
             }
           }
         }
@@ -741,14 +749,14 @@ cache_simulator_t::process_memref(const memref_t &memref)
         if (fraction_part > 0) {
           int roll = rand() % 100; 
           if (fraction_part >= roll) {
-            uint64_t raddr = rand() & (1L << 48);
+            addr_t raddr = rand() & ((1L << 48) - 1);
             memref_t page_walk_memref; 
             page_walk_memref.data.type = TRACE_TYPE_CONT_LLC;
             page_walk_memref.data.addr = raddr;
             page_walk_memref.data.size = 1; 
-            llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
+            cache_result_t res = llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
             if (knobs.verbose >= 2) {
-              std::cerr << "Contention LLC fraction" << std::endl;
+              std::cerr << "Contention LLC fraction: res " << res << std::endl;
             }
           }
         }
