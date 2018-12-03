@@ -66,10 +66,23 @@ $TRACER_DIR/build/bin64/drrun -t drcachesim                  \
                               -verbose 1                     \
                               -enabler_filename $ENABLE_FILE \
                               -trace_after_instrs 1          \
-                                                             \
                               -exit_after_tracing 2000000000      \
+		              -VM_name test1                 \
+			      -VM_hookscript "test1" \
                               -- $APPLICATION                \
                               & pid=$!
+
+
+echo "$TRACER_DIR/build/bin64/drrun -t drcachesim                  \
+                              -offline                       \
+                              -outdir $OUTPUT_DIR            \
+                              -verbose 1                     \
+                              -enabler_filename $ENABLE_FILE \
+                              -trace_after_instrs 1          \
+                              -exit_after_tracing 2000000000      \
+                              -VM_name test1                 \
+                              -VM_hookscript "$REPO_ROOT/linux/kvm/exec_in_host.sh 22 /disk/local/neuralwalkers/linux/kvm/dump_ept.sh test1" \
+                              -- $APPLICATION              " 
                               #-exit_after_tracing 100000000      \
 
 ## enable page table dump

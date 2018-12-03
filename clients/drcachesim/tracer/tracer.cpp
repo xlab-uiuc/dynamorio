@@ -580,8 +580,8 @@ memtrace(void *drcontext, bool skip_size_cap)
               system((std::string("cat /proc/" + std::to_string(getpid()) + "/maps > ") + op_outdir.get_value().c_str() + "/proc_maps").c_str());
               
               if (op_VM_name.get_value() != "") {
-                system((std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str()) ;
-                std::cerr << (std::string("") + op_VM_hookscript_path.get_value().c_str() + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str();
+                system((std::string("/disk/local/neuralwalkers/linux/kvm/exec_in_host.sh 22 /disk/local/neuralwalkers/linux/kvm/dump_ept.sh ") + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str()) ;
+                std::cerr << (std::string("/disk/local/neuralwalkers/linux/kvm/exec_in_host.sh 22 /disk/local/neuralwalkers/linux/kvm/dump_ept.sh ") + " " + op_VM_name.get_value().c_str() + " > " + op_outdir.get_value().c_str() + "/vm_pt_dump_raw").c_str();
               }
               pageTableWasDumped = true;
             }
