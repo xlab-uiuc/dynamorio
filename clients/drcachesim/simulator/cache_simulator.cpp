@@ -142,11 +142,11 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
 #pragma GCC diagnostic pop 
 
 
-    for(page_table_t::const_iterator it = host_page_table.begin();
-    it != host_page_table.end(); ++it)
-    {
-      std::cout << it->first << " " << it->second.VA << " " << it->second.PA << "\n";
-    }
+//    for(page_table_t::const_iterator it = host_page_table.begin();
+//    it != host_page_table.end(); ++it)
+//    {
+//      std::cout << it->first << " " << it->second.VA << " " << it->second.PA << "\n";
+//    }
 
     //*********************************************************
 
