@@ -95,6 +95,7 @@ caching_device_stats_t::access(const memref_t &memref, bool hit)
           hit_statistics[5]++;
           return;
         } 
+
         if (memref.data.type == TRACE_TYPE_PE1) {
           hit_statistics[0]++;
           return;

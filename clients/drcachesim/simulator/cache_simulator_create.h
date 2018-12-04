@@ -71,6 +71,7 @@ struct cache_simulator_knobs_t {
         , cpu_scheduling(false)
         , verbose(0)
         , pt_dump_filename("")
+        , vt_pt_dump_filename("")
         , pt_ranges_file("")
         , num_ranges(10)
         , contention_L1(0)
@@ -97,6 +98,7 @@ struct cache_simulator_knobs_t {
     bool cpu_scheduling;
     unsigned int verbose;
     std::string pt_dump_filename;
+    std::string vt_pt_dump_filename;
     std::string pt_ranges_file;
     unsigned int num_ranges;
     unsigned int contention_L1;

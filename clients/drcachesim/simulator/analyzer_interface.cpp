@@ -106,6 +106,7 @@ get_cache_simulator_knobs()
     knobs->contention_L1 = op_contention_L1.get_value(); //Artemiy
     knobs->contention_LLC = op_contention_LLC.get_value(); //Artemiy
     knobs->pt_dump_filename = op_pt_dump_file.get_value(); //Artemiy
+    knobs->vt_pt_dump_filename = op_vt_pt_dump_file.get_value(); //Artemiy
     knobs->pt_ranges_file = op_pt_ranges_file.get_value(); //Artemiy
     knobs->num_ranges = op_num_ranges.get_value(); //Artemiy
     knobs->replace_policy = op_replace_policy.get_value();

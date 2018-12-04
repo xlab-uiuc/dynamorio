@@ -94,11 +94,12 @@ protected:
       long long unsigned int PE4;
       long long unsigned int PA;
     };
-      
+
     //Artemiy: add TLB
     //typedef std::map<unsigned int, page_table_info_t> page_table_t;
     typedef std::unordered_map<long long unsigned int, page_table_info_t> page_table_t;
     page_table_t page_table;
+    page_table_t host_page_table;
     std::vector<uint64_t> hit_statistics;
     std::vector<uint64_t> miss_statistics;
 
@@ -113,6 +114,9 @@ protected:
     typedef std::map< page_walk_hm_result_t, uint64_t> hm_full_statistic_t;
     hm_full_statistic_t hm_full_statistic;
     page_walk_hm_result_t page_walk_res;
+
+    void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
+    void make_request_simple(trace_type_t type, long long unsigned int addr, int core);
 
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)

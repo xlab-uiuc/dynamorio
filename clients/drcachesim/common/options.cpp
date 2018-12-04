@@ -140,6 +140,11 @@ droption_t<std::string> op_pt_dump_file(
     "Path for loading page table from",
     "");
 
+droption_t<std::string> op_vt_pt_dump_file(
+    DROPTION_SCOPE_FRONTEND, "vt_pt_dump_file", "",
+    "Path for loading page table from",
+    "");
+
 droption_t<std::string> op_pt_ranges_file(
     DROPTION_SCOPE_FRONTEND, "pt_ranges_file", "",
     "Path for loading ranges from",

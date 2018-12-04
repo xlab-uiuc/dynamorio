@@ -76,6 +76,23 @@ typedef enum {
     TRACE_TYPE_PE3,  /**< A data load. */
     TRACE_TYPE_PE4,  /**< A data load. */
 
+    TRACE_TYPE_PE3_PE1,  /**< A data load. */
+    TRACE_TYPE_PE3_PE2,  /**< A data load. */
+    TRACE_TYPE_PE3_PE3,  /**< A data load. */
+    TRACE_TYPE_PE3_PE4,  /**< A data load. */
+    TRACE_TYPE_PE3_PA,  /**< A data load. */
+
+    TRACE_TYPE_PE4_PE1,  /**< A data load. */
+    TRACE_TYPE_PE4_PE2,  /**< A data load. */
+    TRACE_TYPE_PE4_PE3,  /**< A data load. */
+    TRACE_TYPE_PE4_PE4,  /**< A data load. */
+    TRACE_TYPE_PE4_PA,  /**< A data load. */
+
+    TRACE_TYPE_PA_PE1,  /**< A data load. */
+    TRACE_TYPE_PA_PE2,  /**< A data load. */
+    TRACE_TYPE_PA_PE3,  /**< A data load. */
+    TRACE_TYPE_PA_PE4,  /**< A data load. */
+
     TRACE_TYPE_CONT_L1,  /**< A data load. */
     TRACE_TYPE_CONT_LLC,  /**< A data load. */
 
