@@ -541,7 +541,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
         memref_t page_walk_memref; 
 
         page_walk_memref.data.type = TRACE_TYPE_PE1;
-        page_walk_memref.data.addr = it->second.PE1  + (virtual_page_addr >> 27);
+        page_walk_memref.data.addr = it->second.PE1  + 8 * (virtual_page_addr >> 27);
         page_walk_memref.data.size = 1; 
         page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
         if (knobs.verbose >= 2) {
@@ -549,7 +549,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
         }
 
         page_walk_memref.data.type = TRACE_TYPE_PE2;
-        page_walk_memref.data.addr = it->second.PE2  + ((virtual_page_addr >> 18) & ((1 << 9) - 1));
+        page_walk_memref.data.addr = it->second.PE2  + 8 * ((virtual_page_addr >> 18) & ((1 << 9) - 1));
         page_walk_memref.data.size = 1; 
         page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
         if (knobs.verbose >= 2) {
@@ -557,7 +557,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
         }
 
         page_walk_memref.data.type = TRACE_TYPE_PE3;
-        page_walk_memref.data.addr = it->second.PE3  + ((virtual_page_addr >> 9)  & ((1 << 9) - 1));
+        page_walk_memref.data.addr = it->second.PE3  + 8 * ((virtual_page_addr >> 9)  & ((1 << 9) - 1));
         page_walk_memref.data.size = 1; 
         page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
         if (knobs.verbose >= 2) {
@@ -565,7 +565,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
         }
 
         page_walk_memref.data.type = TRACE_TYPE_PE4;
-        page_walk_memref.data.addr = it->second.PE4  +  (virtual_page_addr        & ((1 << 9) - 1));
+        page_walk_memref.data.addr = it->second.PE4  + 8 * (virtual_page_addr        & ((1 << 9) - 1));
         page_walk_memref.data.size = 1; 
         page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
         if (knobs.verbose >= 2) {
