@@ -553,27 +553,29 @@ cache_simulator_t::process_memref(const memref_t &memref)
           bool range_found = true;
           // reset page walk results
           page_walk_res.clear();
+          long long unsigned int page_offset_guest_addr_to_find = 0;
 
-          //it = page_table.find(((guest_it->second.PE3) >> 12) << 12);
           it = host_page_table.find(guest_it->second.PE3);
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE1, it->second.PE1, guest_it->second.PE3, 1, core); // A1 
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE2, it->second.PE2, guest_it->second.PE3, 2, core); // A2
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE3, it->second.PE3, guest_it->second.PE3, 3, core); // A3
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE4, it->second.PE4, guest_it->second.PE3, 4, core); // A4
-          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA, core);                                    // A5
+          page_offset_guest_addr_to_find = 8 * ((((guest_it->second.PA >> 12) >> 9)  &  ((1 << 9) - 1)); 
+          make_request(page_walk_res, TRACE_TYPE_PE3_PE1, it->second.PE1, guest_it->second.PE3 + page_offset_guest_addr_to_find, 1, core); // A1 
+          make_request(page_walk_res, TRACE_TYPE_PE3_PE2, it->second.PE2, guest_it->second.PE3 + page_offset_guest_addr_to_find, 2, core); // A2
+          make_request(page_walk_res, TRACE_TYPE_PE3_PE3, it->second.PE3, guest_it->second.PE3 + page_offset_guest_addr_to_find, 3, core); // A3
+          make_request(page_walk_res, TRACE_TYPE_PE3_PE4, it->second.PE4, guest_it->second.PE3 + page_offset_guest_addr_to_find, 4, core); // A4
+          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
 
           it = host_page_table.find(guest_it->second.PE4);
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE1, it->second.PE1, guest_it->second.PE4, 1, core); //A6
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE2, it->second.PE2, guest_it->second.PE4, 2, core); //A7 
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE3, it->second.PE3, guest_it->second.PE4, 3, core); //A8
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE4, it->second.PE4, guest_it->second.PE4, 4, core); //A9
-          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA, core);                                    //A10
+          page_offset_guest_addr_to_find = 8 * (( (guest_it->second.PA >> 12)        &  ((1 << 9) - 1)); 
+          make_request(page_walk_res, TRACE_TYPE_PE4_PE1, it->second.PE1, guest_it->second.PE4 + page_offset_guest_addr_to_find, 1, core); //A6
+          make_request(page_walk_res, TRACE_TYPE_PE4_PE2, it->second.PE2, guest_it->second.PE4 + page_offset_guest_addr_to_find, 2, core); //A7 
+          make_request(page_walk_res, TRACE_TYPE_PE4_PE3, it->second.PE3, guest_it->second.PE4 + page_offset_guest_addr_to_find, 3, core); //A8
+          make_request(page_walk_res, TRACE_TYPE_PE4_PE4, it->second.PE4, guest_it->second.PE4 + page_offset_guest_addr_to_find, 4, core); //A9
+          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA + page_offset_guest_addr_to_find, core);                                    //A10
 
           it = last_it;
-          make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA, 1, core);
-          make_request(page_walk_res, TRACE_TYPE_PA_PE2, it->second.PE2, guest_it->second.PA, 2, core);
-          make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA, 3, core);
-          make_request(page_walk_res, TRACE_TYPE_PA_PE4, it->second.PE4, guest_it->second.PA, 4, core);
+          make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset_guest_addr_to_find, 1, core);
+          make_request(page_walk_res, TRACE_TYPE_PA_PE2, it->second.PE2, guest_it->second.PA + page_offset_guest_addr_to_find, 2, core);
+          make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA + page_offset_guest_addr_to_find, 3, core);
+          make_request(page_walk_res, TRACE_TYPE_PA_PE4, it->second.PE4, guest_it->second.PA + page_offset_guest_addr_to_find, 4, core);
 
           if (range_found) {
             page_walk_res.push_back(RANGE_HIT);
@@ -823,7 +825,7 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res, trace
   memref_t page_walk_memref; 
 
   page_walk_memref.data.type = type;
-  page_walk_memref.data.addr = base_addr + ( ( addr_to_find >> (12 + (( 4 - level) * 9))) & ((1 << 9) - 1) );
+  page_walk_memref.data.addr = base_addr + 8 * ( ( addr_to_find >> (12 + (( 4 - level) * 9))) & ((1 << 9) - 1) );
   page_walk_memref.data.size = 1; 
   page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
   if (knobs.verbose >= 2) {
