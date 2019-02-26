@@ -80,11 +80,11 @@ protected:
 
     // Implement a set of ICaches and DCaches with pointer arrays.
     // This is useful for implementing polymorphism correctly.
-    cache_t **pw_caches;
     cache_t **l1_icaches;
     cache_t **l1_dcaches;
     cache_t **l2_caches;
     cache_t  *llc1;
+    cache_t **pw_caches;
 
     //Artemiy: add TLB
     analysis_tool_t * tlb_sim;
@@ -132,6 +132,10 @@ protected:
 
     void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
     void make_request_simple(trace_type_t type, long long unsigned int addr, int core);
+    void one_pw_at_host(page_walk_hm_result_t& page_walk_res, 
+				           long long unsigned int guest_addr, 
+				           uint64_t level_guest, 
+				           int core);
 
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)

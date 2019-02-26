@@ -62,6 +62,13 @@ const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 8, PWC_EN
 #include <inttypes.h>
 #include <stdlib.h>
 
+trace_type_t TRACE_TYPE[][5] = { { TRACE_TYPE_PE1_PA, TRACE_TYPE_PE1_PE1, TRACE_TYPE_PE1_PE2, TRACE_TYPE_PE1_PE3, TRACE_TYPE_PE1_PE4 }, 
+                                 { TRACE_TYPE_PE2_PA, TRACE_TYPE_PE2_PE1, TRACE_TYPE_PE2_PE2, TRACE_TYPE_PE2_PE3, TRACE_TYPE_PE2_PE4 }, 
+                                 { TRACE_TYPE_PE3_PA, TRACE_TYPE_PE3_PE1, TRACE_TYPE_PE3_PE2, TRACE_TYPE_PE3_PE3, TRACE_TYPE_PE3_PE4 }, 
+                                 { TRACE_TYPE_PE4_PA, TRACE_TYPE_PE4_PE1, TRACE_TYPE_PE4_PE2, TRACE_TYPE_PE4_PE3, TRACE_TYPE_PE4_PE4 } };
+
+
+
 analysis_tool_t *
 cache_simulator_create(const cache_simulator_knobs_t &knobs, const tlb_simulator_knobs_t &tlb_knobs)
 {
@@ -586,8 +593,8 @@ cache_simulator_t::process_memref(const memref_t &memref)
           // reset page walk results
           page_walk_res.clear();
 
-          for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; i++) {
-            one_pw_at_host(page_walk_res, guest_it->second.all[level_guest], level_guest, core);
+          for (unsigned int level_guest = 1; level_guest <= NUM_PAGE_TABLE_LEVELS; level_guest++) {
+            one_pw_at_host(page_walk_res, *(guest_it->second.all[level_guest]), level_guest, core);
           }
           it = last_it;
           make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset, 1, core);
@@ -890,13 +897,16 @@ void cache_simulator_t::make_request_simple(trace_type_t type, long long unsigne
 void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res, 
                                        long long unsigned int guest_addr, 
                                        uint64_t level_guest, 
-                                       int core)
+                                       int core) {
 
   cache_result_t pwc_search_res = NOT_FOUND;
-  int pwc_hit_level = -1;
+  unsigned int pwc_hit_level = 0;
+  memref_t pwc_check_memref; 
+  pwc_check_memref.data.type = TRACE_TYPE_READ;
   // search PWC starting from highest level
-  for(unsigned int i = NUM_PWC; i >= 1; i-- {
-    pwc_search_res = pw_caches[i]->request((guest_addr >> (PAGE_OFFSET_SIZE + (4 - i) * 9), true /*Artemiy*/);
+  for(unsigned int i = NUM_PWC; i >= 1; i--) {
+    pwc_check_memref.data.addr = guest_addr >> (PAGE_OFFSET_SIZE + (4 - i) * 9);
+    pwc_search_res = pw_caches[i]->request(pwc_check_memref, true /*Artemiy*/);
     // if found, memorize and stop searching 
     if (pwc_search_res != NOT_FOUND) {
       pwc_hit_level = i;
@@ -905,18 +915,18 @@ void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res,
   }
   long long unsigned int page_offset_guest_addr_to_find = 0;
   // find a record in the host PT corresponding to the given guest address
-  host_it = host_page_table.find((guest_addr >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE);
+  page_table_t::iterator host_it = host_page_table.find((guest_addr >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE);
   page_offset_guest_addr_to_find = PAGE_TABLE_ENTRY_SIZE * 
                              ((((guest_addr >> PAGE_OFFSET_SIZE) >> (PAGE_INDEX_SIZE * level_guest))  &  ((1 << PAGE_INDEX_SIZE) - 1))); 
 
-  guest_addr_to_find = guest_addr + page_offset_guest_addr_to_find;
+  long long unsigned int guest_addr_to_find = guest_addr + page_offset_guest_addr_to_find;
 
-  for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; i++) {
+  for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
     if (pwc_hit_level < level_host) {
       // if not found in the PWC, then make a memory req
       make_request(page_walk_res, 
                    TRACE_TYPE[level_guest][level_host], 
-                   host_it->second.all[level_host], 
+                   *(host_it->second.all[level_host]), 
                    guest_addr_to_find, 
                    level_host, 
                    core); 
@@ -925,7 +935,7 @@ void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res,
       // if found in the PWC, indicate PWC_LAT
       page_walk_res.push_back(PWC);
 
-    } else (pwc_hit_level > level_host) {
+    } else if (pwc_hit_level > level_host) {
       // if skipped due to a PWC hit, indicate ZERO_LAT
       page_walk_res.push_back(ZERO);
     }
