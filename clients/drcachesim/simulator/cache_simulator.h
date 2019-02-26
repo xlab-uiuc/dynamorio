@@ -44,6 +44,8 @@
 #include <map>
 #include <unordered_map>
 
+#include <vector>
+
 class cache_simulator_t : public simulator_t {
 public:
     // This constructor is used when the cache hierarchy is configured
@@ -94,6 +96,18 @@ protected:
       long long unsigned int PE3;
       long long unsigned int PE4;
       long long unsigned int PA;
+
+      std::vector<long long unsigned int*> all;
+
+      page_table_info_t() {
+        all.resize(5);
+        all[0] = &(this->PE1);
+        all[1] = &(this->PE2);
+        all[2] = &(this->PE3);
+        all[3] = &(this->PE4);
+        all[4] = &(this->PA );
+      }
+
     };
 
     //Artemiy: add TLB

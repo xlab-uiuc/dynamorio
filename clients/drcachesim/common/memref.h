@@ -134,6 +134,8 @@ typedef enum {
    , WRONG
    , RANGE_HIT
    , RANGE_MISS
+   , PWC
+   , ZERO
 } cache_result_t;
 
 #endif /* _MEMREF_H_ */

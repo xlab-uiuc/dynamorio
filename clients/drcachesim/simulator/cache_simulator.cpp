@@ -34,6 +34,11 @@
 const unsigned int PWC_ASSOC[] = { 4, 8, 16, 32};
 const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 32};
 
+#define NUM_PAGE_TABLE_LEVELS 4
+#define PAGE_TABLE_ENTRY_SIZE 8 
+#define PAGE_OFFSET_SIZE 12
+#define PAGE_INDEX_SIZE 9
+
 #include <iostream>
 #include <iterator>
 #include <string>
@@ -580,51 +585,16 @@ cache_simulator_t::process_memref(const memref_t &memref)
           bool range_found = true;
           // reset page walk results
           page_walk_res.clear();
-          long long unsigned int page_offset_guest_addr_to_find = 0;
 
-//          it = host_page_table.find(guest_it->second.PE1);
-//          page_offset_guest_addr_to_find = 8 * ((((guest_it->second.PA >> 12) >> 27)  &  ((1 << 9) - 1)); 
-//          make_request(page_walk_res, TRACE_TYPE_PE1_PE1, it->second.PE1, guest_it->second.PE1 + page_offset_guest_addr_to_find, 1, core); // A1 
-//          make_request(page_walk_res, TRACE_TYPE_PE1_PE2, it->second.PE2, guest_it->second.PE1 + page_offset_guest_addr_to_find, 2, core); // A2
-//          make_request(page_walk_res, TRACE_TYPE_PE1_PE3, it->second.PE3, guest_it->second.PE1 + page_offset_guest_addr_to_find, 3, core); // A3
-//          make_request(page_walk_res, TRACE_TYPE_PE1_PE4, it->second.PE4, guest_it->second.PE1 + page_offset_guest_addr_to_find, 4, core); // A4
-//          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
-//
-//          it = host_page_table.find(guest_it->second.PE2);
-//          page_offset_guest_addr_to_find = 8 * ((((guest_it->second.PA >> 12) >> 18)  &  ((1 << 9) - 1)); 
-//          make_request(page_walk_res, TRACE_TYPE_PE2_PE1, it->second.PE1, guest_it->second.PE2 + page_offset_guest_addr_to_find, 1, core); // A1 
-//          make_request(page_walk_res, TRACE_TYPE_PE2_PE2, it->second.PE2, guest_it->second.PE2 + page_offset_guest_addr_to_find, 2, core); // A2
-//          make_request(page_walk_res, TRACE_TYPE_PE2_PE3, it->second.PE3, guest_it->second.PE2 + page_offset_guest_addr_to_find, 3, core); // A3
-//          make_request(page_walk_res, TRACE_TYPE_PE2_PE4, it->second.PE4, guest_it->second.PE2 + page_offset_guest_addr_to_find, 4, core); // A4
-//          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
-
-          it = host_page_table.find(guest_it->second.PE3);
-          page_offset_guest_addr_to_find = 8 * ((((guest_it->second.PA >> 12) >> 9)  &  ((1 << 9) - 1)); 
-
-          cache_result_t cur_pwc_search_res;
-          
-          for(unsigned int i = 0; i < NUM_PWC; i++) {
-            search_res = pw_caches[i]->request((guest_it->second.PA >> 12), true /*Artemiy*/);
-            
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE1, it->second.PE1, guest_it->second.PE3 + page_offset_guest_addr_to_find, 1, core); // A1 
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE2, it->second.PE2, guest_it->second.PE3 + page_offset_guest_addr_to_find, 2, core); // A2
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE3, it->second.PE3, guest_it->second.PE3 + page_offset_guest_addr_to_find, 3, core); // A3
-          make_request(page_walk_res, TRACE_TYPE_PE3_PE4, it->second.PE4, guest_it->second.PE3 + page_offset_guest_addr_to_find, 4, core); // A4
-          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
-
-          it = host_page_table.find(guest_it->second.PE4);
-          page_offset_guest_addr_to_find = 8 * (( (guest_it->second.PA >> 12)        &  ((1 << 9) - 1)); 
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE1, it->second.PE1, guest_it->second.PE4 + page_offset_guest_addr_to_find, 1, core); //A6
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE2, it->second.PE2, guest_it->second.PE4 + page_offset_guest_addr_to_find, 2, core); //A7 
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE3, it->second.PE3, guest_it->second.PE4 + page_offset_guest_addr_to_find, 3, core); //A8
-          make_request(page_walk_res, TRACE_TYPE_PE4_PE4, it->second.PE4, guest_it->second.PE4 + page_offset_guest_addr_to_find, 4, core); //A9
-          make_request_simple(TRACE_TYPE_PE4_PA, it->second.PA + page_offset_guest_addr_to_find, core);                                    //A10
-
+          for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; i++) {
+            one_pw_at_host(page_walk_res, guest_it->second.all[level_guest], level_guest, core);
+          }
           it = last_it;
           make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset, 1, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE2, it->second.PE2, guest_it->second.PA + page_offset, 2, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA + page_offset, 3, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE4, it->second.PE4, guest_it->second.PA + page_offset, 4, core);
+
 
           if (range_found) {
             page_walk_res.push_back(RANGE_HIT);
@@ -860,7 +830,12 @@ cache_simulator_t::process_memref(const memref_t &memref)
     typedef std::vector<cache_result_t> page_walk_hm_result_t;
     typedef std::map< page_walk_hm_result_t, uint64_t> hm_full_statistic_t;
 //    typedef std::unordered_map<long long unsigned int, page_table_info_t> page_table_t;
-void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core)
+void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res, 
+                                     trace_type_t type, 
+                                     long long unsigned int base_addr, 
+                                     long long unsigned int addr_to_find, 
+                                     int level, 
+                                     int core)
 {
   if (knobs.verbose >= 2) {
     std::cerr << "Start walk Type: " << type 
@@ -910,6 +885,52 @@ void cache_simulator_t::make_request_simple(trace_type_t type, long long unsigne
     << std::endl;
   }
   return;
+}
+
+void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res, 
+                                       long long unsigned int guest_addr, 
+                                       uint64_t level_guest, 
+                                       int core)
+
+  cache_result_t pwc_search_res = NOT_FOUND;
+  int pwc_hit_level = -1;
+  // search PWC starting from highest level
+  for(unsigned int i = NUM_PWC; i >= 1; i-- {
+    pwc_search_res = pw_caches[i]->request((guest_addr >> (PAGE_OFFSET_SIZE + (4 - i) * 9), true /*Artemiy*/);
+    // if found, memorize and stop searching 
+    if (pwc_search_res != NOT_FOUND) {
+      pwc_hit_level = i;
+      break;
+    }
+  }
+  long long unsigned int page_offset_guest_addr_to_find = 0;
+  // find a record in the host PT corresponding to the given guest address
+  host_it = host_page_table.find((guest_addr >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE);
+  page_offset_guest_addr_to_find = PAGE_TABLE_ENTRY_SIZE * 
+                             ((((guest_addr >> PAGE_OFFSET_SIZE) >> (PAGE_INDEX_SIZE * level_guest))  &  ((1 << PAGE_INDEX_SIZE) - 1))); 
+
+  guest_addr_to_find = guest_addr + page_offset_guest_addr_to_find;
+
+  for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; i++) {
+    if (pwc_hit_level < level_host) {
+      // if not found in the PWC, then make a memory req
+      make_request(page_walk_res, 
+                   TRACE_TYPE[level_guest][level_host], 
+                   host_it->second.all[level_host], 
+                   guest_addr_to_find, 
+                   level_host, 
+                   core); 
+
+    } else if (pwc_hit_level == level_host) {
+      // if found in the PWC, indicate PWC_LAT
+      page_walk_res.push_back(PWC);
+
+    } else (pwc_hit_level > level_host) {
+      // if skipped due to a PWC hit, indicate ZERO_LAT
+      page_walk_res.push_back(ZERO);
+    }
+  }
+  make_request_simple(TRACE_TYPE[level_guest][0], host_it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
 }
 
 // Return true if the number of warmup references have been executed or if
