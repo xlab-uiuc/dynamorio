@@ -78,6 +78,7 @@ protected:
 
     // Implement a set of ICaches and DCaches with pointer arrays.
     // This is useful for implementing polymorphism correctly.
+    cache_t **pw_caches;
     cache_t **l1_icaches;
     cache_t **l1_dcaches;
     cache_t **l2_caches;

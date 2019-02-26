@@ -29,6 +29,11 @@
  * DAMAGE.
  */
 
+#define NUM_PWC 4
+#define PWC_ENTRY_SIZE 8
+const unsigned int PWC_ASSOC[] = { 4, 8, 16, 32};
+const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 32};
+
 #include <iostream>
 #include <iterator>
 #include <string>
@@ -72,6 +77,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     , l1_icaches(NULL)
     , l1_dcaches(NULL)
     , l2_caches(NULL)
+    , pw_caches(NULL)
     , is_warmed_up(false)
 //    , tlb_knobs(tlb_knobs_)
 {
@@ -226,12 +232,30 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
         cache_name = "L1_D_Cache_" + std::to_string(i);
         all_caches[cache_name] = l1_dcaches[i];
     }
+    pw_caches =  new cache_t *[NUM_PWC];
+    for (unsigned int i = 0; i < NUM_PWC; i++) {
+        pw_caches[i] = create_cache(knobs.replace_policy);
+        if (pw_caches[i] == NULL) {
+            success = false;
+            return;
+        }
+        if (!pw_caches[i]->init (PWC_ASSOC[i], PWC_ENTRY_SIZE,
+                                 PWC_SIZE[i], NULL,
+                                 new cache_stats_t("", warmup_enabled))) {
+            error_string = "Usage error: failed to initialize PW caches.  Ensure sizes "
+                           "and associativity are powers of 2 "
+                           "and that the total sizes are multiples of the line size.";
+            success = false;
+            return;
+        }
+    }
 }
 
 cache_simulator_t::cache_simulator_t(const std::string &config_file)
     : simulator_t()
     , l1_icaches(NULL)
     , l1_dcaches(NULL)
+    , pw_caches(NULL)
     , is_warmed_up(false)
 {
     std::map<std::string, cache_params_t> cache_params;
@@ -373,6 +397,9 @@ cache_simulator_t::~cache_simulator_t()
     }
     if (l2_caches != NULL) {
         delete[] l2_caches;
+    }
+    if (pw_caches != NULL) {
+        delete[] pw_caches;
     }
 }
 
@@ -573,6 +600,12 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
           it = host_page_table.find(guest_it->second.PE3);
           page_offset_guest_addr_to_find = 8 * ((((guest_it->second.PA >> 12) >> 9)  &  ((1 << 9) - 1)); 
+
+          cache_result_t cur_pwc_search_res;
+          
+          for(unsigned int i = 0; i < NUM_PWC; i++) {
+            search_res = pw_caches[i]->request((guest_it->second.PA >> 12), true /*Artemiy*/);
+            
           make_request(page_walk_res, TRACE_TYPE_PE3_PE1, it->second.PE1, guest_it->second.PE3 + page_offset_guest_addr_to_find, 1, core); // A1 
           make_request(page_walk_res, TRACE_TYPE_PE3_PE2, it->second.PE2, guest_it->second.PE3 + page_offset_guest_addr_to_find, 2, core); // A2
           make_request(page_walk_res, TRACE_TYPE_PE3_PE3, it->second.PE3, guest_it->second.PE3 + page_offset_guest_addr_to_find, 3, core); // A3
