@@ -909,8 +909,9 @@ void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res,
     pwc_search_res = pw_caches[i]->request(pwc_check_memref, true /*Artemiy*/);
     // if found, memorize and stop searching 
     if (pwc_search_res != NOT_FOUND) {
-      pwc_hit_level = i;
-      break;
+      if (pwc_hit_level == 0) {
+        pwc_hit_level = i;
+      }
     }
   }
   long long unsigned int page_offset_guest_addr_to_find = 0;
