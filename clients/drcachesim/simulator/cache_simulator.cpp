@@ -30,6 +30,17 @@
  * DAMAGE.
  */
 
+#define NUM_PWC 4
+#define PWC_ENTRY_SIZE 8
+const unsigned int PWC_ASSOC[] = { 4, 8, 16, 32};
+const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 32};
+
+#define NUM_PAGE_TABLE_LEVELS 4
+#define PAGE_TABLE_ENTRY_SIZE 8 
+#define PAGE_OFFSET_SIZE 12
+#define PAGE_INDEX_SIZE 9
+
+
 #include <iostream>
 #include <iterator>
 #include <string>
@@ -53,6 +64,8 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
+trace_type_t TRACE_TYPE[] = { TRACE_TYPE_READ, TRACE_TYPE_PE1, TRACE_TYPE_PE2, TRACE_TYPE_PE3, TRACE_TYPE_PE4 };
+
 analysis_tool_t *
 cache_simulator_create(const cache_simulator_knobs_t &knobs, const tlb_simulator_knobs_t &tlb_knobs)
 {
@@ -73,6 +86,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     , l1_icaches(NULL)
     , l1_dcaches(NULL)
     , l2_caches(NULL)
+    , pw_caches(NULL)
     , is_warmed_up(false)
 //    , tlb_knobs(tlb_knobs_)
 {
@@ -208,12 +222,30 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
         cache_name = "L1_D_Cache_" + std::to_string(i);
         all_caches[cache_name] = l1_dcaches[i];
     }
+    pw_caches =  new cache_t *[NUM_PWC];
+    for (unsigned int i = 0; i < NUM_PWC; i++) {
+        pw_caches[i] = create_cache(knobs.replace_policy);
+        if (pw_caches[i] == NULL) {
+            success = false;
+            return;
+        }
+        if (!pw_caches[i]->init (PWC_ASSOC[i], PWC_ENTRY_SIZE,
+                                 PWC_SIZE[i], NULL,
+                                 new cache_stats_t("", warmup_enabled))) {
+            error_string = "Usage error: failed to initialize PW caches.  Ensure sizes "
+                           "and associativity are powers of 2 "
+                           "and that the total sizes are multiples of the line size.";
+            success = false;
+            return;
+        }
+    }
 }
 
 cache_simulator_t::cache_simulator_t(const std::string &config_file)
     : simulator_t()
     , l1_icaches(NULL)
     , l1_dcaches(NULL)
+    , pw_caches(NULL)
     , is_warmed_up(false)
 {
     std::map<std::string, cache_params_t> cache_params;
@@ -355,6 +387,9 @@ cache_simulator_t::~cache_simulator_t()
     }
     if (l2_caches != NULL) {
         delete[] l2_caches;
+    }
+    if (pw_caches != NULL) {
+        delete[] pw_caches;
     }
 }
 
@@ -536,41 +571,77 @@ cache_simulator_t::process_memref(const memref_t &memref)
         // reset page walk results
         page_walk_res.clear();
 
-
         // page walk
-        memref_t page_walk_memref; 
 
-        page_walk_memref.data.type = TRACE_TYPE_PE1;
-        page_walk_memref.data.addr = it->second.PE1  + 8 * (virtual_page_addr >> 27);
-        page_walk_memref.data.size = 1; 
-        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-        if (knobs.verbose >= 2) {
-          std::cerr << "Done walk L1" << std::endl;
+        // checking PWC
+        cache_result_t pwc_search_res = NOT_FOUND;
+        unsigned int pwc_hit_level = 0;
+        memref_t pwc_check_memref; 
+        pwc_check_memref.data.type = TRACE_TYPE_READ;
+        // search PWC starting from highest level
+        for(unsigned int i = NUM_PWC; i >= 1; i--) {
+          pwc_check_memref.data.addr = virtual_full_page_addr >> (12 + (4 - i) * 9);
+          pwc_search_res = pw_caches[i]->request(pwc_check_memref, true /*Artemiy*/);
+          // if found, memorize and stop searching 
+          if (pwc_search_res != NOT_FOUND) {
+            if (pwc_hit_level == 0) {
+              pwc_hit_level = i;
+            }
+          }
+        }
+        // find a record in the host PT corresponding to the given guest address
+        
+        for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
+          if (pwc_hit_level < level_host) {
+            // if not found in the PWC, then make a memory req
+            make_request(page_walk_res, 
+                         TRACE_TYPE[level_host], 
+                         *(it->second.all[level_host]), 
+                         virtual_full_page_addr, 
+                         level_host, 
+                         core); 
+        
+          } else if (pwc_hit_level == level_host) {
+            // if found in the PWC, indicate PWC_LAT
+            page_walk_res.push_back(PWC);
+        
+          } else if (pwc_hit_level > level_host) {
+            // if skipped due to a PWC hit, indicate ZERO_LAT
+            page_walk_res.push_back(ZERO);
+          }
         }
 
-        page_walk_memref.data.type = TRACE_TYPE_PE2;
-        page_walk_memref.data.addr = it->second.PE2  + 8 * ((virtual_page_addr >> 18) & ((1 << 9) - 1));
-        page_walk_memref.data.size = 1; 
-        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-        if (knobs.verbose >= 2) {
-          std::cerr << "Done walk L2" << std::endl;
-        }
-
-        page_walk_memref.data.type = TRACE_TYPE_PE3;
-        page_walk_memref.data.addr = it->second.PE3  + 8 * ((virtual_page_addr >> 9)  & ((1 << 9) - 1));
-        page_walk_memref.data.size = 1; 
-        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-        if (knobs.verbose >= 2) {
-          std::cerr << "Done walk L3" << std::endl;
-        }
-
-        page_walk_memref.data.type = TRACE_TYPE_PE4;
-        page_walk_memref.data.addr = it->second.PE4  + 8 * (virtual_page_addr        & ((1 << 9) - 1));
-        page_walk_memref.data.size = 1; 
-        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-        if (knobs.verbose >= 2) {
-          std::cerr << "Done walk L4" << std::endl;
-        }
+//        page_walk_memref.data.type = TRACE_TYPE_PE1;
+//        page_walk_memref.data.addr = it->second.PE1  + 8 * (virtual_page_addr >> 27);
+//        page_walk_memref.data.size = 1; 
+//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+//        if (knobs.verbose >= 2) {
+//          std::cerr << "Done walk L1" << std::endl;
+//        }
+//
+//        page_walk_memref.data.type = TRACE_TYPE_PE2;
+//        page_walk_memref.data.addr = it->second.PE2  + 8 * ((virtual_page_addr >> 18) & ((1 << 9) - 1));
+//        page_walk_memref.data.size = 1; 
+//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+//        if (knobs.verbose >= 2) {
+//          std::cerr << "Done walk L2" << std::endl;
+//        }
+//
+//        page_walk_memref.data.type = TRACE_TYPE_PE3;
+//        page_walk_memref.data.addr = it->second.PE3  + 8 * ((virtual_page_addr >> 9)  & ((1 << 9) - 1));
+//        page_walk_memref.data.size = 1; 
+//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+//        if (knobs.verbose >= 2) {
+//          std::cerr << "Done walk L3" << std::endl;
+//        }
+//
+//        page_walk_memref.data.type = TRACE_TYPE_PE4;
+//        page_walk_memref.data.addr = it->second.PE4  + 8 * (virtual_page_addr        & ((1 << 9) - 1));
+//        page_walk_memref.data.size = 1; 
+//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+//        if (knobs.verbose >= 2) {
+//          std::cerr << "Done walk L4" << std::endl;
+//        }
 
         if (range_found) {
           page_walk_res.push_back(RANGE_HIT);
@@ -780,6 +851,42 @@ cache_simulator_t::process_memref(const memref_t &memref)
     }
 
     return true;
+}
+
+void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res, 
+                                     trace_type_t type, 
+                                     long long unsigned int base_addr, 
+                                     long long unsigned int addr_to_find, 
+                                     int level, 
+                                     int core)
+{
+  if (knobs.verbose >= 2) {
+    std::cerr << "Start walk Type: " << type 
+    << " Level: " << level 
+    << std::hex
+    << " BaseAddr: " << base_addr 
+    << " addr_to_find: " << addr_to_find 
+    << std::dec
+    << std::endl;
+  }
+  memref_t page_walk_memref; 
+
+  page_walk_memref.data.type = type;
+  page_walk_memref.data.addr = base_addr + 8 * ( ( addr_to_find >> (12 + (( 4 - level) * 9))) & ((1 << 9) - 1) );
+  page_walk_memref.data.size = 1; 
+  page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+  if (knobs.verbose >= 2) {
+    std::cerr << "Done walk Type: " << type 
+    << " Level: " << level 
+    << std::hex
+    << " BaseAddr: " << base_addr 
+    << " addr_to_find: " << addr_to_find 
+    << " offset in cur table: " << (( addr_to_find >> (12 + (( 4 - level) * 9))) & ((1 << 9) - 1))
+    << " final addr : " << page_walk_memref.data.addr
+    << std::dec
+    << std::endl;
+  }
+  return;
 }
 
 // Return true if the number of warmup references have been executed or if

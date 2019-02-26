@@ -82,6 +82,7 @@ protected:
     cache_t **l1_dcaches;
     cache_t **l2_caches;
     cache_t  *llc1;
+    cache_t **pw_caches;
 
     //Artemiy: add TLB
     analysis_tool_t * tlb_sim;
@@ -93,6 +94,18 @@ protected:
       long long unsigned int PE3;
       long long unsigned int PE4;
       long long unsigned int PA;
+
+      std::vector<long long unsigned int*> all;
+
+      page_table_info_t() {
+        all.resize(5);
+        all[0] = &(this->PE1);
+        all[1] = &(this->PE2);
+        all[2] = &(this->PE3);
+        all[3] = &(this->PE4);
+        all[4] = &(this->PA );
+      }
+
     };
       
     //Artemiy: add TLB
@@ -113,6 +126,8 @@ protected:
     typedef std::map< page_walk_hm_result_t, uint64_t> hm_full_statistic_t;
     hm_full_statistic_t hm_full_statistic;
     page_walk_hm_result_t page_walk_res;
+
+    void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
 
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)
