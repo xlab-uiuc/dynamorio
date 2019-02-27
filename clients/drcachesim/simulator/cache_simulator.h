@@ -44,6 +44,9 @@
 #include <map>
 #include <unordered_map>
 
+#include <stdio.h>
+#include <assert.h>
+
 class cache_simulator_t : public simulator_t {
 public:
     // This constructor is used when the cache hierarchy is configured
@@ -95,15 +98,38 @@ protected:
       long long unsigned int PE4;
       long long unsigned int PA;
 
-      std::vector<long long unsigned int*> all;
+      std::vector<long long unsigned int *> all;
 
       page_table_info_t() {
-        all.resize(5);
-        all[0] = &(this->PE1);
-        all[1] = &(this->PE2);
-        all[2] = &(this->PE3);
-        all[3] = &(this->PE4);
-        all[4] = &(this->PA );
+        this->PE1 = 0;
+        this->PE2 = 0;
+        this->PE3 = 0;
+        this->PE4 = 0;
+
+        this->all.resize(5);
+        this->all[1] = &(this->PE1);
+        this->all[2] = &(this->PE2);
+        this->all[3] = &(this->PE3);
+        this->all[4] = &(this->PE4);
+        this->all[0] = &(this->PA );
+
+        assert( *(this->all[2]) == this->PE2);
+      }
+
+      page_table_info_t(const page_table_info_t &obj) {
+        this->PE1 = obj.PE1;
+        this->PE2 = obj.PE2;
+        this->PE3 = obj.PE3;
+        this->PE4 = obj.PE4;
+
+        this->all.resize(5);
+        this->all[1] = &(this->PE1);
+        this->all[2] = &(this->PE2);
+        this->all[3] = &(this->PE3);
+        this->all[4] = &(this->PE4);
+        this->all[0] = &(this->PA );
+
+        assert( *(this->all[2]) == this->PE2);
       }
 
     };
