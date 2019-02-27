@@ -121,6 +121,7 @@ protected:
         this->PE2 = obj.PE2;
         this->PE3 = obj.PE3;
         this->PE4 = obj.PE4;
+        this->PA  = obj.PA;
 
         this->all.resize(5);
         this->all[1] = &(this->PE1);
