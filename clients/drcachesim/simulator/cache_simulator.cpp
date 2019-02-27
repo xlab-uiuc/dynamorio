@@ -32,10 +32,10 @@
 
 #define NUM_PWC 3
 #define PWC_ENTRY_SIZE 1
-const unsigned int PWC_ASSOC[] = { 1, 1, 1, 1};
+const unsigned int PWC_ASSOC[] = { 1, 4, 4};
 //const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 16};
 //const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 16};
-const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 8};
+const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 32};
 
 #define NUM_PAGE_TABLE_LEVELS 4
 #define PAGE_TABLE_ENTRY_SIZE 8 
