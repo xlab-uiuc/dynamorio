@@ -29,10 +29,10 @@
  * DAMAGE.
  */
 
-#define NUM_PWC 4
+#define NUM_PWC 3
 #define PWC_ENTRY_SIZE 8
-const unsigned int PWC_ASSOC[] = { 4, 8, 16, 32};
-const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 32};
+const unsigned int PWC_ASSOC[] = { 1, 4, 4};
+const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 32};
 
 #define NUM_PAGE_TABLE_LEVELS 4
 #define PAGE_TABLE_ENTRY_SIZE 8 
@@ -90,6 +90,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     , l1_dcaches(NULL)
     , l2_caches(NULL)
     , pw_caches(NULL)
+    , gpw_caches(NULL)
     , is_warmed_up(false)
 //    , tlb_knobs(tlb_knobs_)
 {
@@ -244,6 +245,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
         cache_name = "L1_D_Cache_" + std::to_string(i);
         all_caches[cache_name] = l1_dcaches[i];
     }
+    // host PWC
     pw_caches =  new cache_t *[NUM_PWC];
     for (unsigned int i = 0; i < NUM_PWC; i++) {
         pw_caches[i] = create_cache(knobs.replace_policy);
@@ -261,6 +263,24 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
             return;
         }
     }
+    // guest PWC
+    gpw_caches =  new cache_t *[NUM_PWC];
+    for (unsigned int i = 0; i < NUM_PWC; i++) {
+        gpw_caches[i] = create_cache(knobs.replace_policy);
+        if (gpw_caches[i] == NULL) {
+            success = false;
+            return;
+        }
+        if (!gpw_caches[i]->init (PWC_ASSOC[i], PWC_ENTRY_SIZE,
+                                 PWC_SIZE[i], NULL,
+                                 new cache_stats_t("", warmup_enabled))) {
+            error_string = "Usage error: failed to initialize PW caches.  Ensure sizes "
+                           "and associativity are powers of 2 "
+                           "and that the total sizes are multiples of the line size.";
+            success = false;
+            return;
+        }
+    }
 }
 
 cache_simulator_t::cache_simulator_t(const std::string &config_file)
@@ -268,6 +288,7 @@ cache_simulator_t::cache_simulator_t(const std::string &config_file)
     , l1_icaches(NULL)
     , l1_dcaches(NULL)
     , pw_caches(NULL)
+    , gpw_caches(NULL)
     , is_warmed_up(false)
 {
     std::map<std::string, cache_params_t> cache_params;
@@ -412,6 +433,9 @@ cache_simulator_t::~cache_simulator_t()
     }
     if (pw_caches != NULL) {
         delete[] pw_caches;
+    }
+    if (gpw_caches != NULL) {
+        delete[] gpw_caches;
     }
 }
 
@@ -593,8 +617,42 @@ cache_simulator_t::process_memref(const memref_t &memref)
           // reset page walk results
           page_walk_res.clear();
 
+          cache_result_t gpwc_search_res = NOT_FOUND;
+          unsigned int gpwc_hit_level = 0;
+          memref_t gpwc_check_memref; 
+          gpwc_check_memref.data.type = TRACE_TYPE_READ;
+          gpwc_check_memref.data.size = 1;
+          // search PWC starting from highest level
+          for(unsigned int i = NUM_PWC; i >= 1; i--) {
+            gpwc_check_memref.data.addr = virtual_full_page_addr >> (12 + (4 - i) * 9);
+
+            gpwc_search_res = gpw_caches[i-1]->request(gpwc_check_memref, true /*Artemiy*/);
+            // if found, memorize and stop searching 
+            if (gpwc_search_res == FOUND_L1) {
+              if (gpwc_hit_level == 0) {
+                gpwc_hit_level = i;
+              }
+            }
+          }
+
           for (unsigned int level_guest = 1; level_guest <= NUM_PAGE_TABLE_LEVELS; level_guest++) {
-            one_pw_at_host(page_walk_res, *(guest_it->second.all[level_guest]), level_guest, core);
+            if (gpwc_hit_level < level_guest) {
+              // if not found in the PWC, then make a memory req
+              one_pw_at_host(page_walk_res, *(guest_it->second.all[level_guest]), level_guest, core);
+
+            } else if (gpwc_hit_level == level_guest) {
+              // if found in the PWC, indicate PWC_LAT
+              for (unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS; i++) {
+                page_walk_res.push_back(ZERO);
+              }
+              page_walk_res.push_back(PWC);
+
+            } else if (gpwc_hit_level > level_guest) {
+              // if skipped due to a PWC hit, indicate ZERO_LAT
+              for (unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS+1; i++) {
+                page_walk_res.push_back(ZERO);
+              }
+            }
           }
           it = last_it;
           make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset, 1, core);
@@ -903,12 +961,13 @@ void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res,
   unsigned int pwc_hit_level = 0;
   memref_t pwc_check_memref; 
   pwc_check_memref.data.type = TRACE_TYPE_READ;
+  pwc_check_memref.data.size = 1;
   // search PWC starting from highest level
   for(unsigned int i = NUM_PWC; i >= 1; i--) {
     pwc_check_memref.data.addr = guest_addr >> (PAGE_OFFSET_SIZE + (4 - i) * 9);
-    pwc_search_res = pw_caches[i]->request(pwc_check_memref, true /*Artemiy*/);
+    pwc_search_res = pw_caches[i-1]->request(pwc_check_memref, true /*Artemiy*/);
     // if found, memorize and stop searching 
-    if (pwc_search_res != NOT_FOUND) {
+    if (pwc_search_res == FOUND_L1) {
       if (pwc_hit_level == 0) {
         pwc_hit_level = i;
       }
@@ -941,7 +1000,10 @@ void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res,
       page_walk_res.push_back(ZERO);
     }
   }
-  make_request_simple(TRACE_TYPE[level_guest][0], host_it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
+//  make_request_simple(TRACE_TYPE[level_guest][0], host_it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
+// Artemiy: reuse make_request for fetching 5,10,15,20 from memory 
+// 0 is passed as a stub
+  make_request(page_walk_res, TRACE_TYPE[level_guest][0], host_it->second.PA + page_offset_guest_addr_to_find, 0, 1, core);                                    // A5
 }
 
 // Return true if the number of warmup references have been executed or if
@@ -1039,6 +1101,8 @@ cache_simulator_t::print_results()
         , "WRONG"
         , "RANGE_HIT"
         , "RANGE_MISS"
+        , "PWC"
+        , "ZERO"
     };
 #pragma GCC diagnostic pop 
     for (hm_full_statistic_t::iterator it = hm_full_statistic.begin(); it != hm_full_statistic.end(); it++) {

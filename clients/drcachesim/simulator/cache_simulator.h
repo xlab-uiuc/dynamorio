@@ -85,6 +85,7 @@ protected:
     cache_t **l2_caches;
     cache_t  *llc1;
     cache_t **pw_caches;
+    cache_t **gpw_caches;
 
     //Artemiy: add TLB
     analysis_tool_t * tlb_sim;
@@ -97,15 +98,35 @@ protected:
       long long unsigned int PE4;
       long long unsigned int PA;
 
-      std::vector<long long unsigned int*> all;
+      std::vector<long long unsigned int *> all;
 
       page_table_info_t() {
-        all.resize(5);
-        all[0] = &(this->PE1);
-        all[1] = &(this->PE2);
-        all[2] = &(this->PE3);
-        all[3] = &(this->PE4);
-        all[4] = &(this->PA );
+        this->PE1 = 0;
+        this->PE2 = 0;
+        this->PE3 = 0;
+        this->PE4 = 0;
+
+        this->all.resize(5);
+        this->all[1] = &(this->PE1);
+        this->all[2] = &(this->PE2);
+        this->all[3] = &(this->PE3);
+        this->all[4] = &(this->PE4);
+        this->all[0] = &(this->PA );
+      }
+
+      page_table_info_t(const page_table_info_t &obj) {
+        this->PE1 = obj.PE1;
+        this->PE2 = obj.PE2;
+        this->PE3 = obj.PE3;
+        this->PE4 = obj.PE4;
+        this->PA  = obj.PA;
+
+        this->all.resize(5);
+        this->all[1] = &(this->PE1);
+        this->all[2] = &(this->PE2);
+        this->all[3] = &(this->PE3);
+        this->all[4] = &(this->PE4);
+        this->all[0] = &(this->PA );
       }
 
     };
