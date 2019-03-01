@@ -153,7 +153,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     std::cerr << "Loading host_page table with " <<  host_page_table_record_num << " PT entries...\n";
     for (int i = 0; i < host_page_table_record_num; i++) {
       page_table_info_t tmp;
-      fscanf(host_page_table_file, "%llx,%llx,%llx,%llx,%llx,%llx\n", &(tmp.VA), &(tmp.PE1), &(tmp.PE2), &(tmp.PE3), &(tmp.PE4), &(tmp.PA));
+      fscanf(host_page_table_file, "%llx,%llx,%llx,%llx,%llx\n", &(tmp.VA), &(tmp.PE1), &(tmp.PE2), &(tmp.PE3), &(tmp.PA));
       host_page_table.insert(std::make_pair(tmp.VA, tmp));
     }
     std::cerr << "Loaded " << host_page_table.size() << " unique PT entries.\n";
@@ -576,6 +576,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
     page_table_t::iterator guest_it = page_table.find(virtual_full_page_addr);
     if (guest_it != page_table.end()) {
 
+      page_offset = guest_it->second.PA & ((1 << (9+12)) - 1);
 
 	    page_table_t::iterator it = host_page_table.find((guest_it->second.PA >> 12) << 12);
 	    page_table_t::iterator last_it = it;
@@ -642,14 +643,14 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
             } else if (gpwc_hit_level == level_guest) {
               // if found in the PWC, indicate PWC_LAT
-              for (unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS; i++) {
+              for (unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS-1; i++) {
                 page_walk_res.push_back(ZERO);
               }
               page_walk_res.push_back(PWC);
 
             } else if (gpwc_hit_level > level_guest) {
               // if skipped due to a PWC hit, indicate ZERO_LAT
-              for (unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS+1; i++) {
+              for (unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS+1-1; i++) {
                 page_walk_res.push_back(ZERO);
               }
             }
@@ -658,7 +659,6 @@ cache_simulator_t::process_memref(const memref_t &memref)
           make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset, 1, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE2, it->second.PE2, guest_it->second.PA + page_offset, 2, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA + page_offset, 3, core);
-          make_request(page_walk_res, TRACE_TYPE_PA_PE4, it->second.PE4, guest_it->second.PA + page_offset, 4, core);
 
 
           if (range_found) {
@@ -981,7 +981,7 @@ void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res,
 
   long long unsigned int guest_addr_to_find = guest_addr + page_offset_guest_addr_to_find;
 
-  for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
+  for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS-1; level_host++) {
     if (pwc_hit_level < level_host) {
       // if not found in the PWC, then make a memory req
       make_request(page_walk_res, 
@@ -1003,7 +1003,7 @@ void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res,
 //  make_request_simple(TRACE_TYPE[level_guest][0], host_it->second.PA + page_offset_guest_addr_to_find, core);                                    // A5
 // Artemiy: reuse make_request for fetching 5,10,15,20 from memory 
 // 0 is passed as a stub
-  make_request(page_walk_res, TRACE_TYPE[level_guest][0], host_it->second.PA + page_offset_guest_addr_to_find, 0, 1, core);                                    // A5
+  make_request(page_walk_res, TRACE_TYPE[level_guest][0], host_it->second.PA + ((guest_addr + page_offset_guest_addr_to_find) & ((1 << (9+12)) - 1)), 0, 1, core);                                    // A5
 }
 
 // Return true if the number of warmup references have been executed or if
