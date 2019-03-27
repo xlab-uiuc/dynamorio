@@ -35,6 +35,9 @@
 #include <assert.h>
 #include <iostream>
 
+#define COLT_LOG_MAX_CONSEQ 2
+#define COLT_CONSEQ_RECODR_FIELD_BITS 4
+
 
 void
 tlb_t::init_blocks()
@@ -50,7 +53,7 @@ cache_result_t
 tlb_t::request(const memref_t &memref_in, bool)
 {
   assert(0);
-  }
+}
 
 void
 tlb_t::request(const memref_t &memref_in)
@@ -154,22 +157,31 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
     // This means that one memref could touch multiple blocks.
     // We treat each block separately for statistics purposes.
     addr_t final_addr = memref_in.data.addr + memref_in.data.size - 1 /*avoid overflow*/;
+
     addr_t final_tag = compute_tag(final_addr);
+    final_tag = final_tag >> COLT_LOG_MAX_CONSEQ;
+
     addr_t tag = compute_tag(memref_in.data.addr);
+    addr_t bits_conseq = tag & ((1 << COLT_LOG_MAX_CONSEQ) - 1);
+    tag = tag >> COLT_LOG_MAX_CONSEQ;
+
     memref_pid_t pid = memref_in.data.pid;
 
+
     // Optimization: check last tag and pid if single-block
-    if (tag == final_tag && tag == last_tag && pid == last_pid) {
+    if (0 && tag == final_tag && tag == last_tag && pid == last_pid) {
         // Make sure last_tag and pid are properly in sync.
         assert(
             tag != TAG_INVALID &&
-            tag == get_caching_device_block(last_block_idx, last_way).tag &&
-            pid ==
-                ((tlb_entry_t &)get_caching_device_block(last_block_idx, last_way)).pid);
-        stats->access(memref_in, true /*hit*/);
-        if (parent != NULL)
-            parent->get_stats()->child_access(memref_in, true);
+            tag == (get_caching_device_block(last_block_idx, last_way).tag >> COLT_CONSEQ_RECODR_FIELD_BITS) &&
+            pid == ((tlb_entry_t &)get_caching_device_block(last_block_idx, last_way)).pid);
+        if (changed1) {
+          stats->access(memref_in, true /*hit*/);
+          if (parent != NULL)
+              parent->get_stats()->child_access(memref_in, true);
+        }
         access_update(last_block_idx, last_way);
+        get_caching_device_block(last_block_idx, last_way).tag &= (1 << bits_conseq);
         //std::cerr << "TLB hit short" << std::endl; 
         return true; //found
     }
@@ -180,40 +192,64 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
         int way;
         int block_idx = compute_block_idx(tag);
 
-        if (tag + 1 <= final_tag)
+        if (tag + 1 <= final_tag) {
             memref.data.size = ((tag + 1) << block_size_bits) - memref.data.addr;
+        }
+
+        int WayColtEntryHit = -1;
 
         for (way = 0; way < associativity; ++way) {
-            if (get_caching_device_block(block_idx, way).tag == tag &&
-                ((tlb_entry_t &)get_caching_device_block(block_idx, way)).pid == pid) {
-                stats->access(memref, true /*hit*/);
-                if (parent != NULL)
-                    parent->get_stats()->child_access(memref, true);
-                //std::cerr << "TLB hit by search" << std::endl; 
-                prepare_to_return = true; //found
-                break;
+            addr_t mask = get_caching_device_block(block_idx, way).tag & ((1 << COLT_CONSEQ_RECODR_FIELD_BITS) - 1);
+            addr_t true_tag = get_caching_device_block(block_idx, way).tag >> COLT_CONSEQ_RECODR_FIELD_BITS;
+            if  ((true_tag == tag) &&
+                (((tlb_entry_t &)get_caching_device_block(block_idx, way)).pid == pid)) { 
+                WayColtEntryHit = way;
+                // CoLT hit
+                if ((mask >> bits_conseq) & 1) {
+                  //std::cerr << "TLB hit to CoLT" << std::endl; 
+                  if (changed1) {
+                    stats->access(memref, true /*hit*/);
+                    if (parent != NULL)
+                        parent->get_stats()->child_access(memref, true);
+                  }      
+                  prepare_to_return = true; //found
+                  break;
+                }
             }
         }
 
         if (way == associativity) {
-            stats->access(memref, false /*miss*/);
+            if (changed1) 
+              stats->access(memref, false /*miss*/);
             // If no parent we assume we get the data from main memory
             bool result = false;
             if (parent != NULL) {
-                parent->get_stats()->child_access(memref, false);
-                result = parent->request(memref, true, true /* changed */);
+                if (changed1) 
+                  parent->get_stats()->child_access(memref, false);
+                result = parent->request(memref, changed1, true /* changed */);
                 //Artemiy add return translation not found in the TLBs
                 //std::cerr << "TLB get result from parent " << result << std::endl; 
                 prepare_to_return = result;
             }
+
             // XXX: do we need to handle TLB coherency?
-
-            way = replace_which_way(block_idx);
-            get_caching_device_block(block_idx, way).tag = tag;
-            ((tlb_entry_t &)get_caching_device_block(block_idx, way)).pid = pid;
+            if (WayColtEntryHit < 0) {
+              if (changed1) {
+                //std::cerr << "TLB miss - allocating new" << std::endl; 
+                // no hit to possible coalescing entry
+                way = replace_which_way(block_idx);
+                get_caching_device_block(block_idx, way).tag = (tag << COLT_CONSEQ_RECODR_FIELD_BITS) + (1 << bits_conseq);
+                ((tlb_entry_t &)get_caching_device_block(block_idx, way)).pid = pid;
+                access_update(block_idx, way);
+              }
+            } else {
+              //std::cerr << "TLB miss - coalescing" << std::endl; 
+              //int cur_mask = get_caching_device_block(block_idx, WayColtEntryHit).tag & ((1 << COLT_CONSEQ_RECODR_FIELD_BITS) - 1);
+              get_caching_device_block(block_idx, WayColtEntryHit).tag += (1 << bits_conseq);
+              //int new_mask = get_caching_device_block(block_idx, WayColtEntryHit).tag & ((1 << COLT_CONSEQ_RECODR_FIELD_BITS) - 1);
+              access_update(block_idx, WayColtEntryHit);
+            }
         }
-
-        access_update(block_idx, way);
 
         if (tag + 1 <= final_tag) {
             addr_t next_addr = (tag + 1) << block_size_bits;
@@ -226,7 +262,7 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
         last_block_idx = block_idx;
         last_pid = pid;
 
-        //std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 
+        //std::cerr << "TLB return result after search " << way << " " << prepare_to_return << std::endl; 
         return prepare_to_return;
     }
     //std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 

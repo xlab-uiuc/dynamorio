@@ -558,6 +558,25 @@ cache_simulator_t::process_memref(const memref_t &memref)
           std::cerr << "TLB miss \n";
         }
 
+
+        for (unsigned int i = 0; i < 8; i++) {
+          page_table_t::iterator it = page_table.find((((virtual_full_page_addr >> (12 + 3)) << 3) + i) << 12);
+          if (it != page_table.end()) {
+            uint64_t cur_physical_page_addr = (it->second.PA >> (12 + 3));
+            if (physical_page_addr >> (12 + 3) == cur_physical_page_addr) {
+              memref_t fetch_memref; 
+              fetch_memref.marker.pid = memref.marker.pid;
+              fetch_memref.marker.tid = memref.marker.tid;
+              fetch_memref.data.type = TRACE_TYPE_READ;
+              fetch_memref.data.size = 1; 
+              fetch_memref.data.addr = (((virtual_full_page_addr >> (12 + 3)) << 3) + i) << 12;
+//              std::cerr << "fetched TLB addr << " << std::hex << fetch_memref.data.addr << std::dec << " \n";
+              std::pair<bool, bool> _ = tlb_sim->process_memref(fetch_memref, false /*do not allocate if does not hit to CoLT entry*/);
+//              std::cerr << "finished fetched TLB addr << " << std::hex << fetch_memref.data.addr << std::dec << " \n";
+            }
+          }
+        }
+
         bool range_found = false;
         if (knobs.pt_ranges_file != "") {
           for (unsigned int i = 0; i < knobs.num_ranges; i++) {
