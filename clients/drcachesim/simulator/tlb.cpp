@@ -35,8 +35,8 @@
 #include <assert.h>
 #include <iostream>
 
-#define COLT_LOG_MAX_CONSEQ 2
-#define COLT_CONSEQ_RECODR_FIELD_BITS 4
+#define COLT_LOG_MAX_CONSEQ 3
+#define COLT_CONSEQ_RECODR_FIELD_BITS 8
 
 
 void
@@ -143,7 +143,7 @@ tlb_t::request(const memref_t &memref_in)
 
 //Artemiy copypaste
 bool
-tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
+tlb_t::request(const memref_t &memref_in, bool demand, bool changed2)
 {
     // XXX: any better way to derive caching_device_t::request?
     // Since pid is needed in a lot of places from the beginning to the end,
@@ -175,7 +175,7 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
             tag != TAG_INVALID &&
             tag == (get_caching_device_block(last_block_idx, last_way).tag >> COLT_CONSEQ_RECODR_FIELD_BITS) &&
             pid == ((tlb_entry_t &)get_caching_device_block(last_block_idx, last_way)).pid);
-        if (changed1) {
+        if (demand) {
           stats->access(memref_in, true /*hit*/);
           if (parent != NULL)
               parent->get_stats()->child_access(memref_in, true);
@@ -204,29 +204,32 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
             if  ((true_tag == tag) &&
                 (((tlb_entry_t &)get_caching_device_block(block_idx, way)).pid == pid)) { 
                 WayColtEntryHit = way;
-                // CoLT hit
+                // check if there is CoLT hit
                 if ((mask >> bits_conseq) & 1) {
                   //std::cerr << "TLB hit to CoLT" << std::endl; 
-                  if (changed1) {
+                  if (demand) {
                     stats->access(memref, true /*hit*/);
                     if (parent != NULL)
                         parent->get_stats()->child_access(memref, true);
                   }      
                   prepare_to_return = true; //found
+                  access_update(block_idx, way);
                   break;
                 }
             }
         }
 
         if (way == associativity) {
-            if (changed1) 
+            if (demand) {
               stats->access(memref, false /*miss*/);
+            }  
             // If no parent we assume we get the data from main memory
             bool result = false;
             if (parent != NULL) {
-                if (changed1) 
+                if (demand) {
                   parent->get_stats()->child_access(memref, false);
-                result = parent->request(memref, changed1, true /* changed */);
+                  result = parent->request(memref, demand, true /* changed */);
+                }  
                 //Artemiy add return translation not found in the TLBs
                 //std::cerr << "TLB get result from parent " << result << std::endl; 
                 prepare_to_return = result;
@@ -234,7 +237,7 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
 
             // XXX: do we need to handle TLB coherency?
             if (WayColtEntryHit < 0) {
-              if (changed1) {
+              if (demand) {
                 //std::cerr << "TLB miss - allocating new" << std::endl; 
                 // no hit to possible coalescing entry
                 way = replace_which_way(block_idx);
@@ -247,7 +250,7 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
               //int cur_mask = get_caching_device_block(block_idx, WayColtEntryHit).tag & ((1 << COLT_CONSEQ_RECODR_FIELD_BITS) - 1);
               get_caching_device_block(block_idx, WayColtEntryHit).tag += (1 << bits_conseq);
               //int new_mask = get_caching_device_block(block_idx, WayColtEntryHit).tag & ((1 << COLT_CONSEQ_RECODR_FIELD_BITS) - 1);
-              access_update(block_idx, WayColtEntryHit);
+              //access_update(block_idx, WayColtEntryHit);
             }
         }
 

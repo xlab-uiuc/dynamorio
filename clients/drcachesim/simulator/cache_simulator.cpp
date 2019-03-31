@@ -1,6 +1,6 @@
 /* **********************************************************
  * Copyright (c) 2015-2018 Google, Inc.  All rights reserved.
- * **********************************************************/
+* **********************************************************/
 
 /*
  * Redistribution and use in source and binary forms, with or without
@@ -423,6 +423,9 @@ cache_simulator_t::process_memref(const memref_t &memref)
       num_request_shifted = 0;
       std::cerr << "Heartbeat. " << num_request << " references processed.\n";
       print_results();
+      if (num_request > 5000000000) {
+        exit(0);
+      }
       //std::cerr << std::endl;
       //std::cerr << std::endl;
       //std::cerr << std::endl;
@@ -563,7 +566,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
           page_table_t::iterator it = page_table.find((((virtual_full_page_addr >> (12 + 3)) << 3) + i) << 12);
           if (it != page_table.end()) {
             uint64_t cur_physical_page_addr = (it->second.PA >> (12 + 3));
-            if (physical_page_addr >> (12 + 3) == cur_physical_page_addr) {
+            if ((physical_page_addr >> (12 + 3)) == cur_physical_page_addr) {
               memref_t fetch_memref; 
               fetch_memref.marker.pid = memref.marker.pid;
               fetch_memref.marker.tid = memref.marker.tid;
