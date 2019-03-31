@@ -214,6 +214,10 @@ tlb_t::request(const memref_t &memref_in, bool demand, bool changed2)
                   }      
                   prepare_to_return = true; //found
                   access_update(block_idx, way);
+                  if (!demand) {
+                    if (parent != NULL)
+                      parent->request(memref, demand, true /* changed */);
+                  }
                   break;
                 }
             }
@@ -228,8 +232,8 @@ tlb_t::request(const memref_t &memref_in, bool demand, bool changed2)
             if (parent != NULL) {
                 if (demand) {
                   parent->get_stats()->child_access(memref, false);
-                  result = parent->request(memref, demand, true /* changed */);
                 }  
+                result = parent->request(memref, demand, true /* changed */);
                 //Artemiy add return translation not found in the TLBs
                 //std::cerr << "TLB get result from parent " << result << std::endl; 
                 prepare_to_return = result;
