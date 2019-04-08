@@ -113,10 +113,19 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     std::cerr << "Loading page table with " <<  page_table_record_num << " PT entries...\n";
     for (int i = 0; i < page_table_record_num; i++) {
       page_table_info_t tmp;
-      fscanf(page_table_file, "%llx,%llx,%llx,%llx,%llx,%llx\n", &(tmp.VA), &(tmp.PE1), &(tmp.PE2), &(tmp.PE3), &(tmp.PE4), &(tmp.PA));
-      page_table.insert(std::make_pair(tmp.VA, tmp));
+      char mode;
+      fscanf(page_table_file, "%c,%llx,%llx,%llx,%llx,%llx,%llx\n", &(mode), &(tmp.VA), &(tmp.PE1), &(tmp.PE2), &(tmp.PE3), &(tmp.PE4), &(tmp.PA));
+      if (mode == 'l') {
+        tmp.mode = LARGE_PAGE;
+        page_table_large.insert(std::make_pair(tmp.VA, tmp));
+        //assert(tmp.PE4 == 0);
+      } else {
+        page_table.insert(std::make_pair(tmp.VA, tmp));
+      }  
+//      std::cout << std::hex << mode << " " << tmp.VA << " " << tmp.PA << std::dec << "\n";
     }
-    std::cerr << "Loaded " << page_table.size() << " unique PT entries.\n";
+//    std::cerr << "Loaded " << page_table.size() << " unique PT entries.\n";
+//    std::cerr << "Loaded L " << page_table_large.size() << " unique PT entries.\n";
     fclose(page_table_file);
 #pragma GCC diagnostic pop 
 
@@ -143,8 +152,18 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
 //    for(page_table_t::const_iterator it = page_table.begin();
 //    it != page_table.end(); ++it)
 //    {
-//      std::cout << it->first << " " << it->second.VA << " " << it->second.PA << "\n";
+//      std::cout << std::hex << it->first << " " << it->second.VA << " " << it->second.PA << " " << std::dec << it->second.mode << "\n";
 //    }
+//    
+//    std::cerr << "End of dump PT" << page_table.size() << " unique PT entries.\n";
+//
+//    for(page_table_t::const_iterator it = page_table_large.begin();
+//    it != page_table.end(); ++it)
+//    {
+//      std::cout << std::hex << it->first << " " << it->second.VA << " " << it->second.PA << " " << std::dec << it->second.mode << "\n";
+//    }
+
+    std::cerr << "End of dump PTL" << page_table_large.size() << " unique PT entries.\n";
 
     //*********************************************************
 
@@ -427,6 +446,9 @@ cache_simulator_t::process_memref(const memref_t &memref)
       //std::cerr << std::endl;
       //std::cerr << std::endl;
       //std::cerr << std::endl;
+      if (num_request > 4000000000) {
+        exit(0);
+      }
     }
 
       
@@ -516,11 +538,12 @@ cache_simulator_t::process_memref(const memref_t &memref)
     uint64_t virtual_full_page_addr = virtual_page_addr << 12;
 
     //TLB request
-    std::pair<bool, bool> res = tlb_sim->process_memref(memref, true /*changeByArtemiy*/);
+    std::pair<bool, bool> res = dynamic_cast<tlb_simulator_t*>(tlb_sim)->process_memref(memref, true /*this is only checking*/, true /*stub*/);
     bool is_TLB_hit = res.second;
     if (knobs.verbose >= 2) {
       std::cerr << __FUNCTION__ << " Received TLB result: " << is_TLB_hit << std::endl;
     }
+//    std::cerr << __FUNCTION__ << " Received TLB result: " << is_TLB_hit << std::endl;
 
     memref_t new_memref; 
     new_memref = memref;
@@ -528,9 +551,26 @@ cache_simulator_t::process_memref(const memref_t &memref)
     new_memref.marker.pid = memref.marker.pid;
     new_memref.marker.tid = memref.marker.tid;
     page_table_t::iterator it = page_table.find(virtual_full_page_addr);
+    int cur_mode = SMALL_PAGE;
+    bool found_small = false;
+    if (it == page_table.end()) {
+      virtual_full_page_addr = (virtual_full_page_addr >> (12 + 9)) << (12 + 9);
+      it = page_table_large.find(virtual_full_page_addr);
+    } else {
+      found_small = true;
+    }
     // if found 
-    if (it != page_table.end()) {
-      
+    if ( found_small || (it != page_table_large.end())) {
+      cur_mode = it->second.mode;
+
+      if (cur_mode == LARGE_PAGE) {
+        dynamic_cast<tlb_simulator_t*>(tlb_sim)->process_memref(memref, false /*not checking*/, true /*isLarge*/);
+        page_offset       = memref.data.addr & ((1 << (12 + 9)) - 1);
+ //       std::cerr << __FUNCTION__ << " Access to a large page " << std::endl;
+      } else { 
+        dynamic_cast<tlb_simulator_t*>(tlb_sim)->process_memref(memref, false /*not checking*/, false /*isLarge*/);
+      }
+
       physical_page_addr = it->second.PA;
 
       if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
@@ -581,7 +621,11 @@ cache_simulator_t::process_memref(const memref_t &memref)
         memref_t pwc_check_memref; 
         pwc_check_memref.data.type = TRACE_TYPE_READ;
         // search PWC starting from highest level
-        for(unsigned int i = NUM_PWC; i >= 1; i--) {
+        unsigned int num_pwc = NUM_PWC;
+        if (cur_mode == LARGE_PAGE) {
+          num_pwc = NUM_PWC - 1;
+        }
+        for(unsigned int i = num_pwc; i >= 1; i--) {
           pwc_check_memref.data.addr = virtual_full_page_addr >> (12 + (4 - i) * 9);
           pwc_check_memref.data.size = 1; 
           pwc_search_res = pw_caches[i-1]->request(pwc_check_memref, true /*Artemiy*/);
@@ -594,7 +638,11 @@ cache_simulator_t::process_memref(const memref_t &memref)
         }
         // find a record in the host PT corresponding to the given guest address
         
-        for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
+        unsigned int num_page_table_levels = NUM_PAGE_TABLE_LEVELS;
+        if (cur_mode == LARGE_PAGE) {
+          num_page_table_levels = NUM_PAGE_TABLE_LEVELS - 1;
+        }
+        for (unsigned int level_host = 1; level_host <= num_page_table_levels; level_host++) {
           if (pwc_hit_level < level_host) {
             // if not found in the PWC, then make a memory req
             make_request(page_walk_res, 
@@ -612,6 +660,10 @@ cache_simulator_t::process_memref(const memref_t &memref)
             // if skipped due to a PWC hit, indicate ZERO_LAT
             page_walk_res.push_back(ZERO);
           }
+        }
+        
+        if (cur_mode == LARGE_PAGE) {
+            page_walk_res.push_back(ZERO);
         }
 
 //        page_walk_memref.data.type = TRACE_TYPE_PE1;

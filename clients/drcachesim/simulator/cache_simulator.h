@@ -47,6 +47,15 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "tlb_simulator.h"
+
+typedef enum {
+     SMALL_PAGE
+   , LARGE_PAGE
+} page_mode;
+
+
+
 class cache_simulator_t : public simulator_t {
 public:
     // This constructor is used when the cache hierarchy is configured
@@ -98,6 +107,9 @@ protected:
       long long unsigned int PE4;
       long long unsigned int PA;
 
+      std::string str_mode;
+      int mode;
+
       std::vector<long long unsigned int *> all;
 
       page_table_info_t() {
@@ -114,6 +126,8 @@ protected:
         this->all[0] = &(this->PA );
 
         assert( *(this->all[2]) == this->PE2);
+
+        mode = SMALL_PAGE;
       }
 
       page_table_info_t(const page_table_info_t &obj) {
@@ -131,6 +145,7 @@ protected:
         this->all[0] = &(this->PA );
 
         assert( *(this->all[2]) == this->PE2);
+        mode = obj.mode;
       }
 
     };
@@ -139,6 +154,7 @@ protected:
     //typedef std::map<unsigned int, page_table_info_t> page_table_t;
     typedef std::unordered_map<long long unsigned int, page_table_info_t> page_table_t;
     page_table_t page_table;
+    page_table_t page_table_large;
     std::vector<uint64_t> hit_statistics;
     std::vector<uint64_t> miss_statistics;
 

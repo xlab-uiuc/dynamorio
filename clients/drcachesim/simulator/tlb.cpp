@@ -26,14 +26,23 @@
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
- * DAMAGE.
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH * DAMAGE.
  */
 
 #include "tlb.h"
 #include "../common/utils.h"
 #include <assert.h>
 #include <iostream>
+#include <bitset>
+#include <string>
+
+template<typename T>
+static std::string toBinaryString(const T& x)
+{
+    std::stringstream ss;
+    ss << std::bitset<sizeof(T) * 8>(x);
+    return ss.str();
+}
 
 
 void
@@ -140,8 +149,14 @@ tlb_t::request(const memref_t &memref_in)
 
 //Artemiy copypaste
 bool
-tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
+tlb_t::request(const memref_t &memref_in, bool isOnlyCheck, bool isLarge)
 {
+    if (isOnlyCheck) {
+      memref_t memref;
+      memref = memref_in;
+      return this->check(memref, isOnlyCheck, isLarge);
+    }
+
     // XXX: any better way to derive caching_device_t::request?
     // Since pid is needed in a lot of places from the beginning to the end,
     // it might also not be a good way to write a lot of helper functions
@@ -158,8 +173,19 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
     addr_t tag = compute_tag(memref_in.data.addr);
     memref_pid_t pid = memref_in.data.pid;
 
+    if (isLarge) {
+      final_addr = (              (final_addr >> (12 + 9)) << 12) | (1L << 50); 
+      final_tag = compute_tag(final_addr);
+      tag = compute_tag(((memref_in.data.addr >> (12 + 9)) << 12) | (1L << 50));
+    }
+
+//    std::cerr << __FUNCTION__ << "IsLarge?" << isLarge << std::endl;
+//    std::cerr << "Input addr: " << std::hex << memref_in.data.addr << "\t" << toBinaryString(memref_in.data.addr) << std::endl;
+//    std::cerr << "Tag: " << std::hex << tag << "\t" << toBinaryString(tag) << std::endl;
+//    std::cerr << "Fanal_tag: " << std::hex << final_tag << "\t" << toBinaryString(final_tag) << std::endl;
+
     // Optimization: check last tag and pid if single-block
-    if (tag == final_tag && tag == last_tag && pid == last_pid) {
+    if (0 && tag == final_tag && tag == last_tag && pid == last_pid) {
         // Make sure last_tag and pid are properly in sync.
         assert(
             tag != TAG_INVALID &&
@@ -201,7 +227,7 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
             bool result = false;
             if (parent != NULL) {
                 parent->get_stats()->child_access(memref, false);
-                result = parent->request(memref, true, true /* changed */);
+                result = parent->request(memref, isOnlyCheck, isLarge /* changed */);
                 //Artemiy add return translation not found in the TLBs
                 //std::cerr << "TLB get result from parent " << result << std::endl; 
                 prepare_to_return = result;
@@ -226,7 +252,71 @@ tlb_t::request(const memref_t &memref_in, bool changed1, bool changed2)
         last_block_idx = block_idx;
         last_pid = pid;
 
-        //std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 
+//        std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 
+//        std::cerr << std::endl << std::endl;
+        return prepare_to_return;
+    }
+    //std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 
+    return prepare_to_return;
+}
+
+bool
+tlb_t::check(const memref_t &memref_in, bool changed1, bool isLarge)
+{
+    // XXX: any better way to derive caching_device_t::request?
+    // Since pid is needed in a lot of places from the beginning to the end,
+    // it might also not be a good way to write a lot of helper functions
+    // to isolate them.
+
+    // Unfortunately we need to make a copy for our loop so we can pass
+    // the right data struct to the parent and stats collectors.
+    memref_t memref;
+    // We support larger sizes to improve the IPC perf.
+    // This means that one memref could touch multiple blocks.
+    // We treat each block separately for statistics purposes.
+    addr_t final_addr = memref_in.data.addr + memref_in.data.size - 1 /*avoid overflow*/;
+    addr_t final_tag = compute_tag(final_addr);
+    addr_t tag = compute_tag(memref_in.data.addr);
+    memref_pid_t pid = memref_in.data.pid;
+
+    if (isLarge) {
+      final_addr = (              (final_addr >> (12 + 9)) << 12) | (1L << 50); 
+      final_tag = compute_tag(final_addr);
+      tag = compute_tag(((memref_in.data.addr >> (12 + 9)) << 12) | (1L << 50));
+    }
+
+//    std::cerr << __FUNCTION__ << "IsLarge?" << isLarge << std::endl;
+//    std::cerr << "Input addr: " << std::hex << memref_in.data.addr << "\t" << toBinaryString(memref_in.data.addr) << std::endl;
+//    std::cerr << "Tag: " << std::hex << tag << "\t" << toBinaryString(tag) << std::endl;
+//    std::cerr << "Fanal_tag: " << std::hex << final_tag << "\t" << toBinaryString(final_tag) << std::endl;
+//    std::cerr << std::endl << std::endl;
+
+    bool prepare_to_return = false;
+    memref = memref_in;
+    for (; tag <= final_tag; ++tag) {
+        int way;
+        int block_idx = compute_block_idx(tag);
+
+        for (way = 0; way < associativity; ++way) {
+            if (get_caching_device_block(block_idx, way).tag == tag &&
+                ((tlb_entry_t &)get_caching_device_block(block_idx, way)).pid == pid) {
+                prepare_to_return = true; //found
+                break;
+            }
+        }
+
+        if (way == associativity) {
+            // If no parent we assume we get the data from main memory
+            bool result = false;
+            if (parent != NULL) {
+                result = dynamic_cast<tlb_t*>(parent)->check(memref, true, isLarge /* changed */);
+                //Artemiy add return translation not found in the TLBs
+                prepare_to_return = result;
+            }
+            // XXX: do we need to handle TLB coherency?
+        }
+//        std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 
+//        std::cerr << std::endl << std::endl;
         return prepare_to_return;
     }
     //std::cerr << "TLB return result after search " << prepare_to_return << std::endl; 

@@ -127,16 +127,23 @@ tlb_simulator_t::process_memref(const memref_t &memref) {
 return true;
 }
 
+std::pair<bool, bool>
+tlb_simulator_t::process_memref(const memref_t &memref, bool changed) {
+  assert(0);
+  return std::pair<bool, bool>(true, true);
+}
 
 // returns: first done
 // second: hit/miss
 std::pair<bool, bool>
-tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
+tlb_simulator_t::process_memref(const memref_t &memref, bool isOnlyCheck, bool isLarge)
 {
-    if (knobs.skip_refs > 0) {
-        knobs.skip_refs--;
-        std::cerr << "1 " << memref.data.addr << "...";
-        return std::pair<bool, bool>(true, true);
+    if (!isOnlyCheck) {
+      if (knobs.skip_refs > 0) {
+          knobs.skip_refs--;
+          std::cerr << "1 " << memref.data.addr << "...";
+          return std::pair<bool, bool>(true, true);
+      }
     }
 
     // The references after warmup and simulated ones are dropped.
@@ -175,14 +182,26 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
 
     if (type_is_instr(memref.instr.type)) {
         //std::cerr << "Checking ITLB for addr " << std::hex << memref.instr.addr << std::dec << "...";
-        found = itlbs[core]->request(memref, true, true /* Artemiy change */ );
+        found = itlbs[core]->request(memref, false /*check*/, false /*large*/);
         if (knobs.verbose >= 2) {
           std::cerr << "found in ITLB: " << found << std::endl;
         }
     }
     else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE) {
         //std::cerr << "Checking DTLB for addr " << std::hex << memref.data.addr << std::dec << "...";
-        found = dtlbs[core]->request(memref, true, true /* Artemiy change */ );
+        //
+        if (isOnlyCheck) {
+//          std::cerr << "Sending small page req" << std::endl;
+          found = dtlbs[core]->request(memref, isOnlyCheck /*check*/, false /*small*/ );
+          if (!found) {
+//            std::cerr << "Sending large page req" << std::endl;
+            found = dtlbs[core]->request(memref, isOnlyCheck /*check*/, true /*large*/);
+          }
+        } else {
+//            std::cerr << "Sending permanent req " << isLarge << std::endl;
+          found = dtlbs[core]->request(memref, isOnlyCheck /*check*/, isLarge /*small*/ );
+        }
+
         if (knobs.verbose >= 2) {
           std::cerr << "found in DTLB: " << found << std::endl;
         }
@@ -211,7 +230,9 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
 
     // process counters for warmup and simulated references
     if (knobs.warmup_refs > 0) { // warm tlbs up
-        knobs.warmup_refs--;
+        if (!isOnlyCheck) {
+          knobs.warmup_refs--;
+        }
         // reset tlb stats when warming up is completed
         if (knobs.warmup_refs == 0) {
             for (unsigned int i = 0; i < knobs.num_cores; i++) {

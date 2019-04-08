@@ -55,6 +55,9 @@ public:
     std::pair<bool,bool> 
     process_memref(const memref_t &memref, bool changed); //Added by Artemiy
 
+    std::pair<bool,bool> 
+    process_memref(const memref_t &memref, bool changed1, bool changed2); //Added by Artemiy
+
 protected:
     // Create a tlb_t object with a specific replacement policy.
     virtual tlb_t *
