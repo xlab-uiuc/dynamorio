@@ -487,7 +487,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
     num_request++;
     num_request_shifted++;
 
-    if ((num_request >> 29) > 0) {
+    if ((num_request >> 30) > 0) {
       exit(0);
     }
     if ((num_request_shifted >> 22) > 0) {
