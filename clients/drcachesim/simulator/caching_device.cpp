@@ -121,7 +121,7 @@ caching_device_t::request(const memref_t &memref_in, bool changed1, bool changed
 
   // for cache
 cache_result_t
-caching_device_t::request(const memref_t &memref_in, bool changed ) {
+caching_device_t::request(const memref_t &memref_in, bool allocate ) {
     // Unfortunately we need to make a copy for our loop so we can pass
     // the right data struct to the parent and stats collectors.
     memref_t memref;
@@ -137,16 +137,18 @@ caching_device_t::request(const memref_t &memref_in, bool changed ) {
     cache_result_t res = NOT_FOUND;
 
     // Optimization: check last tag if single-block
-    if (tag == final_tag && tag == last_tag) {
-        // Make sure last_tag is properly in sync.
-        assert(tag != TAG_INVALID &&
-               tag == get_caching_device_block(last_block_idx, last_way).tag);
-        stats->access(memref_in, true /*hit*/);
-        if (parent != NULL)
-            parent->stats->child_access(memref_in, true);
-        access_update(last_block_idx, last_way);
-        //std::cerr << "Left by short path" << std::endl; 
-        return res;
+    if (allocate) {
+      if (tag == final_tag && tag == last_tag) {
+          // Make sure last_tag is properly in sync.
+          assert(tag != TAG_INVALID &&
+                 tag == get_caching_device_block(last_block_idx, last_way).tag);
+          stats->access(memref_in, true /*hit*/);
+          if (parent != NULL)
+              parent->stats->child_access(memref_in, true);
+          access_update(last_block_idx, last_way);
+          //std::cerr << "Left by short path" << std::endl; 
+          return res;
+      }
     }
 
     memref = memref_in;
@@ -160,55 +162,64 @@ caching_device_t::request(const memref_t &memref_in, bool changed ) {
 
         for (way = 0; way < associativity; ++way) {
             if (get_caching_device_block(block_idx, way).tag == tag) {
-                stats->access(memref, true /*hit*/);
-                res = FOUND_L1;
-                if (parent != NULL)
+                if (allocate) {
+                  stats->access(memref, true /*hit*/);
+                  if (parent != NULL)
                     parent->stats->child_access(memref, true);
+                }
+                res = FOUND_L1;
                 break;
             }
         }
         if (way == associativity) {
-            stats->access(memref, false /*miss*/);
+            if (allocate)
+              stats->access(memref, false /*miss*/);
             missed = true;
             // If no parent we assume we get the data from main memory
             if (parent != NULL) {
+              if (allocate)
                 parent->stats->child_access(memref, false);
-                res = parent->request(memref, true /*Artemiy*/);
-                res = got_from_parent(res);
+              res = parent->request(memref, allocate /*Artemiy*/);
+              res = got_from_parent(res);
             }
 
             // FIXME i#1726: coherence policy
 
-            way = replace_which_way(block_idx);
-            // Check if we are inserting a new block, if we are then increment
-            // the block loaded count.
-            if (get_caching_device_block(block_idx, way).tag == TAG_INVALID) {
-                loaded_blocks++;
-            } else if (inclusive && !children.empty()) {
-                for (auto &child : children) {
-                    child->invalidate(get_caching_device_block(block_idx, way).tag);
-                }
+            if (allocate) {
+              way = replace_which_way(block_idx);
+              // Check if we are inserting a new block, if we are then increment
+              // the block loaded count.
+              if (get_caching_device_block(block_idx, way).tag == TAG_INVALID) {
+                  loaded_blocks++;
+              } else if (inclusive && !children.empty()) {
+                  for (auto &child : children) {
+                      child->invalidate(get_caching_device_block(block_idx, way).tag);
+                  }
+              }
+              get_caching_device_block(block_idx, way).tag = tag;
             }
-            get_caching_device_block(block_idx, way).tag = tag;
         }
 
-        access_update(block_idx, way);
+        if (allocate)
+          access_update(block_idx, way);
 
         // Issue a hardware prefetch, if any, before we remember the last tag,
         // so we remember this line and not the prefetched line.
-        if (missed && !type_is_prefetch(memref.data.type) && prefetcher != nullptr)
+        if (allocate && missed && !type_is_prefetch(memref.data.type) && prefetcher != nullptr)
             prefetcher->prefetch(this, memref);
 
-        if (tag + 1 <= final_tag) {
-            addr_t next_addr = (tag + 1) << block_size_bits;
-            memref.data.addr = next_addr;
-            memref.data.size = final_addr - next_addr + 1 /*undo the -1*/;
-        }
+        if (allocate) {
+          if (tag + 1 <= final_tag) {
+              addr_t next_addr = (tag + 1) << block_size_bits;
+              memref.data.addr = next_addr;
+              memref.data.size = final_addr - next_addr + 1 /*undo the -1*/;
+          }
 
-        // Optimization: remember last tag
-        last_tag = tag;
-        last_way = way;
-        last_block_idx = block_idx;
+          // Optimization: remember last tag
+          last_tag = tag;
+          last_way = way;
+          last_block_idx = block_idx;
+        }
     }
     return res;
 }

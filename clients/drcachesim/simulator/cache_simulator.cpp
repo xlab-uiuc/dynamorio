@@ -1,7 +1,5 @@
 /* **********************************************************
- * Copyright (c) 2015-2018 Google, Inc.  All rights reserved.
- * **********************************************************/
-
+ * Copyright (c) 2015-2018 Google, Inc.  All rights reserved.  * **********************************************************/ 
 /*
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -58,9 +56,34 @@ const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_EN
 #include "cache_simulator.h"
 #include "droption.h"
 
+#include <algorithm>
+
 #include <cstdio>
 #include <inttypes.h>
 #include <stdlib.h>
+
+int rank111(cache_result_t value)
+{
+  switch (value)
+  {
+  case cache_result_t::FOUND_L1:
+      return 1;
+
+  case cache_result_t::FOUND_L2:
+      return 2;
+
+  case cache_result_t::FOUND_LLC:
+      return 3;
+
+  default :
+      return 4;
+  }
+}
+
+bool operator<(cache_result_t left, cache_result_t right)
+{ return rank111(left) < rank111(right); }
+
+
 
 trace_type_t TRACE_TYPE[][5] = { { TRACE_TYPE_PE1_PA, TRACE_TYPE_PE1_PE1, TRACE_TYPE_PE1_PE2, TRACE_TYPE_PE1_PE3, TRACE_TYPE_PE1_PE4 }, 
                                  { TRACE_TYPE_PE2_PA, TRACE_TYPE_PE2_PE1, TRACE_TYPE_PE2_PE2, TRACE_TYPE_PE2_PE3, TRACE_TYPE_PE2_PE4 }, 
@@ -464,6 +487,9 @@ cache_simulator_t::process_memref(const memref_t &memref)
     num_request++;
     num_request_shifted++;
 
+    if ((num_request >> 29) > 0) {
+      exit(0);
+    }
     if ((num_request_shifted >> 22) > 0) {
       num_request_shifted = 0;
       std::cerr << "Heartbeat. " << num_request << " references processed.\n";
@@ -473,8 +499,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
       //std::cerr << std::endl;
       //std::cerr << std::endl;
     }
-
-      
+    
 
     if (knobs.skip_refs > 0) {
         knobs.skip_refs--;
@@ -634,7 +659,9 @@ cache_simulator_t::process_memref(const memref_t &memref)
               }
             }
           }
-
+          
+          bool gPTE_found_in_caches = false;
+          page_walk_hm_result_t all_hPTE_res_cp;
           for (unsigned int level_guest = 1; level_guest <= NUM_PAGE_TABLE_LEVELS; level_guest++) {
             long long unsigned int page_offset_in_vpage = 8 * ((virtual_full_page_addr >> (12 + (4 - level_guest) * 9)) & ((1 << 9) - 1));
             if (gpwc_hit_level < level_guest) {
@@ -655,12 +682,52 @@ cache_simulator_t::process_memref(const memref_t &memref)
                 page_walk_res.push_back(ZERO);
               }
             }
+            if (level_guest == 4) {
+              if (page_walk_res.back() != NOT_FOUND) {
+                page_walk_hm_result_t all_hPTE_res;
+                // check all pages which have their PTEs in the same cache line
+                for (unsigned int page = 0; page < 8; page++) {
+                  long long unsigned int virtual_full_page_addr1 = ((virtual_full_page_addr << 15) >> 15) + 4096 * page;
+                  page_table_t::iterator guest_it1 = page_table.find(virtual_full_page_addr1);
+                  where_PTE_at_host(all_hPTE_res,
+                                    guest_it1->second.PA,
+                                    core,
+                                    // don't allocate, just check if it is there
+                                    false /* allocate */); 
+                }
+                all_hPTE_res_cp = all_hPTE_res;
+                // sort responses to find the best one
+                std::sort(all_hPTE_res_cp.begin(), all_hPTE_res_cp.end());
+                // if any of the hPTEs were found in caches ->
+                //   -> Touch that cache line again, so it is placed to lower level caches
+                if (all_hPTE_res_cp[0] != NOT_FOUND) {
+                  page_walk_hm_result_t::iterator res_it = std::lower_bound( all_hPTE_res.begin(), all_hPTE_res.end(), all_hPTE_res_cp[0]);
+                  int res_index = std::distance(all_hPTE_res.begin(), res_it);
+                  long long unsigned int virtual_full_page_addr1 = ((virtual_full_page_addr << 15) >> 15) + 4096 * res_index;
+                  page_table_t::iterator guest_it1 = page_table.find(virtual_full_page_addr1);
+//                  std::cout << "Result: " << *res_it << std::endl;
+                  where_PTE_at_host(all_hPTE_res,
+                                    guest_it1->second.PA,
+                                    core,
+                                    true /* allocate */); 
+                } else {
+                  gPTE_found_in_caches = false;
+                }
+              }
+            }
           }
+
           it = last_it;
           make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset, 1, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE2, it->second.PE2, guest_it->second.PA + page_offset, 2, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA + page_offset, 3, core);
-          make_request(page_walk_res, TRACE_TYPE_PA_PE4, it->second.PE4, guest_it->second.PA + page_offset, 4, core);
+          if (gPTE_found_in_caches) {
+            // if we found gPTE in caches and found at least one hPTE corresponding to this gPTE somewhere in the caches, then
+            //    say that we hit to this "closest" hPTE (even if this hPTE is not ours
+            page_walk_res.push_back(all_hPTE_res_cp[0]);
+          } else {
+            make_request(page_walk_res, TRACE_TYPE_PA_PE4, it->second.PE4, guest_it->second.PA + page_offset, 4, core);
+          }
 
 
           if (range_found) {
@@ -902,7 +969,8 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res,
                                      long long unsigned int base_addr, 
                                      long long unsigned int addr_to_find, 
                                      int level, 
-                                     int core)
+                                     int core,
+                                     bool allocate) 
 {
   if (knobs.verbose >= 2) {
     std::cerr << "Start walk Type: " << type 
@@ -918,7 +986,7 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res,
   page_walk_memref.data.type = type;
   page_walk_memref.data.addr = base_addr + 8 * ( ( addr_to_find >> (12 + (( 4 - level) * 9))) & ((1 << 9) - 1) );
   page_walk_memref.data.size = 1; 
-  page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+  page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, allocate /* Artemiy -- get the source */));
   if (knobs.verbose >= 2) {
     std::cerr << "Done walk Type: " << type 
     << " Level: " << level 
@@ -953,6 +1021,25 @@ void cache_simulator_t::make_request_simple(trace_type_t type, long long unsigne
   }
   return;
 }
+
+void cache_simulator_t::where_PTE_at_host(page_walk_hm_result_t& page_walk_res, 
+                                       long long unsigned int guest_addr, 
+                                       int core,
+                                       bool allocate) {
+
+  page_table_t::iterator host_it = host_page_table.find((guest_addr >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE);
+  int level_host = 4;
+
+  make_request(page_walk_res, 
+               TRACE_TYPE[0][level_host], 
+               *(host_it->second.all[level_host]), 
+               guest_addr, 
+               level_host, 
+               core,
+               allocate);
+}
+
+
 
 void cache_simulator_t::one_pw_at_host(page_walk_hm_result_t& page_walk_res, 
                                        long long unsigned int guest_addr, 
