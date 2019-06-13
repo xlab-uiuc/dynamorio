@@ -689,11 +689,15 @@ cache_simulator_t::process_memref(const memref_t &memref)
                 for (unsigned int page = 0; page < 8; page++) {
                   long long unsigned int virtual_full_page_addr1 = ((virtual_full_page_addr << 15) >> 15) + 4096 * page;
                   page_table_t::iterator guest_it1 = page_table.find(virtual_full_page_addr1);
-                  where_PTE_at_host(all_hPTE_res,
-                                    guest_it1->second.PA,
-                                    core,
-                                    // don't allocate, just check if it is there
-                                    false /* allocate */); 
+                  if (guest_it1 != page_table.end()) {
+                    where_PTE_at_host(all_hPTE_res,
+                                      guest_it1->second.PA,
+                                      core,
+                                      // don't allocate, just check if it is there
+                                      false /* allocate */); 
+                  } else {
+                    all_hPTE_res.push_back(NOT_FOUND);
+                  }
                 }
                 all_hPTE_res_cp = all_hPTE_res;
                 // sort responses to find the best one
