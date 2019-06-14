@@ -162,6 +162,7 @@ protected:
     void where_PTE_at_host(page_walk_hm_result_t& page_walk_res,
                       long long unsigned int guest_addr,
                       int core,
+                      int level_host,
                       bool allocate);
 
     // The following unordered maps map a cache's name to a pointer to it.

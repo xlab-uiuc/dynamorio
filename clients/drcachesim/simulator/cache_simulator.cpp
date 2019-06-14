@@ -662,6 +662,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
           
           bool gPTE_found_in_caches = false;
           page_walk_hm_result_t all_hPTE_res_cp;
+          page_walk_hm_result_t hPDE_res;
           for (unsigned int level_guest = 1; level_guest <= NUM_PAGE_TABLE_LEVELS; level_guest++) {
             long long unsigned int page_offset_in_vpage = 8 * ((virtual_full_page_addr >> (12 + (4 - level_guest) * 9)) & ((1 << 9) - 1));
             if (gpwc_hit_level < level_guest) {
@@ -693,6 +694,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
                     where_PTE_at_host(all_hPTE_res,
                                       guest_it1->second.PA,
                                       core,
+                                      4, // checkout for PTEs
                                       // don't allocate, just check if it is there
                                       false /* allocate */); 
                   } else {
@@ -713,6 +715,13 @@ cache_simulator_t::process_memref(const memref_t &memref)
                   where_PTE_at_host(all_hPTE_res,
                                     guest_it1->second.PA,
                                     core,
+                                    4, // check for PTE
+                                    true /* allocate */); 
+
+                  where_PTE_at_host(all_hPTE_res,
+                                    guest_it1->second.PA,
+                                    core,
+                                    3, // check for PDE
                                     true /* allocate */); 
                 } else {
                   gPTE_found_in_caches = false;
@@ -724,13 +733,14 @@ cache_simulator_t::process_memref(const memref_t &memref)
           it = last_it;
           make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset, 1, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE2, it->second.PE2, guest_it->second.PA + page_offset, 2, core);
-          make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA + page_offset, 3, core);
           if (gPTE_found_in_caches) {
             // if we found gPTE in caches and found at least one hPTE corresponding to this gPTE somewhere in the caches, then
             //    say that we hit to this "closest" hPTE (even if this hPTE is not ours
+            page_walk_res.push_back(hPDE_res[0]);
             page_walk_res.push_back(all_hPTE_res_cp[0]);
           } else {
             make_request(page_walk_res, TRACE_TYPE_PA_PE4, it->second.PE4, guest_it->second.PA + page_offset, 4, core);
+            make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA + page_offset, 3, core);
           }
 
 
@@ -1029,10 +1039,10 @@ void cache_simulator_t::make_request_simple(trace_type_t type, long long unsigne
 void cache_simulator_t::where_PTE_at_host(page_walk_hm_result_t& page_walk_res, 
                                        long long unsigned int guest_addr, 
                                        int core,
+                                       int level_host,
                                        bool allocate) {
 
   page_table_t::iterator host_it = host_page_table.find((guest_addr >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE);
-  int level_host = 4;
 
   make_request(page_walk_res, 
                TRACE_TYPE[0][level_host], 
