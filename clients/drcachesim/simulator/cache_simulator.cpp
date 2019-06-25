@@ -62,21 +62,21 @@ const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_EN
 #include <inttypes.h>
 #include <stdlib.h>
 
-int rank111(cache_result_t value)
+unsigned int rank111(cache_result_t value)
 {
   switch (value)
   {
   case cache_result_t::FOUND_L1:
-      return 1;
+      return 0;
 
   case cache_result_t::FOUND_L2:
-      return 2;
+      return 1;
 
   case cache_result_t::FOUND_LLC:
-      return 3;
+      return 2;
 
   default :
-      return 4;
+      return 3;
   }
 }
 
@@ -183,6 +183,9 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     fclose(host_page_table_file);
 #pragma GCC diagnostic pop 
 
+    gPTE_locality_maps.resize(3);
+    gPTE_locality_allocations.resize(3);
+    gPTE_locality_accesses.resize(3);
 
 //    for(page_table_t::const_iterator it = host_page_table.begin();
 //    it != host_page_table.end(); ++it)
@@ -488,12 +491,15 @@ cache_simulator_t::process_memref(const memref_t &memref)
     num_request_shifted++;
 
     if ((num_request >> 30) > 0) {
+//    if ((num_request >> 24) > 0) {
+      print_locality_results();
       exit(0);
     }
     if ((num_request_shifted >> 22) > 0) {
       num_request_shifted = 0;
       std::cerr << "Heartbeat. " << num_request << " references processed.\n";
-      print_results();
+//      print_results();
+//      print_locality_results();
       //std::cerr << std::endl;
       //std::cerr << std::endl;
       //std::cerr << std::endl;
@@ -683,6 +689,31 @@ cache_simulator_t::process_memref(const memref_t &memref)
               }
             }
             if (level_guest == 4) {
+              cache_result_t where_gPTE = page_walk_res.back();
+              for (unsigned int cache_level = 0; cache_level <= 2; cache_level++) {
+                addr_map_t::iterator it = gPTE_locality_maps[cache_level].find(virtual_full_page_addr >> 15);
+                if (cache_level >= rank111(where_gPTE)) {
+                  if ( it != gPTE_locality_maps[cache_level].end()) {
+                    it->second |= 1 << (( virtual_full_page_addr >> 12) & 7);
+                  } else {
+                    gPTE_locality_maps[cache_level].insert(std::pair<long long unsigned int, unsigned int>(virtual_full_page_addr >> 15, (1 << ((virtual_full_page_addr >> 12) & 7))));
+                  }
+                } else {
+                  if ( it != gPTE_locality_maps[cache_level].end()) {
+                    gPTE_locality_allocations[cache_level]++;
+                    int count = 0;
+                    while (it->second) {
+                      if (it->second % 2 == 1) count++;
+                      it->second = it->second >> 1;
+                    }
+                    gPTE_locality_accesses[cache_level] += count;
+                    it->second = 0;
+                    it->second |= 1 << (( virtual_full_page_addr >> 12) & 7);
+                  } else {
+                    gPTE_locality_maps[cache_level].insert(std::pair<long long unsigned int, unsigned int>(virtual_full_page_addr >> 15, (1 << ((virtual_full_page_addr >> 12) & 7))));
+                  }
+                }
+              }
               if (page_walk_res.back() != NOT_FOUND) {
                 page_walk_hm_result_t all_hPTE_res;
                 // check all pages which have their PTEs in the same cache line
@@ -725,7 +756,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
           make_request(page_walk_res, TRACE_TYPE_PA_PE1, it->second.PE1, guest_it->second.PA + page_offset, 1, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE2, it->second.PE2, guest_it->second.PA + page_offset, 2, core);
           make_request(page_walk_res, TRACE_TYPE_PA_PE3, it->second.PE3, guest_it->second.PA + page_offset, 3, core);
-          if (gPTE_found_in_caches) {
+          if (0 && gPTE_found_in_caches) {
             // if we found gPTE in caches and found at least one hPTE corresponding to this gPTE somewhere in the caches, then
             //    say that we hit to this "closest" hPTE (even if this hPTE is not ours
             page_walk_res.push_back(all_hPTE_res_cp[0]);
@@ -1141,6 +1172,37 @@ cache_simulator_t::check_warmed_up()
     // If we reach here then warmup is not done.
     return false;
 }
+
+bool cache_simulator_t::print_locality_results() {
+  for (unsigned int cache_level = 0; cache_level <= 2; cache_level++) {
+    for (addr_map_t::iterator map_it = gPTE_locality_maps[cache_level].begin(); map_it != gPTE_locality_maps[cache_level].end(); map_it++) {
+      long long unsigned int va = (map_it->first << 15);
+      page_walk_hm_result_t where_gPTE;
+      page_table_t::iterator guest_it1 = page_table.find(va >> 12 << 12);
+      if (guest_it1 != page_table.end()) {
+        page_table_t::iterator host_it = host_page_table.find(((*guest_it1->second.all[4]) >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE);
+        long long unsigned int page_offset_guest_addr_to_find = 8 * ((va >> 12) & ((1 << 9) - 1));
+        for (unsigned int core = 0; core < 20; core++) {
+          make_request(where_gPTE, TRACE_TYPE[4][0], host_it->second.PA + page_offset_guest_addr_to_find, 0, 1, core, false /* dont't allocate */);
+        }
+        std::sort(where_gPTE.begin(), where_gPTE.end());
+        if (cache_level < rank111(where_gPTE[0])) {
+          gPTE_locality_allocations[cache_level]++;
+          int count = 0;
+          while (map_it->second) {
+            if (map_it->second % 2 == 1) count++;
+            map_it->second = map_it->second >> 1;
+          }
+          gPTE_locality_accesses[cache_level] += count;
+        }
+      }
+    }
+    std::cout << "\t" << cache_level+1 << "\t" << (float)(gPTE_locality_accesses[cache_level]) / gPTE_locality_allocations[cache_level] << std::endl;
+  }
+  return true;
+}
+    
+
 
 bool
 cache_simulator_t::print_results()

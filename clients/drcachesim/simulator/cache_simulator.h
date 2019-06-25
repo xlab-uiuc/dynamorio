@@ -64,6 +64,8 @@ public:
     process_memref(const memref_t &memref, bool changed);
     virtual bool
     print_results();
+    virtual bool
+    print_locality_results();
 
     // Exposed to make it easy to test
     bool
@@ -133,11 +135,17 @@ protected:
 
     //Artemiy: add TLB
     //typedef std::map<unsigned int, page_table_info_t> page_table_t;
+    typedef std::unordered_map<long long unsigned int, unsigned int> addr_map_t;
+
     typedef std::unordered_map<long long unsigned int, page_table_info_t> page_table_t;
     page_table_t page_table;
     page_table_t host_page_table;
     std::vector<uint64_t> hit_statistics;
     std::vector<uint64_t> miss_statistics;
+    
+    std::vector<addr_map_t> gPTE_locality_maps;
+    std::vector<uint64_t> gPTE_locality_allocations;
+    std::vector<uint64_t> gPTE_locality_accesses;
 
     struct range_info_t {
       long long unsigned int l_bound;
