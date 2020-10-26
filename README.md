@@ -1,9 +1,9 @@
-**Description**
+### Description
 The simulator periodically (after a fixed amount of processed instructions) outputs statistics to stdout. The statistic consists of (1) cache and TLB hit/miss rations for each core, and (2) a histogram of all trajectories of a page walk (together with normal cache stats). Each trajectory consists of four steps corresponding to page walk accesses. Each value in a trajectory means the source from where the corresponding page table node was fetched in the memory hierarchy. An example output can be found in ./example/mcf.res
 
 The trajectories data can be processed by a side script to calculate the page walk latency statistics. For now, we are not providing the scripts for calculating the page walk latency statistics. 
 
-**Building and running instructions**
+### Building and running instructions
 1. Set up environment variables
 ```bash
 source source.sh
@@ -47,5 +47,5 @@ $SIMULATOR_DIR/build/bin64/drrun -t drcachesim \
                     > $OUTPUT_FILE 2>&1 & pid=$! &
 ```
 
-**Settings**
+### Settings 
 Most of the settings can be specified in through a command line (see above). There is also a limited number of compile-time parameters (defines), namely for page walk caches, in ./clients/drcachesim/simulator/cache_simulator.cpp. 
