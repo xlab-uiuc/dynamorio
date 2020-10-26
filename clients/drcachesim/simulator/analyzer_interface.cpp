@@ -103,11 +103,11 @@ get_cache_simulator_knobs()
     knobs->LL_size = op_LL_size.get_value();
     knobs->LL_assoc = op_LL_assoc.get_value();
     knobs->LL_miss_file = op_LL_miss_file.get_value();
-    knobs->contention_L1 = op_contention_L1.get_value(); //Artemiy
-    knobs->contention_LLC = op_contention_LLC.get_value(); //Artemiy
-    knobs->pt_dump_filename = op_pt_dump_file.get_value(); //Artemiy
-    knobs->pt_ranges_file = op_pt_ranges_file.get_value(); //Artemiy
-    knobs->num_ranges = op_num_ranges.get_value(); //Artemiy
+    knobs->contention_L1 = op_contention_L1.get_value(); 
+    knobs->contention_LLC = op_contention_LLC.get_value(); 
+    knobs->pt_dump_filename = op_pt_dump_file.get_value(); 
+    knobs->pt_ranges_file = op_pt_ranges_file.get_value(); 
+    knobs->num_ranges = op_num_ranges.get_value(); 
     knobs->replace_policy = op_replace_policy.get_value();
     knobs->data_prefetcher = op_data_prefetcher.get_value();
     knobs->skip_refs = op_skip_refs.get_value();
@@ -122,7 +122,7 @@ get_cache_simulator_knobs()
 static tlb_simulator_knobs_t *
 get_tlb_simulator_knobs()
 {
-    //Artemiy, read TLB params to tlb_knobs
+    //Parse TLB params to tlb_knobs
     tlb_simulator_knobs_t *knobs = new tlb_simulator_knobs_t;
     knobs->num_cores = op_num_cores.get_value();
     knobs->page_size = op_page_size.get_value();
@@ -152,7 +152,7 @@ drmemtrace_analysis_tool_create()
         } else {
             tlb_simulator_knobs_t *tlb_knobs = get_tlb_simulator_knobs();
             cache_simulator_knobs_t *knobs = get_cache_simulator_knobs();
-            //Artemiy: pass tlb knobs to the cache simlator creator
+            //Pass tlb knobs to the cache simlator creator
             return cache_simulator_create(*knobs, *tlb_knobs);
         }
     } else if (op_simulator_type.get_value() == MISS_ANALYZER) {

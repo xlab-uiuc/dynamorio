@@ -48,14 +48,9 @@ public:
     init(int associativity, int line_size, int total_size, caching_device_t *parent,
          caching_device_stats_t *stats, prefetcher_t *prefetcher = nullptr,
          bool inclusive = false, const std::vector<caching_device_t *> &children = {});
-    virtual void
-    request(const memref_t &memref);
-
-    virtual bool
-    request(const memref_t &memref, bool changed1, bool changed2 );
-
+    
     virtual cache_result_t
-    request(const memref_t &memref, bool changed );
+    request(const memref_t &memref);
 
     virtual void
     flush(const memref_t &memref);

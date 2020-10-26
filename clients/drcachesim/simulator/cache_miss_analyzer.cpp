@@ -153,8 +153,11 @@ cache_miss_analyzer_t::cache_miss_analyzer_t(const cache_simulator_knobs_t &knob
                                              unsigned int miss_count_threshold,
                                              double miss_frac_threshold,
                                              double confidence_threshold)
-    : cache_simulator_t(knobs, *(new tlb_simulator_knobs_t())) //Artemiy: very dirty hack to remove incompatibility with the new version
+    : cache_simulator_t(knobs, *(new tlb_simulator_knobs_t())) // Hack to remove incompatibility 
+                                                               // with the new type of simulator 
 {
+    std::cout << "THIS FUNCTIONALITY IS UNTESTED. PLEASE USE CLEAN VERSION" << std::endl;
+
     if (!success) {
         return;
     }

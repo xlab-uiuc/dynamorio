@@ -77,11 +77,6 @@ simulator_t::init_knobs(unsigned int num_cores, uint64_t skip_refs, uint64_t war
     }
 }
 
-std::pair<bool,bool>
-simulator_t::process_memref(const memref_t &memref, bool changed) {
-return std::pair<bool,bool>(true,true);
-}
-
 bool
 simulator_t::process_memref(const memref_t &memref)
 {

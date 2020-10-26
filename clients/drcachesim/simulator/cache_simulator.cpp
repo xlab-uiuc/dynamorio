@@ -94,7 +94,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     // XXX i#1703: get defaults from hardware being run on.
 
     // Create TLB(s)
-    tlb_sim = tlb_simulator_create(tlb_knobs_);
+    tlb_sim = new tlb_simulator_t(tlb_knobs_);
 
     /* initialize random seed: */
     srand (42);
@@ -400,11 +400,6 @@ cache_simulator_t::remaining_sim_refs() const
     return knobs.sim_refs;
 }
 
-std::pair<bool,bool>
-cache_simulator_t::process_memref(const memref_t &memref, bool changed) {
-return std::pair<bool,bool>(true,true);
-}
-
 static uint64_t num_request = 0;
 static uint64_t num_not_found = 0;
 static uint64_t num_request_shifted = 0;
@@ -418,7 +413,7 @@ cache_result_t issue_contention_request(cache_t* to_cache, trace_type_t type) {
   cont_req_memref.data.type = type;
   cont_req_memref.data.addr = raddr;
   cont_req_memref.data.size = 1; //Set size 1 byte
-  cache_result_t res = to_cache->request(cont_req_memref, true /* Artemiy -- get the source */);
+  cache_result_t res = to_cache->request(cont_req_memref);
   return res;
 }
 
@@ -494,7 +489,6 @@ cache_simulator_t::process_memref(const memref_t &memref)
         last_core = core;
     }
 
-    //Artemiy: add TLB
     uint64_t addr;
 
     uint64_t virtual_page_addr = 0;
@@ -517,7 +511,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
     uint64_t virtual_full_page_addr = virtual_page_addr << NUM_PAGE_OFFSET_BITS;
 
     //issue a TLB request
-    std::pair<bool, bool> res = tlb_sim->process_memref(memref, true /*changeByArtemiy*/);
+    std::pair<bool, bool> res = tlb_sim->process_memref_tlb(memref);
     bool is_TLB_hit = res.second;
     if (knobs.verbose >= 2) {
       std::cerr << __FUNCTION__ << " Received TLB result: " << is_TLB_hit << std::endl;
@@ -589,7 +583,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
                                                                    ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS)
                                                                  );
           pwc_check_memref.data.size = 1; 
-          pwc_search_res = pw_caches[pwc_level-1]->request(pwc_check_memref, true /*Artemiy*/);
+          pwc_search_res = pw_caches[pwc_level-1]->request(pwc_check_memref);
           // if found, memorize the pwc_level and stop searching 
           if (pwc_search_res == FOUND_L1) {
             if (pwc_hit_level == 0) {
@@ -682,7 +676,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
                       << trace_type_names[new_memref.data.type] << " "
                       << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
         }
-        search_res = l1_dcaches[core]->request(new_memref, true /*Artemiy*/);
+        search_res = l1_dcaches[core]->request(new_memref);
     } else if (new_memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
         if (knobs.verbose >= 3) {
             std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
@@ -813,7 +807,7 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res,
   page_walk_memref.data.addr = base_addr + PAGE_TABLE_ENTRY_SIZE * offset_in_pt_page;
                              
   page_walk_memref.data.size = 1; 
-  page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
+  page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref));
   if (knobs.verbose >= 2) {
     std::cerr << "Done walk Type: " << type 
     << " Level: " << level 

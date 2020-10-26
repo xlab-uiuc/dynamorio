@@ -103,9 +103,8 @@ struct cache_simulator_knobs_t {
     unsigned int contention_LLC;
 };
 
-/** Creates an instance of a cache simulator with a 2-level hierarchy. */
+/** Creates an instance of a cache simulator with a 3-level hierarchy and TLBs. */
 analysis_tool_t *
-//cache_simulator_create(const cache_simulator_knobs_t &knobs); //Artemiy
 cache_simulator_create(const cache_simulator_knobs_t &knobs, const tlb_simulator_knobs_t &tlb_knobs);
 
 /**

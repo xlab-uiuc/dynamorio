@@ -46,6 +46,7 @@ class tlb_simulator_t : public simulator_t {
 public:
     tlb_simulator_t(const tlb_simulator_knobs_t &knobs);
     virtual ~tlb_simulator_t();
+
     virtual bool
     process_memref(const memref_t &memref);
 
@@ -53,7 +54,7 @@ public:
     print_results();
 
     std::pair<bool,bool> 
-    process_memref(const memref_t &memref, bool changed); //Added by Artemiy
+    process_memref_tlb(const memref_t &memref); 
 
 protected:
     // Create a tlb_t object with a specific replacement policy.

@@ -60,17 +60,8 @@ public:
          bool inclusive = false, const std::vector<caching_device_t *> &children = {});
     virtual ~caching_device_t();
 
-    // default 
-    virtual void
-    request(const memref_t &memref);
-
-    // for TLB
-    virtual bool
-    request(const memref_t &memref, bool, bool);
-
-    // for cache
     virtual cache_result_t
-    request(const memref_t &memref, bool);
+    request(const memref_t &memref);
 
     virtual void
     invalidate(const addr_t tag);

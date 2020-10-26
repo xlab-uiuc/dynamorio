@@ -57,22 +57,12 @@ cache_t::init_blocks()
     }
 }
 
-bool
-cache_t::request(const memref_t &memref_in,  bool changed1, bool changed2 ) {
-  assert(0);
-}
-
 cache_result_t
-cache_t::request(const memref_t &memref_in, bool changed ) {
-  return caching_device_t::request(memref_in, true);
-}
-
-void
 cache_t::request(const memref_t &memref_in)
 {
     // FIXME i#1726: if the request is a data write, we should check the
     // instr cache and invalidate the cache line there if necessary on x86.
-    caching_device_t::request(memref_in);
+    return caching_device_t::request(memref_in);
 }
 
 void

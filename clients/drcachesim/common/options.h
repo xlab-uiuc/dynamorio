@@ -78,8 +78,8 @@ extern droption_t<bytesize_t> op_LL_size;
 extern droption_t<bytesize_t> op_L2_size;
 extern droption_t<unsigned int> op_LL_assoc;
 extern droption_t<std::string> op_LL_miss_file;
-extern droption_t<std::string> op_pt_dump_file; //Artemiy
-extern droption_t<std::string> op_pt_ranges_file; //Artemiy
+extern droption_t<std::string> op_pt_dump_file; 
+extern droption_t<std::string> op_pt_ranges_file;
 extern droption_t<bytesize_t> op_L0I_size;
 extern droption_t<bool> op_L0_filter;
 extern droption_t<bytesize_t> op_L0D_size;

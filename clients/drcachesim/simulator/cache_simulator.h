@@ -44,6 +44,8 @@
 #include <map>
 #include <unordered_map>
 
+#include "tlb_simulator.h"
+
 #include <stdio.h>
 #include <assert.h>
 
@@ -59,10 +61,10 @@ public:
     cache_simulator_t(const std::string &config_file);
 
     virtual ~cache_simulator_t();
+
     virtual bool
     process_memref(const memref_t &memref);
-    virtual std::pair<bool,bool>
-    process_memref(const memref_t &memref, bool changed);
+
     virtual bool
     print_results();
 
@@ -87,8 +89,8 @@ protected:
     cache_t  *llc1;
     cache_t **pw_caches;
 
-    //Artemiy: add TLB
-    analysis_tool_t * tlb_sim;
+    //TLB(s)
+    tlb_simulator_t *tlb_sim;
 
     struct page_table_info_t {
       long long unsigned int VA;
@@ -135,8 +137,7 @@ protected:
 
     };
       
-    //Artemiy: add TLB
-    //typedef std::map<unsigned int, page_table_info_t> page_table_t;
+    //Add page table and statistics for it
     typedef std::unordered_map<long long unsigned int, page_table_info_t> page_table_t;
     page_table_t page_table;
     std::vector<uint64_t> hit_statistics;

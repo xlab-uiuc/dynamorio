@@ -52,11 +52,9 @@ public:
                 double warmup_fraction, uint64_t sim_refs, bool cpu_scheduling,
                 unsigned int verbose);
     virtual ~simulator_t() = 0;
+
     virtual bool
     process_memref(const memref_t &memref);
-
-    virtual std::pair<bool,bool>
-    process_memref(const memref_t &memref, bool changed);
 
 protected:
     // Initialize knobs. Success or failure is indicated by setting/resetting
