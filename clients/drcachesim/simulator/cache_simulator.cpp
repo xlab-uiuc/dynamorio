@@ -419,9 +419,7 @@ cache_result_t issue_contention_request(cache_t* to_cache, trace_type_t type) {
   cont_req_memref.data.addr = raddr;
   cont_req_memref.data.size = 1; //Set size 1 byte
   cache_result_t res = to_cache->request(cont_req_memref, true /* Artemiy -- get the source */);
-  if (knobs.verbose >= 2) {
-    std::cerr << "Contention " << type " : res " << res << std::endl;
-  }
+  return res;
 }
 
 bool
@@ -606,8 +604,12 @@ cache_simulator_t::process_memref(const memref_t &memref)
             // ignore these levels as they are bypassed due to PWC hit
             // if skipped due to a PWC hit, indicate ZERO_LAT
             page_walk_res.push_back(ZERO);
-          }
-          if (level_host > pwc_hit_level) {
+
+          } else if (level_host == pwc_hit_level) {
+            // if found in the PWC, indicate PWC_LAT
+            page_walk_res.push_back(PWC);
+
+          } else if (level_host > pwc_hit_level) {
             // if not found in the PWC, then make a memory req
             make_request(page_walk_res, 
                          TRACE_TYPE[level_host], 
@@ -615,10 +617,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
                          virtual_full_page_addr, 
                          level_host, 
                          core); 
-        
-          } else if (pwc_hit_level == level_host) {
-            // if found in the PWC, indicate PWC_LAT
-            page_walk_res.push_back(PWC);
+          }
         }
 
         // Update range range statistics
@@ -718,7 +717,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
     // Simulate contetnion in caches 
     // Firstly, simulate conetion in LLC
     if (op_contention_L1.get_value() != 0) {
-      int num_req_expected = op_contention_L1.get_value(); //This is an expected number of L1 contention 
+      unsigned int num_req_expected = op_contention_L1.get_value(); //This is an expected number of L1 contention 
                                                            //requests (multiplied by 100 and roundedd to integer, 
                                                            //for example, value 560 would correspond to 5.6 requests on
                                                            //average) 
@@ -733,8 +732,8 @@ cache_simulator_t::process_memref(const memref_t &memref)
         num_req_expected = num_req_expected - req_count;
       }
       if (num_req_expected >= 0) {
-        int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
-        if (fraction_part >= draw_a_dice) {
+        unsigned int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
+        if (num_req_expected >= draw_a_dice) {
           cache_result_t res = issue_contention_request(l1_dcaches[core], TRACE_TYPE_CONT_L1);
           if (knobs.verbose >= 2) {
             std::cerr << "Contention L1: res" << res << std::endl;
@@ -743,10 +742,11 @@ cache_simulator_t::process_memref(const memref_t &memref)
       }
     } //end if L1 contention
 
+
     //Secondly, simulate contention in LLC
     if ((op_contention_LLC.get_value() != 0) && 
        ((search_res == FOUND_LLC) || (search_res == NOT_FOUND))) { //Only make a request if LLC was accessed
-      int num_req_expected = op_contention_L1.get_value(); 
+      unsigned int num_req_expected = op_contention_L1.get_value(); 
       if (num_req_expected >= 100) { //If more than one request expected
         unsigned int req_count = 0;
         for(; (req_count+100) <= num_req_expected; req_count+=100) {
@@ -758,8 +758,8 @@ cache_simulator_t::process_memref(const memref_t &memref)
         num_req_expected = num_req_expected - req_count;
       }
       if (num_req_expected >= 0) {
-        int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
-        if (fraction_part >= draw_a_dice) {
+        unsigned int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
+        if (num_req_expected >= draw_a_dice) {
           cache_result_t res = issue_contention_request(llc1, TRACE_TYPE_CONT_LLC);
           if (knobs.verbose >= 2) {
             std::cerr << "Contention L1: res" << res << std::endl;
