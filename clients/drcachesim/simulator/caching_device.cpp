@@ -145,7 +145,6 @@ caching_device_t::request(const memref_t &memref_in, bool changed ) {
         if (parent != NULL)
             parent->stats->child_access(memref_in, true);
         access_update(last_block_idx, last_way);
-        //std::cerr << "Left by short path" << std::endl; 
         return res;
     }
 

@@ -30,17 +30,17 @@
  * DAMAGE.
  */
 
+// Set properties of Page Walk Caches
 #define NUM_PWC 3
 #define PWC_ENTRY_SIZE 1
 const unsigned int PWC_ASSOC[] = { 1, 4, 4};
-//const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 8, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 16};
-//const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 16, PWC_ENTRY_SIZE * 16};
 const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 32};
 
-#define NUM_PAGE_TABLE_LEVELS 4
-#define PAGE_TABLE_ENTRY_SIZE 8 
-#define PAGE_OFFSET_SIZE 12
-#define PAGE_INDEX_SIZE 9
+#define NUM_PAGE_TABLE_LEVELS 4 //Number of PT radix-tree levels
+#define PAGE_TABLE_ENTRY_SIZE 8 //PTE size in bytes
+#define NUM_PAGE_OFFSET_BITS 12 //Number of bit used for addressing withing a page     
+#define NUM_PAGE_INDEX_BITS 9 //Number of address bits used for indexing a level in a radix tree
+#define SIMULATOR_HEARTBEAT_FREQ 22 //Log of number of meminsts to process between two simulator hearbeats
 
 
 #include <iostream>
@@ -90,15 +90,13 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     , l2_caches(NULL)
     , pw_caches(NULL)
     , is_warmed_up(false)
-//    , tlb_knobs(tlb_knobs_)
 {
     // XXX i#1703: get defaults from hardware being run on.
 
-    //Artemiy - add TLB
+    // Create TLB(s)
     tlb_sim = tlb_simulator_create(tlb_knobs_);
 
     /* initialize random seed: */
-    //srand (time(NULL));
     srand (42);
 
     std::cout << "Initialising PT from file: " << knobs.pt_dump_filename.c_str() << std::endl;
@@ -140,6 +138,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
 #pragma GCC diagnostic pop 
 
 
+//    // Debug: print the loaded PT    
 //    for(page_table_t::const_iterator it = page_table.begin();
 //    it != page_table.end(); ++it)
 //    {
@@ -413,23 +412,29 @@ static uint64_t num_request_shifted = 0;
 static uint64_t num_range_found = 0;
 static uint64_t num_range_not_found = 0;
 
+cache_result_t issue_contention_request(cache_t* to_cache, trace_type_t type) {
+  addr_t raddr = rand() & ((1L << (NUM_PAGE_TABLE_LEVELS * NUM_PAGE_OFFSET_BITS)) - 1); //Generate a random addess
+  memref_t cont_req_memref; 
+  cont_req_memref.data.type = type;
+  cont_req_memref.data.addr = raddr;
+  cont_req_memref.data.size = 1; //Set size 1 byte
+  cache_result_t res = to_cache->request(cont_req_memref, true /* Artemiy -- get the source */);
+  if (knobs.verbose >= 2) {
+    std::cerr << "Contention " << type " : res " << res << std::endl;
+  }
+}
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
     num_request++;
     num_request_shifted++;
 
-    if ((num_request_shifted >> 22) > 0) {
+    if ((num_request_shifted >> SIMULATOR_HEARTBEAT_FREQ) > 0) {
       num_request_shifted = 0;
       std::cerr << "Heartbeat. " << num_request << " references processed.\n";
       print_results();
-      //std::cerr << std::endl;
-      //std::cerr << std::endl;
-      //std::cerr << std::endl;
-      //std::cerr << std::endl;
     }
-
-      
 
     if (knobs.skip_refs > 0) {
         knobs.skip_refs--;
@@ -501,21 +506,19 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
     if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
       addr              = memref.instr.addr;
-      virtual_page_addr = memref.instr.addr >> 12;
-      page_offset       = memref.instr.addr & ((1 << 12) - 1);
+      virtual_page_addr = memref.instr.addr >> NUM_PAGE_OFFSET_BITS;
+      page_offset       = memref.instr.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
       instrs_type       = 1;
-      //std::cerr << __FUNCTION__ << " should be instr request" << std::endl;
     } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
       addr              = memref.data.addr;
-      virtual_page_addr = memref.data.addr >> 12;
-      page_offset       = memref.data.addr & ((1 << 12) - 1);
+      virtual_page_addr = memref.data.addr >> NUM_PAGE_OFFSET_BITS;
+      page_offset       = memref.data.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
       instrs_type       = 2;
-      //std::cerr << __FUNCTION__ << " should be data request" << std::endl;
     }
 
-    uint64_t virtual_full_page_addr = virtual_page_addr << 12;
+    uint64_t virtual_full_page_addr = virtual_page_addr << NUM_PAGE_OFFSET_BITS;
 
-    //TLB request
+    //issue a TLB request
     std::pair<bool, bool> res = tlb_sim->process_memref(memref, true /*changeByArtemiy*/);
     bool is_TLB_hit = res.second;
     if (knobs.verbose >= 2) {
@@ -543,8 +546,8 @@ cache_simulator_t::process_memref(const memref_t &memref)
       //              << std::hex 
       //              << "Type " << ((instrs_type == 1) ? "instr" : "data") << std::endl 
       //              << "Vddr " << addr <<  std::endl
-      //              << "VAddr >> 12 : " << virtual_page_addr << std::endl
-      //              << "VAddr page_addr : " << (virtual_page_addr << 12) << std::endl
+      //              << "VAddr >> NUM_PAGE_OFFSET_BITS : " << virtual_page_addr << std::endl
+      //              << "VAddr page_addr : " << (virtual_page_addr << NUM_PAGE_OFFSET_BITS) << std::endl
       //              << "PAddr page_addr : " << physical_page_addr << std::endl
       //              << "PAddr page_addr : " << physical_page_addr + page_offset << std::endl
       //              << std::dec
@@ -558,6 +561,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
           std::cerr << "TLB miss \n";
         }
 
+        //Check if falls withing a range from the list of ranges (if file containing ranges is provided)
         bool range_found = false;
         if (knobs.pt_ranges_file != "") {
           for (unsigned int i = 0; i < knobs.num_ranges; i++) {
@@ -570,32 +574,40 @@ cache_simulator_t::process_memref(const memref_t &memref)
           range_found = true;
         }
             
-        // reset page walk results
-        page_walk_res.clear();
+        // reset page walk trajectory path 
+        page_walk_res.clear();// Accumulates sources for each access during a page walk
 
-        // page walk
 
-        // checking PWC
+        //BEGIN PAGE WALK 
+        //PT levels are counted from the root of the radix tree
+        // Check PWCs
         cache_result_t pwc_search_res = NOT_FOUND;
         unsigned int pwc_hit_level = 0;
         memref_t pwc_check_memref; 
         pwc_check_memref.data.type = TRACE_TYPE_READ;
         // search PWC starting from highest level
-        for(unsigned int i = NUM_PWC; i >= 1; i--) {
-          pwc_check_memref.data.addr = virtual_full_page_addr >> (12 + (4 - i) * 9);
+        for(unsigned int pwc_level = NUM_PWC; pwc_level >= 1; pwc_level--) {
+          pwc_check_memref.data.addr = virtual_full_page_addr >> ( NUM_PAGE_OFFSET_BITS + 
+                                                                   ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS)
+                                                                 );
           pwc_check_memref.data.size = 1; 
-          pwc_search_res = pw_caches[i-1]->request(pwc_check_memref, true /*Artemiy*/);
-          // if found, memorize and stop searching 
+          pwc_search_res = pw_caches[pwc_level-1]->request(pwc_check_memref, true /*Artemiy*/);
+          // if found, memorize the pwc_level and stop searching 
           if (pwc_search_res == FOUND_L1) {
             if (pwc_hit_level == 0) {
-              pwc_hit_level = i;
+              pwc_hit_level = pwc_level;
             }
           }
         }
-        // find a record in the host PT corresponding to the given guest address
+        // find a record in the host PT corresponding to the given address
         
         for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
-          if (pwc_hit_level < level_host) {
+          if (level_host < pwc_hit_level) {
+            // ignore these levels as they are bypassed due to PWC hit
+            // if skipped due to a PWC hit, indicate ZERO_LAT
+            page_walk_res.push_back(ZERO);
+          }
+          if (level_host > pwc_hit_level) {
             // if not found in the PWC, then make a memory req
             make_request(page_walk_res, 
                          TRACE_TYPE[level_host], 
@@ -607,45 +619,9 @@ cache_simulator_t::process_memref(const memref_t &memref)
           } else if (pwc_hit_level == level_host) {
             // if found in the PWC, indicate PWC_LAT
             page_walk_res.push_back(PWC);
-        
-          } else if (pwc_hit_level > level_host) {
-            // if skipped due to a PWC hit, indicate ZERO_LAT
-            page_walk_res.push_back(ZERO);
-          }
         }
 
-//        page_walk_memref.data.type = TRACE_TYPE_PE1;
-//        page_walk_memref.data.addr = it->second.PE1  + 8 * (virtual_page_addr >> 27);
-//        page_walk_memref.data.size = 1; 
-//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-//        if (knobs.verbose >= 2) {
-//          std::cerr << "Done walk L1" << std::endl;
-//        }
-//
-//        page_walk_memref.data.type = TRACE_TYPE_PE2;
-//        page_walk_memref.data.addr = it->second.PE2  + 8 * ((virtual_page_addr >> 18) & ((1 << 9) - 1));
-//        page_walk_memref.data.size = 1; 
-//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-//        if (knobs.verbose >= 2) {
-//          std::cerr << "Done walk L2" << std::endl;
-//        }
-//
-//        page_walk_memref.data.type = TRACE_TYPE_PE3;
-//        page_walk_memref.data.addr = it->second.PE3  + 8 * ((virtual_page_addr >> 9)  & ((1 << 9) - 1));
-//        page_walk_memref.data.size = 1; 
-//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-//        if (knobs.verbose >= 2) {
-//          std::cerr << "Done walk L3" << std::endl;
-//        }
-//
-//        page_walk_memref.data.type = TRACE_TYPE_PE4;
-//        page_walk_memref.data.addr = it->second.PE4  + 8 * (virtual_page_addr        & ((1 << 9) - 1));
-//        page_walk_memref.data.size = 1; 
-//        page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
-//        if (knobs.verbose >= 2) {
-//          std::cerr << "Done walk L4" << std::endl;
-//        }
-
+        // Update range range statistics
         if (range_found) {
           page_walk_res.push_back(RANGE_HIT);
             num_range_found++;
@@ -654,6 +630,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
             num_range_not_found++;
         }
 
+        // Update page walk trajectory statistics
         hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
         if (it != hm_full_statistic.end()) {
           it->second++;
@@ -665,16 +642,16 @@ cache_simulator_t::process_memref(const memref_t &memref)
       num_not_found++;
       if (knobs.verbose >= 2) {
         std::cerr << "Error: cannot find translation for " << std::endl
-                      << std::hex 
-                      << "Type " << ((instrs_type == 1) ? "instr" : "data") << std::endl 
-                      << "Vddr " << addr <<  std::endl
-                      << "VAddr >> 12 : " << virtual_page_addr << std::endl
-                      << "VAddr page_addr : " << (virtual_page_addr << 12) << std::endl
-                      << std::dec
-                      << "VAddr page_offset : " << page_offset << std::endl
-                      << "num_requests : " << num_request << std::endl
-                      << "num_not_found : " << num_not_found <<  std::endl
-                      ;
+                  << std::hex 
+                  << "Type " << ((instrs_type == 1) ? "instr" : "data") << std::endl 
+                  << "Vddr " << addr <<  std::endl
+                  << "VAddr >> NUM_PAGE_OFFSET_BITS : " << virtual_page_addr << std::endl
+                  << "VAddr page_addr : " << (virtual_page_addr << NUM_PAGE_OFFSET_BITS) << std::endl
+                  << std::dec
+                  << "VAddr page_offset : " << page_offset << std::endl
+                  << "num_requests : " << num_request << std::endl
+                  << "num_not_found : " << num_not_found <<  std::endl
+                  ;
       }
       return true;
     }
@@ -737,101 +714,55 @@ cache_simulator_t::process_memref(const memref_t &memref)
         return false;
     }
 
+     
+    // Simulate contetnion in caches 
+    // Firstly, simulate conetion in LLC
     if (op_contention_L1.get_value() != 0) {
-
-      //L1 contention 
-      if (op_contention_L1.get_value() >= 100) {
-        unsigned int i = 100;
-        for(; i <= op_contention_L1.get_value(); i+=100) {
-          addr_t raddr = rand() & ((1L << 48) - 1);
-          memref_t page_walk_memref; 
-          page_walk_memref.data.type = TRACE_TYPE_CONT_L1;
-          page_walk_memref.data.addr = raddr;
-          page_walk_memref.data.size = 1; 
-          cache_result_t res = l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
+      int num_req_expected = op_contention_L1.get_value(); //This is an expected number of L1 contention 
+                                                           //requests (multiplied by 100 and roundedd to integer, 
+                                                           //for example, value 560 would correspond to 5.6 requests on
+                                                           //average) 
+      if (num_req_expected >= 100) { //If more than one trashing request expected
+        unsigned int req_count = 0;
+        for(; (req_count+100) <= num_req_expected; req_count+=100) {
+          cache_result_t res = issue_contention_request(l1_dcaches[core], TRACE_TYPE_CONT_L1);
           if (knobs.verbose >= 2) {
             std::cerr << "Contention L1: res" << res << std::endl;
           }
         }
-        int fraction_part = 100 - (i - op_contention_L1.get_value());
-        if (fraction_part > 0) {
-          int roll = rand() % 100; 
-          if (fraction_part >= roll) {
-            addr_t raddr = rand() & ((1L << 48) - 1);
-            memref_t page_walk_memref; 
-            page_walk_memref.data.type = TRACE_TYPE_CONT_L1;
-            page_walk_memref.data.addr = raddr;
-            page_walk_memref.data.size = 1; 
-            cache_result_t res = l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
-            if (knobs.verbose >= 2) {
-              std::cerr << "Contention L1: res" << res << std::endl;
-            }
-          }
-        }
-      } else { //op_contention_L1.get_value() < 100
-        int fraction_part = op_contention_L1.get_value();
-        if (fraction_part > 0) {
-          int roll = rand() % 100; 
-          if (fraction_part >= roll) {
-            addr_t raddr = rand() & ((1L << 48) - 1);
-            memref_t page_walk_memref; 
-            page_walk_memref.data.type = TRACE_TYPE_CONT_L1;
-            page_walk_memref.data.addr = raddr;
-            page_walk_memref.data.size = 1; 
-            cache_result_t res = l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */);
-            if (knobs.verbose >= 2) {
-              std::cerr << "Contention L1: res" << res << std::endl;
-            }
+        num_req_expected = num_req_expected - req_count;
+      }
+      if (num_req_expected >= 0) {
+        int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
+        if (fraction_part >= draw_a_dice) {
+          cache_result_t res = issue_contention_request(l1_dcaches[core], TRACE_TYPE_CONT_L1);
+          if (knobs.verbose >= 2) {
+            std::cerr << "Contention L1: res" << res << std::endl;
           }
         }
       }
     } //end if L1 contention
 
-    if ((op_contention_LLC.get_value() != 0) && ((search_res == FOUND_LLC) || (search_res == NOT_FOUND))) {
-
-      //LLC contention 
-      if (op_contention_LLC.get_value() >= 100) {
-        unsigned int i = 100;
-        for(; i <= op_contention_LLC.get_value(); i+=100) {
-          addr_t raddr = rand() & ((1L << 48) - 1);
-          memref_t page_walk_memref; 
-          page_walk_memref.data.type = TRACE_TYPE_CONT_LLC;
-          page_walk_memref.data.addr = raddr;
-          page_walk_memref.data.size = 1; 
-          cache_result_t res = llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
+    //Secondly, simulate contention in LLC
+    if ((op_contention_LLC.get_value() != 0) && 
+       ((search_res == FOUND_LLC) || (search_res == NOT_FOUND))) { //Only make a request if LLC was accessed
+      int num_req_expected = op_contention_L1.get_value(); 
+      if (num_req_expected >= 100) { //If more than one request expected
+        unsigned int req_count = 0;
+        for(; (req_count+100) <= num_req_expected; req_count+=100) {
+          cache_result_t res = issue_contention_request(llc1, TRACE_TYPE_CONT_LLC);
           if (knobs.verbose >= 2) {
-            std::cerr << "Contention LLC fraction: res " << res << std::endl;
+            std::cerr << "Contention L1: res" << res << std::endl;
           }
         }
-        int fraction_part = 100 - (i - op_contention_LLC.get_value());
-        if (fraction_part > 0) {
-          int roll = rand() % 100; 
-          if (fraction_part >= roll) {
-            addr_t raddr = rand() & ((1L << 48) - 1);
-            memref_t page_walk_memref; 
-            page_walk_memref.data.type = TRACE_TYPE_CONT_LLC;
-            page_walk_memref.data.addr = raddr;
-            page_walk_memref.data.size = 1; 
-            cache_result_t res = llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
-            if (knobs.verbose >= 2) {
-              std::cerr << "Contention LLC fraction: res " << res << std::endl;
-            }
-          }
-        }
-      } else { //op_contention_LLC.get_value() < 100
-        int fraction_part = op_contention_LLC.get_value();
-        if (fraction_part > 0) {
-          int roll = rand() % 100; 
-          if (fraction_part >= roll) {
-            addr_t raddr = rand() & ((1L << 48) - 1);
-            memref_t page_walk_memref; 
-            page_walk_memref.data.type = TRACE_TYPE_CONT_LLC;
-            page_walk_memref.data.addr = raddr;
-            page_walk_memref.data.size = 1; 
-            cache_result_t res = llc1->request(page_walk_memref, true /* Artemiy -- get the source */);
-            if (knobs.verbose >= 2) {
-              std::cerr << "Contention LLC fraction: res " << res << std::endl;
-            }
+        num_req_expected = num_req_expected - req_count;
+      }
+      if (num_req_expected >= 0) {
+        int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
+        if (fraction_part >= draw_a_dice) {
+          cache_result_t res = issue_contention_request(llc1, TRACE_TYPE_CONT_LLC);
+          if (knobs.verbose >= 2) {
+            std::cerr << "Contention L1: res" << res << std::endl;
           }
         }
       }
@@ -858,9 +789,9 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
 void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res, 
                                      trace_type_t type, 
-                                     long long unsigned int base_addr, 
+                                     long long unsigned int base_addr, //phys addr of beginning of a PT page
                                      long long unsigned int addr_to_find, 
-                                     int level, 
+                                     int level, //PT level
                                      int core)
 {
   if (knobs.verbose >= 2) {
@@ -875,7 +806,12 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res,
   memref_t page_walk_memref; 
 
   page_walk_memref.data.type = type;
-  page_walk_memref.data.addr = base_addr + 8 * ( ( addr_to_find >> (12 + (( 4 - level) * 9))) & ((1 << 9) - 1) );
+  int offset_in_pt_page = ( 
+                            ( addr_to_find >> (NUM_PAGE_OFFSET_BITS + ( (NUM_PAGE_TABLE_LEVELS - level) * NUM_PAGE_INDEX_BITS ))) 
+                            & ((1 << NUM_PAGE_INDEX_BITS) - 1) 
+                          );
+  page_walk_memref.data.addr = base_addr + PAGE_TABLE_ENTRY_SIZE * offset_in_pt_page;
+                             
   page_walk_memref.data.size = 1; 
   page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref, true /* Artemiy -- get the source */));
   if (knobs.verbose >= 2) {
@@ -884,7 +820,7 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res,
     << std::hex
     << " BaseAddr: " << base_addr 
     << " addr_to_find: " << addr_to_find 
-    << " offset in cur table: " << (( addr_to_find >> (12 + (( 4 - level) * 9))) & ((1 << 9) - 1))
+    << " offset in cur page: " << offset_in_pt_page
     << " final addr : " << page_walk_memref.data.addr
     << std::dec
     << std::endl;

@@ -124,36 +124,35 @@ tlb_simulator_t::~tlb_simulator_t()
 
 bool
 tlb_simulator_t::process_memref(const memref_t &memref) {
-return true;
+  return true;
 }
 
 
 // returns: first done
-// second: hit/miss
+// second:  hit/miss
 std::pair<bool, bool>
 tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
 {
     if (knobs.skip_refs > 0) {
         knobs.skip_refs--;
-        std::cerr << "1 " << memref.data.addr << "...";
+        std::cerr << "Warning: skip_refs " << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
     }
 
     // The references after warmup and simulated ones are dropped.
     if (knobs.warmup_refs == 0 && knobs.sim_refs == 0) {
-        std::cerr << "2 " << memref.data.addr << "...";
+        std::cerr << "Warning: warmup+skiprefs " << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
     }
 
     // Both warmup and simulated references are simulated.
-
     if (!simulator_t::process_memref(memref)) {
-        std::cerr << "3 " << memref.data.addr << "...";
+        std::cerr << "Warning: untrue " << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
     }
 
     if (memref.marker.type == TRACE_TYPE_MARKER) {
-        // We ignore markers before we ask core_for_thread, to avoid asking
+      // We ignore markers before we ask core_for_thread, to avoid asking
       // too early on a timestamp marker.
         std::cerr << __FUNCTION__ << "memref.marker.type == TRACE_TYPE_MARKER" << memref.data.addr << "...";
         return std::pair<bool, bool>(true, true);
@@ -174,6 +173,7 @@ tlb_simulator_t::process_memref(const memref_t &memref, bool changed)
     bool found = false;
 
     if (type_is_instr(memref.instr.type)) {
+        //Debug
         //std::cerr << "Checking ITLB for addr " << std::hex << memref.instr.addr << std::dec << "...";
         found = itlbs[core]->request(memref, true, true /* Artemiy change */ );
         if (knobs.verbose >= 2) {

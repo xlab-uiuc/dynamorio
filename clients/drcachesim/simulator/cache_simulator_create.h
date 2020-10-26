@@ -54,7 +54,7 @@ struct cache_simulator_knobs_t {
         : num_cores(4)
         , line_size(64)
         , L1I_size(32 * 1024U)
-        , L1D_size(4 * 1024U)
+        , L1D_size(32 * 1024U)
         , L1I_assoc(8)
         , L1D_assoc(8)
         , L2_size(256 * 1024)
@@ -72,7 +72,7 @@ struct cache_simulator_knobs_t {
         , verbose(0)
         , pt_dump_filename("")
         , pt_ranges_file("")
-        , num_ranges(10)
+        , num_ranges(16)
         , contention_L1(0)
         , contention_LLC(0)
     {
