@@ -114,6 +114,11 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     for (int i = 0; i < page_table_record_num; i++) {
       page_table_info_t tmp;
       fscanf(page_table_file, "%llx,%llx,%llx,%llx,%llx,%llx\n", &(tmp.VA), &(tmp.PE1), &(tmp.PE2), &(tmp.PE3), &(tmp.PE4), &(tmp.PA));
+      tmp.VA = (tmp.VA >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE;
+      tmp.PE1 = (tmp.PE1 >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE;
+      tmp.PE2 = (tmp.PE2 >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE;
+      tmp.PE3 = (tmp.PE3 >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE;
+      tmp.PE4 = (tmp.PE4 >> PAGE_OFFSET_SIZE) << PAGE_OFFSET_SIZE;
       page_table.insert(std::make_pair(tmp.VA, tmp));
     }
     std::cerr << "Loaded " << page_table.size() << " unique PT entries.\n";
