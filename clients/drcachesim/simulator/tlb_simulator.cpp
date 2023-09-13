@@ -125,6 +125,7 @@ tlb_simulator_t::~tlb_simulator_t()
 bool
 tlb_simulator_t::process_memref(const memref_t &memref) {
   assert(0); //should not be called 
+  return 0;
 }
 
 // Returns 
