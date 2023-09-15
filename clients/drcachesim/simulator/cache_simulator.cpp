@@ -99,12 +99,15 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     /* initialize random seed: */
     srand (42);
 
+    /* comment this out first to have the simulator run */
+/**/
     std::cout << "Initialising PT from file: " << knobs.pt_dump_filename.c_str() << std::endl;
+    std::cout << "Initialising memory references from file: " << op_qemu_mem_trace.get_value() << std::endl;
 // load page table
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-result" 
     //load page_table
-    FILE* page_table_file = fopen(knobs.pt_dump_filename.c_str(),"r");
+    /* FILE* page_table_file = fopen(knobs.pt_dump_filename.c_str(),"r");
     //read page_table size (in records)
     int page_table_record_num = 0;
     fscanf(page_table_file, "%d\n", &page_table_record_num);
@@ -115,7 +118,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
       page_table.insert(std::make_pair(tmp.VA, tmp));
     }
     std::cerr << "Loaded " << page_table.size() << " unique PT entries.\n";
-    fclose(page_table_file);
+    fclose(page_table_file); */
 #pragma GCC diagnostic pop 
 
 // load ranges
@@ -527,7 +530,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
     if (it != page_table.end()) {
       
       physical_page_addr = it->second.PA;
-
+      /* TODO: now we don't have to process page table dump */
       if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
         new_memref.instr.addr = physical_page_addr + page_offset;
       } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
@@ -578,6 +581,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
         memref_t pwc_check_memref; 
         pwc_check_memref.data.type = TRACE_TYPE_READ;
         // search PWC starting from highest level
+        /* pwc_hit_level will be the highest level PWC that gives PWC hit */
         for(unsigned int pwc_level = NUM_PWC; pwc_level >= 1; pwc_level--) {
           pwc_check_memref.data.addr = virtual_full_page_addr >> ( NUM_PAGE_OFFSET_BITS + 
                                                                    ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS)
@@ -649,6 +653,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
       return true;
     }
 
+    /* search result for data paddr */
     cache_result_t search_res;
     if (type_is_instr(new_memref.instr.type) ||
         new_memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
@@ -804,6 +809,7 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res,
                             ( addr_to_find >> (NUM_PAGE_OFFSET_BITS + ( (NUM_PAGE_TABLE_LEVELS - level) * NUM_PAGE_INDEX_BITS ))) 
                             & ((1 << NUM_PAGE_INDEX_BITS) - 1) 
                           );
+  /* TODO: this needs to be fixed we directly acquire the paddr of page table now */
   page_walk_memref.data.addr = base_addr + PAGE_TABLE_ENTRY_SIZE * offset_in_pt_page;
                              
   page_walk_memref.data.size = 1; 

@@ -29,6 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  */
+#include <iostream>
 
 #include "analyzer.h"
 #include "analyzer_multi.h"
@@ -39,6 +40,7 @@
 #ifdef HAS_ZLIB
 #    include "reader/compressed_file_reader.h"
 #endif
+#include "reader/qemu_file_reader.h"
 #include "reader/ipc_reader.h"
 #include "tracer/raw2trace_directory.h"
 #include "tracer/raw2trace.h"
@@ -53,6 +55,15 @@ analyzer_multi_t::analyzer_multi_t()
         error_string = "Failed to create analysis tool: " + error_string;
         return;
     }
+
+    if (!op_qemu_mem_trace.get_value().empty()) {
+        std::cout << "op_qemu_mem_trace=" << op_qemu_mem_trace.get_value() << std::endl;
+        trace_iter = new qemu_file_reader_t(op_qemu_mem_trace.get_value().c_str());
+        trace_end = new qemu_file_reader_t();
+        std::cout << "Done with qemu tracer" << std::endl;
+        return;
+    }
+
     // XXX: add a "required" flag to droption to avoid needing this here
     if (op_infile.get_value().empty() && op_ipc_name.get_value().empty()) {
         error_string = "Usage error: -ipc_name or -infile is required\nUsage:\n" +

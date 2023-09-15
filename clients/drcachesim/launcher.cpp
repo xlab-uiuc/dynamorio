@@ -228,7 +228,8 @@ _tmain(int argc, const TCHAR *targv[])
                         droption_parser_t::usage_short(DROPTION_SCOPE_ALL).c_str());
         }
     }
-    have_trace_file = !op_infile.get_value().empty() || !op_indir.get_value().empty();
+    have_trace_file = !op_infile.get_value().empty() || !op_indir.get_value().empty() ||
+        !op_qemu_mem_trace.get_value().empty();
 
     if (!have_trace_file) {
         if (app_idx >= argc) {

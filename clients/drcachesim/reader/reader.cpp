@@ -35,6 +35,8 @@
 #include "../common/memref.h"
 #include "../common/utils.h"
 
+#include <iostream>
+
 #ifdef VERBOSE
 #    include <iostream>
 #endif
@@ -66,6 +68,7 @@ reader_t &
 reader_t::operator++()
 {
     // We bail if we get a partial read, or EOF, or any error.
+    std::cout << "try to get next entry" << std::endl;
     while (true) {
         if (bundle_idx == 0 /*not in instr bundle*/)
             input_entry = read_next_entry();
@@ -154,10 +157,7 @@ reader_t::operator++()
             cur_pc = next_pc;
             cur_ref.instr.addr = cur_pc;
             next_pc = cur_pc + cur_ref.instr.size;
-            // input_entry->size stores the number of instrs in this bundle
-            assert(input_entry->size <= sizeof(input_entry->length));
-            if (bundle_idx == input_entry->size)
-                bundle_idx = 0;
+            // input_entry->size stores thewef
             break;
         case TRACE_TYPE_INSTR_FLUSH:
         case TRACE_TYPE_DATA_FLUSH:

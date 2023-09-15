@@ -122,6 +122,7 @@ set(drcachesim_srcs
   reader/reader.cpp
   reader/config_reader.cpp
   reader/file_reader.cpp
+  reader/qemu_file_reader.cpp
   ${zlib_reader}
   reader/ipc_reader.cpp
   simulator/analyzer_interface.cpp
@@ -160,6 +161,7 @@ add_exported_library(drmemtrace_analyzer STATIC
   reader/reader.cpp
   reader/config_reader.cpp
   reader/file_reader.cpp
+  reader/qemu_file_reader.cpp
   ${zlib_reader}
   )
 # We get away w/ exporting the generically-named "utils.h" by putting into a
