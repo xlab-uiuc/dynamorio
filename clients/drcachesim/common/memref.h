@@ -37,6 +37,7 @@
 
 #include <stdint.h>
 #include <stddef.h> // for size_t
+#include <vector>
 #include "trace_entry.h"
 
 /**
@@ -57,6 +58,7 @@ struct _memref_data_t {
     addr_t addr;       /**< Address of data being loaded or stored. */
     size_t size;       /**< Size of data being loaded or stored. */
     addr_t pc;         /**< Program counter of instruction performing load or store. */
+    _memref_pgtable_results pgtable_results;
 };
 
 /** A trace entry representing an instruction fetch. */
@@ -66,6 +68,7 @@ struct _memref_instr_t {
     memref_tid_t tid;  /**< Thread id. */
     addr_t addr;       /**< The address of the instruction (i.e., program counter). */
     size_t size;       /**< The length of the instruction. */
+    _memref_pgtable_results pgtable_results;
 };
 
 /** A trace entry representing a software-requested explicit cache flush. */
@@ -76,6 +79,7 @@ struct _memref_flush_t {
     addr_t addr;       /**< The start address of the region being flushed. */
     size_t size;       /**< The size of the region being flushed. */
     addr_t pc;         /**< Program counter of the instruction requesting the flush. */
+    _memref_pgtable_results pgtable_results;
 };
 
 /** A trace entry representing a thread exit. */

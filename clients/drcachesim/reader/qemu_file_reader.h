@@ -58,6 +58,7 @@ protected:
     read_next_entry();
 
 private:
+    int parse_qemu_line_radix(std::string &line);
     std::ifstream fstream;
     trace_entry_t entry_copy;
 };

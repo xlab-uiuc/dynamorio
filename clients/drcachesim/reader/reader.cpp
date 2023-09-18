@@ -111,6 +111,8 @@ reader_t::operator++()
             // The trace stream always has the instr fetch first, which we
             // use to obtain the PC for subsequent data references.
             cur_ref.data.pc = cur_pc;
+            cur_ref.data.pgtable_results = input_entry->pgtable_results;
+
             break;
         case TRACE_TYPE_INSTR_MAYBE_FETCH:
             // While offline traces can convert rep string per-iter instrs into

@@ -155,7 +155,8 @@ protected:
     hm_full_statistic_t hm_full_statistic;
     page_walk_hm_result_t page_walk_res;
 
-    void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
+    // void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
+    void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int pgtable_addr, int core);
 
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)

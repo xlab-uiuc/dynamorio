@@ -67,7 +67,7 @@ qemu_file_reader_t::init()
     //     ERRMSG("missing header or version mismatch\n");
     //     return false;
     // }
-    // ++*this;
+    ++*this;
     return true;
 }
 
@@ -75,6 +75,8 @@ qemu_file_reader_t::~qemu_file_reader_t()
 {
     fstream.close();
 }
+
+#define N_RADIX_VARIABLE 7
 
 #define RADIX_LEVEL 4
 struct radix_trans_info {
@@ -84,22 +86,47 @@ struct radix_trans_info {
     uint64_t page_size;
 };
 
+int
+qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
+{
+    radix_trans_info info;
+    int parsed_n_var =sscanf(line.c_str(),"Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx page_size=%lx",
+            &info.vaddr, &info.PTEs[0], &info.PTEs[2], &info.PTEs[3], &info.PTEs[4], &info.paddr, &info.page_size);
+    
+    if (parsed_n_var != N_RADIX_VARIABLE) {
+        std::cerr << "error parsing line: " << line << std::endl;  
+        return -1;
+    }
+
+    entry_copy.type = TRACE_TYPE_WRITE;
+    entry_copy.addr = info.vaddr;
+    /* TODO this may have to be fixed */
+    entry_copy.size = info.page_size;
+    // entry.phys_addr = info.paddr;
+
+    entry_copy.pgtable_results.paddr = info.paddr;
+    int i = 0;
+    for (; i < RADIX_LEVEL; i++) {
+        if (info.PTEs[i] != 0) {
+            entry_copy.pgtable_results.steps[i] = info.PTEs[i];
+        } else {
+            break;
+        }
+    }
+    entry_copy.pgtable_results.num_steps = i;
+    return 0;
+}
+
 trace_entry_t *
 qemu_file_reader_t::read_next_entry()
 {
-    radix_trans_info info;
     std::string line;
     if (std::getline(fstream, line)) {
         std::cout << line << std::endl;
-        sscanf(line.c_str(),"Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx page_size=%lx",
-            &info.vaddr, &info.PTEs[0], &info.PTEs[2], &info.PTEs[3], &info.PTEs[4], &info.paddr, &info.page_size);
-        /* TODO: place holder */
-        entry_copy.type = TRACE_TYPE_WRITE;
-        entry_copy.addr = info.vaddr;
-        entry_copy.size = info.page_size;
-        entry_copy.phys_addr = info.paddr;
-
-        // std::cout << line << std::endl;
+        
+        if (this->parse_qemu_line_radix(line) < 0) {
+            return NULL;
+        }
         return &entry_copy;
     } else {
         return NULL;

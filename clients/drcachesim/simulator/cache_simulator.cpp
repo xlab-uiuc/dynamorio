@@ -479,7 +479,13 @@ cache_simulator_t::process_memref(const memref_t &memref)
         }
         return true;
     }
-
+    if (knobs.verbose >= 3) {
+      std::cout << "Request \n"
+                  << std::hex 
+                  << "Vaddr " << memref.data.addr << std::endl
+                  << std::dec
+                  << "num_requests : " << num_request << "\n" ;
+    }
     // We use a static scheduling of threads to cores, as it is
     // not practical to measure which core each thread actually
     // ran on for each memref.
@@ -496,7 +502,6 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
     uint64_t virtual_page_addr = 0;
     uint64_t page_offset = 0;
-    uint64_t physical_page_addr = 0;
     uint64_t instrs_type = 0;
 
     if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
@@ -511,6 +516,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
       instrs_type       = 2;
     }
 
+    /* virtual_full_page_addr is the virtual address without page offset */
     uint64_t virtual_full_page_addr = virtual_page_addr << NUM_PAGE_OFFSET_BITS;
 
     //issue a TLB request
@@ -525,132 +531,88 @@ cache_simulator_t::process_memref(const memref_t &memref)
     new_memref.marker.type = memref.marker.type;
     new_memref.marker.pid = memref.marker.pid;
     new_memref.marker.tid = memref.marker.tid;
-    page_table_t::iterator it = page_table.find(virtual_full_page_addr);
+    // page_table_t::iterator it = page_table.find(virtual_full_page_addr);
     // if found 
-    if (it != page_table.end()) {
+    // if (it != page_table.end()) {
       
-      physical_page_addr = it->second.PA;
-      /* TODO: now we don't have to process page table dump */
-      if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
-        new_memref.instr.addr = physical_page_addr + page_offset;
-      } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
-        new_memref.data.addr  = physical_page_addr + page_offset;
-      }
+    /* TODO: now we don't have to process page table dump */
+    uint64_t pgwalk_steps = 0;
 
-      //std::cerr << "Request \n"
-      //              << std::hex 
-      //              << "Type " << ((instrs_type == 1) ? "instr" : "data") << std::endl 
-      //              << "Vddr " << addr <<  std::endl
-      //              << "VAddr >> NUM_PAGE_OFFSET_BITS : " << virtual_page_addr << std::endl
-      //              << "VAddr page_addr : " << (virtual_page_addr << NUM_PAGE_OFFSET_BITS) << std::endl
-      //              << "PAddr page_addr : " << physical_page_addr << std::endl
-      //              << "PAddr page_addr : " << physical_page_addr + page_offset << std::endl
-      //              << std::dec
-      //              << "num_requests : " << num_request << "\n" 
-      //            ;
+    if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+      // new_memref.instr.addr = physical_page_addr + page_offset;
+      new_memref.instr.addr = memref.instr.pgtable_results.paddr;
+      pgwalk_steps = memref.instr.pgtable_results.num_steps;
+    } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
+      // new_memref.data.addr  = physical_page_addr + page_offset;
+      new_memref.data.addr = memref.data.pgtable_results.paddr;
+      pgwalk_steps = memref.data.pgtable_results.num_steps;
+    } else if (memref.flush.type == TRACE_TYPE_INSTR_FLUSH || memref.flush.type == TRACE_TYPE_DATA_FLUSH) {
+      pgwalk_steps = memref.flush.pgtable_results.num_steps;
+    }
 
 
-      // process TLB miss
-      if (!is_TLB_hit) {
-        if (knobs.verbose >= 2) {
-          std::cerr << "TLB miss \n";
-        }
-
-        //Check if falls withing a range from the list of ranges (if file containing ranges is provided)
-        bool range_found = false;
-        if (knobs.pt_ranges_file != "") {
-          for (unsigned int i = 0; i < knobs.num_ranges; i++) {
-            if ( (virtual_full_page_addr >= range_table[i].l_bound) && (virtual_full_page_addr < range_table[i].h_bound) ) {
-              range_found = true;
-              break;
-            }
-          }
-        } else {
-          range_found = true;
-        }
-            
-        // reset page walk trajectory path 
-        page_walk_res.clear();// Accumulates sources for each access during a page walk
-
-
-        //BEGIN PAGE WALK 
-        //PT levels are counted from the root of the radix tree
-        // Check PWCs
-        cache_result_t pwc_search_res = NOT_FOUND;
-        unsigned int pwc_hit_level = 0;
-        memref_t pwc_check_memref; 
-        pwc_check_memref.data.type = TRACE_TYPE_READ;
-        // search PWC starting from highest level
-        /* pwc_hit_level will be the highest level PWC that gives PWC hit */
-        for(unsigned int pwc_level = NUM_PWC; pwc_level >= 1; pwc_level--) {
-          pwc_check_memref.data.addr = virtual_full_page_addr >> ( NUM_PAGE_OFFSET_BITS + 
-                                                                   ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS)
-                                                                 );
-          pwc_check_memref.data.size = 1; 
-          pwc_search_res = pw_caches[pwc_level-1]->request(pwc_check_memref);
-          // if found, memorize the pwc_level and stop searching 
-          if (pwc_search_res == FOUND_L1) {
-            if (pwc_hit_level == 0) {
-              pwc_hit_level = pwc_level;
-            }
-          }
-        }
-        // find a record in the host PT corresponding to the given address
-        
-        for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
-          if (level_host < pwc_hit_level) {
-            // ignore these levels as they are bypassed due to PWC hit
-            // if skipped due to a PWC hit, indicate ZERO_LAT
-            page_walk_res.push_back(ZERO);
-
-          } else if (level_host == pwc_hit_level) {
-            // if found in the PWC, indicate PWC_LAT
-            page_walk_res.push_back(PWC);
-
-          } else if (level_host > pwc_hit_level) {
-            // if not found in the PWC, then make a memory req
-            make_request(page_walk_res, 
-                         TRACE_TYPE[level_host], 
-                         *(it->second.all[level_host]), 
-                         virtual_full_page_addr, 
-                         level_host, 
-                         core); 
-          }
-        }
-
-        // Update range range statistics
-        if (range_found) {
-          page_walk_res.push_back(RANGE_HIT);
-            num_range_found++;
-        } else {
-          page_walk_res.push_back(RANGE_MISS);
-            num_range_not_found++;
-        }
-
-        // Update page walk trajectory statistics
-        hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
-        if (it != hm_full_statistic.end()) {
-          it->second++;
-        } else {
-          hm_full_statistic.insert(std::make_pair(page_walk_res, 1));
-        }
-      }
-    } else { //(it != page_table.end()) 
-      num_not_found++;
+    // process TLB miss
+    if (!is_TLB_hit) {
       if (knobs.verbose >= 2) {
-        std::cerr << "Error: cannot find translation for " << std::endl
-                  << std::hex 
-                  << "Type " << ((instrs_type == 1) ? "instr" : "data") << std::endl 
-                  << "Vddr " << addr <<  std::endl
-                  << "VAddr >> NUM_PAGE_OFFSET_BITS : " << virtual_page_addr << std::endl
-                  << "VAddr page_addr : " << (virtual_page_addr << NUM_PAGE_OFFSET_BITS) << std::endl
-                  << std::dec
-                  << "VAddr page_offset : " << page_offset << std::endl
-                  << "num_requests : " << num_request << std::endl
-                  << "num_not_found : " << num_not_found <<  std::endl
-                  ;
+        std::cerr << "TLB miss \n";
       }
-      return true;
+          
+      // reset page walk trajectory path 
+      page_walk_res.clear();// Accumulates sources for each access during a page walk
+
+
+      //BEGIN PAGE WALK 
+      //PT levels are counted from the root of the radix tree
+      // Check PWCs
+      cache_result_t pwc_search_res = NOT_FOUND;
+      unsigned int pwc_hit_level = 0;
+      memref_t pwc_check_memref; 
+      pwc_check_memref.data.type = TRACE_TYPE_READ;
+      // search PWC starting from highest level
+      /* pwc_hit_level will be the highest level PWC that gives PWC hit */
+      for(unsigned int pwc_level = NUM_PWC; pwc_level >= 1; pwc_level--) {
+        pwc_check_memref.data.addr = virtual_full_page_addr >> ( NUM_PAGE_OFFSET_BITS + 
+                                                                  ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS)
+                                                                );
+        pwc_check_memref.data.size = 1; 
+        pwc_search_res = pw_caches[pwc_level-1]->request(pwc_check_memref);
+        // if found, memorize the pwc_level and stop searching 
+        if (pwc_search_res == FOUND_L1) {
+          if (pwc_hit_level == 0) {
+            pwc_hit_level = pwc_level;
+          }
+        }
+      }
+      // find a record in the host PT corresponding to the given address
+      
+      for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
+        if (level_host < pwc_hit_level) {
+          // ignore these levels as they are bypassed due to PWC hit
+          // if skipped due to a PWC hit, indicate ZERO_LAT
+          page_walk_res.push_back(ZERO);
+
+        } else if (level_host == pwc_hit_level) {
+          // if found in the PWC, indicate PWC_LAT
+          page_walk_res.push_back(PWC);
+
+        } else if (level_host > pwc_hit_level) {
+          // if not found in the PWC, then make a memory req
+          if (level_host <= pgwalk_steps) {
+            make_request(page_walk_res, TRACE_TYPE[level_host], memref.data.pgtable_results.steps[level_host - 1], core);
+          } else {
+            /* huge page last level skipped */
+            page_walk_res.push_back(ZERO);
+          }
+        }
+      }
+
+      // Update page walk trajectory statistics
+      hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
+      if (it != hm_full_statistic.end()) {
+        it->second++;
+      } else {
+        hm_full_statistic.insert(std::make_pair(page_walk_res, 1));
+      }
     }
 
     /* search result for data paddr */
@@ -788,40 +750,43 @@ cache_simulator_t::process_memref(const memref_t &memref)
 
 void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res, 
                                      trace_type_t type, 
-                                     long long unsigned int base_addr, //phys addr of beginning of a PT page
-                                     long long unsigned int addr_to_find, 
-                                     int level, //PT level
+                                     long long unsigned int pgtable_addr, /* phys addr of the page table */
+                                    //  long long unsigned int base_addr, //phys addr of beginning of a PT page
+                                    //  long long unsigned int addr_to_find, 
+                                    //  int level, //PT level
                                      int core)
 {
   if (knobs.verbose >= 2) {
     std::cerr << "Start walk Type: " << type 
-    << " Level: " << level 
+    // << " Level: " << level 
     << std::hex
-    << " BaseAddr: " << base_addr 
-    << " addr_to_find: " << addr_to_find 
+    << " pgtable_addr: " << pgtable_addr
+    // << " BaseAddr: " << base_addr 
+    // << " addr_to_find: " << addr_to_find 
     << std::dec
     << std::endl;
   }
   memref_t page_walk_memref; 
 
   page_walk_memref.data.type = type;
-  int offset_in_pt_page = ( 
-                            ( addr_to_find >> (NUM_PAGE_OFFSET_BITS + ( (NUM_PAGE_TABLE_LEVELS - level) * NUM_PAGE_INDEX_BITS ))) 
-                            & ((1 << NUM_PAGE_INDEX_BITS) - 1) 
-                          );
+  // int offset_in_pt_page = ( 
+  //                           ( addr_to_find >> (NUM_PAGE_OFFSET_BITS + ( (NUM_PAGE_TABLE_LEVELS - level) * NUM_PAGE_INDEX_BITS ))) 
+  //                           & ((1 << NUM_PAGE_INDEX_BITS) - 1) 
+  //                         );
   /* TODO: this needs to be fixed we directly acquire the paddr of page table now */
-  page_walk_memref.data.addr = base_addr + PAGE_TABLE_ENTRY_SIZE * offset_in_pt_page;
+  page_walk_memref.data.addr = pgtable_addr;
                              
   page_walk_memref.data.size = 1; 
   page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref));
+
   if (knobs.verbose >= 2) {
     std::cerr << "Done walk Type: " << type 
-    << " Level: " << level 
+    // << " Level: " << level 
     << std::hex
-    << " BaseAddr: " << base_addr 
-    << " addr_to_find: " << addr_to_find 
-    << " offset in cur page: " << offset_in_pt_page
-    << " final addr : " << page_walk_memref.data.addr
+    << " pgtable_addr: " << pgtable_addr
+    // << " BaseAddr: " << base_addr 
+    // << " addr_to_find: " << addr_to_find 
+    // << " offset in cur page: " << offset_in_pt_page
     << std::dec
     << std::endl;
   }
