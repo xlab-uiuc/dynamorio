@@ -14,6 +14,12 @@ source source.sh
 ./install.sh
 ```
 
+3. Run the simulator
+```bash
+bin64/drrun -t drcachesim -qemu_mem_trace ../mmu_10000.log 2>&1 | tee ../10000_parse.log
+```
+
+
 3. Run the simulator 
 Example:
 ```bash
