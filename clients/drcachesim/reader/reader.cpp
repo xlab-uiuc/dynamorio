@@ -68,7 +68,6 @@ reader_t &
 reader_t::operator++()
 {
     // We bail if we get a partial read, or EOF, or any error.
-    std::cout << "try to get next entry" << std::endl;
     while (true) {
         if (bundle_idx == 0 /*not in instr bundle*/)
             input_entry = read_next_entry();

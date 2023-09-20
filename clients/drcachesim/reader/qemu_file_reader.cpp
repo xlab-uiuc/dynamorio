@@ -76,7 +76,13 @@ qemu_file_reader_t::~qemu_file_reader_t()
     fstream.close();
 }
 
-#define N_RADIX_VARIABLE 7
+#define N_RADIX_VARIABLE 10
+
+typedef enum MMUAccessType {
+    MMU_DATA_LOAD  = 0,
+    MMU_DATA_STORE = 1,
+    MMU_INST_FETCH = 2
+} MMUAccessType;
 
 #define RADIX_LEVEL 4
 struct radix_trans_info {
@@ -84,24 +90,48 @@ struct radix_trans_info {
     uint64_t PTEs[RADIX_LEVEL];
     uint64_t paddr;
     uint64_t page_size;
+    int access_type;
+    uint32_t access_size;
+    uint64_t pc;
 };
 
 int
 qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
 {
     radix_trans_info info;
-    int parsed_n_var =sscanf(line.c_str(),"Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx page_size=%lx",
-            &info.vaddr, &info.PTEs[0], &info.PTEs[2], &info.PTEs[3], &info.PTEs[4], &info.paddr, &info.page_size);
-    
+    int parsed_n_var = sscanf(
+        line.c_str(),
+        "Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx "
+        "page_size=%lx access=%d size=%d pc=%lx\n",
+        &info.vaddr, &info.PTEs[0], &info.PTEs[2], &info.PTEs[3], &info.PTEs[4],
+        &info.paddr, &info.page_size, &info.access_type, &info.access_size, &info.pc);
+
     if (parsed_n_var != N_RADIX_VARIABLE) {
         std::cerr << "error parsing line: " << line << std::endl;  
         return -1;
     }
 
-    entry_copy.type = TRACE_TYPE_WRITE;
+    switch ((MMUAccessType) info.access_type)
+    {
+    case MMU_DATA_LOAD:
+        entry_copy.type = TRACE_TYPE_READ;
+        break;
+    case MMU_DATA_STORE:
+        /* code */
+        entry_copy.type = TRACE_TYPE_WRITE;
+        break;
+    case MMU_INST_FETCH:
+        /* code */
+        entry_copy.type = TRACE_TYPE_INSTR;
+        break;
+    default:
+        break;
+    }
+
     entry_copy.addr = info.vaddr;
     /* TODO this may have to be fixed */
-    entry_copy.size = info.page_size;
+    entry_copy.size = info.access_size;
+    // entry_copy.pc = info.pc;
     // entry.phys_addr = info.paddr;
 
     entry_copy.pgtable_results.paddr = info.paddr;
@@ -122,7 +152,7 @@ qemu_file_reader_t::read_next_entry()
 {
     std::string line;
     if (std::getline(fstream, line)) {
-        std::cout << line << std::endl;
+        // std::cout << line << std::endl;
         
         if (this->parse_qemu_line_radix(line) < 0) {
             return NULL;
