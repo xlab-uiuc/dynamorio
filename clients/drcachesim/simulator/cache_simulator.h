@@ -157,6 +157,9 @@ protected:
 
     // void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
     void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int pgtable_addr, int core);
+    void print_page_walk_res(page_walk_hm_result_t & page_walk_res, int pwc_hit_level, int pgwalk_steps);
+    void print_memref_inst(const memref_t &memref);
+    void print_memref_data(const memref_t &memref);
 
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)

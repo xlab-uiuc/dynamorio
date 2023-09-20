@@ -47,8 +47,8 @@ qemu_file_reader_t::qemu_file_reader_t()
     /* Empty. */
 }
 
-qemu_file_reader_t::qemu_file_reader_t(const char *file_name)
-    : fstream(file_name, std::ifstream::binary)
+qemu_file_reader_t::qemu_file_reader_t(const char *file_name, int verbosity)
+    : fstream(file_name, std::ifstream::binary), verbose(verbosity)
 {
     /* Empty. */
 }
@@ -76,24 +76,39 @@ qemu_file_reader_t::~qemu_file_reader_t()
     fstream.close();
 }
 
-#define N_RADIX_VARIABLE 10
 
-typedef enum MMUAccessType {
-    MMU_DATA_LOAD  = 0,
-    MMU_DATA_STORE = 1,
-    MMU_INST_FETCH = 2
-} MMUAccessType;
+void qemu_file_reader_t::print_entry_copy(trace_entry_t & entry)
+{   
+    if(verbose >= 2) {
+        printf("entry_copy.type: %d\n", entry.type);
+        printf("entry_copy.addr: %lx\n", entry.addr);
+        printf("entry_copy.size: %x\n", entry.size);
 
-#define RADIX_LEVEL 4
-struct radix_trans_info {
-    uint64_t vaddr;
-    uint64_t PTEs[RADIX_LEVEL];
-    uint64_t paddr;
-    uint64_t page_size;
-    int access_type;
-    uint32_t access_size;
-    uint64_t pc;
-};
+        printf("entry_copy.pgtable_results.paddr: %lx\n", entry.pgtable_results.paddr);
+        printf("entry_copy.pgtable_results.num_steps: %x\n", entry.pgtable_results.num_steps);
+
+        // std::cout << "entry_copy.pgtable_results.paddr: " << entry.pgtable_results.paddr << std::endl;
+        // std::cout << "entry_copy.pgtable_results.num_steps: " << entry.pgtable_results.num_steps << std::endl;
+        for (int i = 0; i < RADIX_LEVEL; i++) {
+            printf("entry_copy.pgtable_results.steps[%d]: %lx\n", i, entry.pgtable_results.steps[i]);
+        }
+    } 
+}
+
+void qemu_file_reader_t::print_radix_trans_info(radix_trans_info & info)
+{
+    if(verbose >= 2) {
+        printf("info.vaddr: %lx\n", info.vaddr);
+        printf("info.paddr: %lx\n", info.paddr);
+        for (int i = 0; i < RADIX_LEVEL; i++) {
+            printf("info.PTEs[%d]: %lx\n", i, info.PTEs[i]);
+        }
+        printf("info.page_size: %lx\n", info.page_size);
+        printf("info.access_type: %d\n", info.access_type);
+        printf("info.access_size: %x\n", info.access_size);
+        printf("info.pc: %lx\n", info.pc);
+    }
+}
 
 int
 qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
@@ -103,13 +118,15 @@ qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
         line.c_str(),
         "Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx "
         "page_size=%lx access=%d size=%d pc=%lx\n",
-        &info.vaddr, &info.PTEs[0], &info.PTEs[2], &info.PTEs[3], &info.PTEs[4],
+        &info.vaddr, &info.PTEs[0], &info.PTEs[1], &info.PTEs[2], &info.PTEs[3],
         &info.paddr, &info.page_size, &info.access_type, &info.access_size, &info.pc);
 
     if (parsed_n_var != N_RADIX_VARIABLE) {
         std::cerr << "error parsing line: " << line << std::endl;  
         return -1;
     }
+
+    print_radix_trans_info(info);
 
     switch ((MMUAccessType) info.access_type)
     {
@@ -144,6 +161,9 @@ qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
         }
     }
     entry_copy.pgtable_results.num_steps = i;
+
+    print_entry_copy(entry_copy);
+
     return 0;
 }
 
@@ -152,7 +172,9 @@ qemu_file_reader_t::read_next_entry()
 {
     std::string line;
     if (std::getline(fstream, line)) {
-        // std::cout << line << std::endl;
+        
+        if(verbose >= 2)
+            std::cout << line << std::endl;
         
         if (this->parse_qemu_line_radix(line) < 0) {
             return NULL;

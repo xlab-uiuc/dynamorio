@@ -43,10 +43,31 @@
 #include "../common/memref.h"
 #include "../common/trace_entry.h"
 
+
+#define N_RADIX_VARIABLE 10
+
+typedef enum MMUAccessType {
+    MMU_DATA_LOAD  = 0,
+    MMU_DATA_STORE = 1,
+    MMU_INST_FETCH = 2
+} MMUAccessType;
+
+#define RADIX_LEVEL 4
+struct radix_trans_info {
+    uint64_t vaddr;
+    uint64_t PTEs[RADIX_LEVEL];
+    uint64_t paddr;
+    uint64_t page_size;
+    int access_type;
+    uint32_t access_size;
+    uint64_t pc;
+};
+
+
 class qemu_file_reader_t : public reader_t {
 public:
     qemu_file_reader_t();
-    explicit qemu_file_reader_t(const char *file_name);
+    explicit qemu_file_reader_t(const char *file_name, int verbosity);
     virtual ~qemu_file_reader_t();
     virtual bool
     init();
@@ -59,8 +80,12 @@ protected:
 
 private:
     int parse_qemu_line_radix(std::string &line);
+    void print_entry_copy(trace_entry_t & entry);
+    void print_radix_trans_info(radix_trans_info & info);
+    
     std::ifstream fstream;
     trace_entry_t entry_copy;
+    int verbose;
 };
 
 #endif /* _QEMU_FILE_READER_H_ */

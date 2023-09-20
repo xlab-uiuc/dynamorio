@@ -58,7 +58,7 @@ analyzer_multi_t::analyzer_multi_t()
 
     if (!op_qemu_mem_trace.get_value().empty()) {
         std::cout << "op_qemu_mem_trace=" << op_qemu_mem_trace.get_value() << std::endl;
-        trace_iter = new qemu_file_reader_t(op_qemu_mem_trace.get_value().c_str());
+        trace_iter = new qemu_file_reader_t(op_qemu_mem_trace.get_value().c_str(), op_verbose.get_value());
         trace_end = new qemu_file_reader_t();
         std::cout << "Done with qemu tracer" << std::endl;
         return;

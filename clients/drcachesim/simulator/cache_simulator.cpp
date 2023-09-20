@@ -420,6 +420,49 @@ cache_result_t issue_contention_request(cache_t* to_cache, trace_type_t type) {
   return res;
 }
 
+void cache_simulator_t::print_page_walk_res(page_walk_hm_result_t & page_walk_res, int pwc_hit_level, int pgwalk_steps) 
+{
+    std::vector<std::string> page_walk_res_str {
+        "MEMORY"
+        , "L1"
+        , "L2"
+        , "LLC"
+        , "WRONG"
+        , "RANGE_HIT"
+        , "RANGE_MISS"
+        , "PWC"
+        , "ZERO"
+    };
+
+    if (knobs.verbose >= 2) {
+        std::cerr << "pwc_hit_level " << pwc_hit_level << " ";
+        std::cerr << "pgwalk_steps " << pgwalk_steps << " ";
+        std::cerr << "Page walk result: ";
+        for(unsigned int i = 0; i < page_walk_res.size(); i++) {
+            std::cerr << page_walk_res_str[page_walk_res[i]] << ",";
+        }
+        std::cerr << std::endl;
+    }
+}
+
+void cache_simulator_t::print_memref_inst(const memref_t &memref)
+{
+    if (knobs.verbose >= 2) {
+        printf("Memref: type %d, addr 0x%lx, size %ld, steps %d pid %ld, tid %ld\n",
+            memref.instr.type, memref.instr.addr, memref.instr.size, memref.instr.pgtable_results.num_steps,
+            memref.instr.pid, memref.instr.tid);
+    }
+}
+
+void cache_simulator_t::print_memref_data(const memref_t &memref)
+{
+    if (knobs.verbose >= 2) {
+        printf("Memref: type %d, addr 0x%lx, size %ld, steps %d pid %ld, tid %ld\n",
+            memref.data.type, memref.data.addr, memref.data.size, memref.data.pgtable_results.num_steps,
+            memref.data.pid, memref.data.tid);
+    }
+}
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
@@ -538,14 +581,18 @@ cache_simulator_t::process_memref(const memref_t &memref)
     /* TODO: now we don't have to process page table dump */
     uint64_t pgwalk_steps = 0;
 
+
+
     if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
       // new_memref.instr.addr = physical_page_addr + page_offset;
       new_memref.instr.addr = memref.instr.pgtable_results.paddr;
       pgwalk_steps = memref.instr.pgtable_results.num_steps;
+      print_memref_inst(memref);
     } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
       // new_memref.data.addr  = physical_page_addr + page_offset;
       new_memref.data.addr = memref.data.pgtable_results.paddr;
       pgwalk_steps = memref.data.pgtable_results.num_steps;
+      print_memref_data(memref);
     } else if (memref.flush.type == TRACE_TYPE_INSTR_FLUSH || memref.flush.type == TRACE_TYPE_DATA_FLUSH) {
       pgwalk_steps = memref.flush.pgtable_results.num_steps;
     }
@@ -605,6 +652,8 @@ cache_simulator_t::process_memref(const memref_t &memref)
           }
         }
       }
+
+       print_page_walk_res(page_walk_res, pwc_hit_level, pgwalk_steps);
 
       // Update page walk trajectory statistics
       hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);

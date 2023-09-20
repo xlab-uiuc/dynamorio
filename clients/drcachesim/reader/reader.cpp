@@ -111,7 +111,7 @@ reader_t::operator++()
             // use to obtain the PC for subsequent data references.
             cur_ref.data.pc = cur_pc;
             cur_ref.data.pgtable_results = input_entry->pgtable_results;
-
+            
             break;
         case TRACE_TYPE_INSTR_MAYBE_FETCH:
             // While offline traces can convert rep string per-iter instrs into
@@ -147,6 +147,8 @@ reader_t::operator++()
                 cur_ref.instr.addr = cur_pc;
                 next_pc = cur_pc + cur_ref.instr.size;
                 prev_instr_addr = input_entry->addr;
+
+                cur_ref.instr.pgtable_results = input_entry->pgtable_results;
             }
             break;
         case TRACE_TYPE_INSTR_BUNDLE:
