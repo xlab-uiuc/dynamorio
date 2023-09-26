@@ -3,7 +3,7 @@
  * **********************************************************/
 
 /*
- * Redistribution and use in source and binary forms, with or without
+ *Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
  * * Redistributions of source code must retain the above copyright notice,
@@ -84,14 +84,7 @@ void qemu_file_reader_t::print_entry_copy(trace_entry_t & entry)
         printf("entry_copy.addr: %lx\n", entry.addr);
         printf("entry_copy.size: %x\n", entry.size);
 
-        printf("entry_copy.pgtable_results.paddr: %lx\n", entry.pgtable_results.paddr);
-        printf("entry_copy.pgtable_results.num_steps: %x\n", entry.pgtable_results.num_steps);
-
-        // std::cout << "entry_copy.pgtable_results.paddr: " << entry.pgtable_results.paddr << std::endl;
-        // std::cout << "entry_copy.pgtable_results.num_steps: " << entry.pgtable_results.num_steps << std::endl;
-        for (int i = 0; i < RADIX_LEVEL; i++) {
-            printf("entry_copy.pgtable_results.steps[%d]: %lx\n", i, entry.pgtable_results.steps[i]);
-        }
+        entry.pgtable_results.print();
     } 
 }
 
@@ -107,6 +100,7 @@ void qemu_file_reader_t::print_radix_trans_info(radix_trans_info & info)
         printf("info.access_type: %d\n", info.access_type);
         printf("info.access_size: %x\n", info.access_size);
         printf("info.pc: %lx\n", info.pc);
+        printf("info.success: %d\n", info.success);
     }
 }
 
@@ -114,12 +108,13 @@ int
 qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
 {
     radix_trans_info info;
-    int parsed_n_var = sscanf(
-        line.c_str(),
-        "Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx "
-        "page_size=%lx access=%d size=%d pc=%lx\n",
-        &info.vaddr, &info.PTEs[0], &info.PTEs[1], &info.PTEs[2], &info.PTEs[3],
-        &info.paddr, &info.page_size, &info.access_type, &info.access_size, &info.pc);
+    int parsed_n_var =
+        sscanf(line.c_str(),
+               "Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx "
+               "page_size=%lx access=%d size=%d pc=%lx success=%d\n",
+               &info.vaddr, &info.PTEs[0], &info.PTEs[1], &info.PTEs[2], &info.PTEs[3],
+               &info.paddr, &info.page_size, &info.access_type, &info.access_size,
+               &info.pc, &info.success);
 
     if (parsed_n_var != N_RADIX_VARIABLE) {
         std::cerr << "error parsing line: " << line << std::endl;  
@@ -161,6 +156,7 @@ qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
         }
     }
     entry_copy.pgtable_results.num_steps = i;
+    entry_copy.pgtable_results.success = info.success;
 
     print_entry_copy(entry_copy);
 

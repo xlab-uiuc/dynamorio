@@ -44,7 +44,7 @@
 #include "../common/trace_entry.h"
 
 
-#define N_RADIX_VARIABLE 10
+#define N_RADIX_VARIABLE 11
 
 typedef enum MMUAccessType {
     MMU_DATA_LOAD  = 0,
@@ -61,6 +61,7 @@ struct radix_trans_info {
     int access_type;
     uint32_t access_size;
     uint64_t pc;
+    int success;
 };
 
 

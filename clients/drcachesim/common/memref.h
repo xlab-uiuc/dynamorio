@@ -128,6 +128,8 @@ typedef union _memref_t {
     struct _memref_flush_t flush;      /**< A software-initiated cache flush. */
     struct _memref_thread_exit_t exit; /**< A thread exit. */
     struct _memref_marker_t marker;    /**< A marker holding metadata. */
+
+    void print() const;
 } memref_t;
 
 typedef enum {
