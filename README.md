@@ -4,6 +4,12 @@ The simulator periodically (after a fixed amount of processed instructions) outp
 The trajectories data can be processed by a side script to calculate the page walk latency statistics. For now, we are not providing the scripts for calculating the page walk latency statistics. 
 
 ### Building and running instructions
+0. Build Docker environment
+```bash
+sudo docker build -t dynamorio . 
+sudo docker run -it -v `pwd`:/dynamorio dynamorio:latest /bin/bash
+```
+
 1. Set up environment variables
 ```bash
 source source.sh
@@ -16,7 +22,7 @@ source source.sh
 
 3. Run the simulator
 ```bash
-bin64/drrun -t drcachesim -qemu_mem_trace ../mmu_10000.log 2>&1 | tee ../10000_parse.log
+bin64/drrun -t drcachesim -qemu_mem_trace ../mmu_1M.log 2>&1 | tee ../mmu_dyna_1M.log
 ```
 
 
