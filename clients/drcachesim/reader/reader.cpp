@@ -41,13 +41,15 @@
 #    include <iostream>
 #endif
 
+#define MAGIC_PID 0xdeadbeef
+#define MAGIC_TID 0xdeadbeef
 // Following typical stream iterator convention, the default constructor
 // produces an EOF object.
 reader_t::reader_t()
     : at_eof(true)
     , input_entry(NULL)
-    , cur_tid(0)
-    , cur_pid(0)
+    , cur_tid(MAGIC_TID)
+    , cur_pid(MAGIC_PID)
     , cur_pc(0)
     , prev_instr_addr(0)
     , bundle_idx(0)
@@ -67,15 +69,14 @@ reader_t::operator*()
 reader_t &
 reader_t::operator++()
 {
-    memref_tid_t magic_tid = 0xdeadbeef;
-    memref_pid_t magic_pid = 0xdeadbeef;
+    
     // We bail if we get a partial read, or EOF, or any error.
     while (true) {
         if (bundle_idx == 0 /*not in instr bundle*/)
             input_entry = read_next_entry();
         if (input_entry == NULL) {
             ERRMSG("Trace is truncated\n");
-            assert(false);
+            // assert(false);
             at_eof = true; // bail
             break;
         }
@@ -104,10 +105,8 @@ reader_t::operator++()
         case TRACE_TYPE_PREFETCH_INSTR:
             have_memref = true;
             assert(cur_tid != 0 && cur_pid != 0);
-            // cur_ref.data.pid = cur_pid;
-            // cur_ref.data.tid = cur_tid;
-            cur_ref.data.pid = magic_pid;
-            cur_ref.data.tid = magic_tid;
+            cur_ref.data.pid = cur_pid;
+            cur_ref.data.tid = cur_tid;
             cur_ref.data.type = (trace_type_t)input_entry->type;
             cur_ref.data.size = input_entry->size;
             cur_ref.data.addr = input_entry->addr;
@@ -143,10 +142,8 @@ reader_t::operator++()
                 cur_pc = input_entry->addr;
             } else {
                 have_memref = true;
-                // cur_ref.instr.pid = cur_pid;
-                // cur_ref.instr.tid = cur_tid;
-                cur_ref.instr.pid = magic_pid;
-                cur_ref.instr.tid = magic_tid;
+                cur_ref.instr.pid = cur_pid;
+                cur_ref.instr.tid = cur_tid;
                 cur_ref.instr.type = (trace_type_t)input_entry->type;
                 cur_ref.instr.size = input_entry->size;
                 cur_pc = input_entry->addr;
