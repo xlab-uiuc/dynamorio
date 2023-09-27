@@ -61,7 +61,7 @@ const char *const trace_type_names[] = {
 };
 
 void _memref_pgtable_results::print() const {
-    printf("pgtable_results: paddr: %lx num_steps: %d", paddr, num_steps);
+    printf("pgtable_results: paddr: %lx num_steps: %d ", paddr, num_steps);
     for (uint32_t i = 0; i < num_steps; i++) {
         printf("steps[%d]: %lx ", i, steps[i]);
     }

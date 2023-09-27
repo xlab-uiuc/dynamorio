@@ -536,6 +536,12 @@ cache_simulator_t::process_memref(const memref_t &memref)
     // not practical to measure which core each thread actually
     // ran on for each memref.
     int core;
+
+    if (knobs.verbose >= 3) {
+        std::cerr << "last_thread " << last_thread << " memref.data.tid " << memref.data.tid << "\n";
+        std::cerr << "last_core " << last_core << "\n";
+    }
+
     if (memref.data.tid == last_thread)
         core = last_core;
     else {
@@ -544,6 +550,10 @@ cache_simulator_t::process_memref(const memref_t &memref)
         last_core = core;
     }
 
+    if (knobs.verbose >= 3) {
+        std::cerr << "core "<< core << "\n";
+    }
+    
     uint64_t addr;
 
     uint64_t virtual_page_addr = 0;
@@ -636,6 +646,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
         
         if (pwc_level <= pgwalk_steps) {
             /* bring to PWC only when PTE at step x is valid */
+            /* Invalid entries (PTEs beyond pgwalk_steps ) */
             pwc_search_res = pw_caches[pwc_level-1]->request(pwc_check_memref);
         } 
            
