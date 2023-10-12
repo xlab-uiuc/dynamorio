@@ -200,6 +200,17 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
             return;
         }
 
+        std::cerr << "Initialising for core " << i << "\n";
+        std::cerr << "Initialising L2 cache with size: " << knobs.L2_size
+                  << " with assoc: " << knobs.L2_assoc
+                  << " with line size: " << knobs.line_size << std::endl;
+        std::cerr << "Initialising L1 I cache with size: " << knobs.L1I_size
+                  << " with assoc: " << knobs.L1I_assoc
+                  << " with line size: " << knobs.line_size << std::endl;
+        std::cerr << "Initialising L1 D cache with size: " << knobs.L1D_size
+                  << " with assoc: " << knobs.L1D_assoc
+                  << " with line size: " << knobs.line_size << std::endl;
+
         if (!l2_caches[i]->init (knobs.L2_assoc, (int)knobs.line_size,
                                  (int)knobs.L2_size, llc,
                                  new cache_stats_t("", warmup_enabled)) || 
@@ -233,6 +244,11 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
             success = false;
             return;
         }
+
+        std::cerr << "Initialising PW cache with size: " << PWC_SIZE[i]
+                  << " with assoc: " << PWC_ASSOC[i]
+                  << " with line size: " << knobs.line_size << std::endl;
+        
         if (!pw_caches[i]->init (PWC_ASSOC[i], PWC_ENTRY_SIZE,
                                  PWC_SIZE[i], NULL,
                                  new cache_stats_t("", warmup_enabled))) {
