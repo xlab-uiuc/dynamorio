@@ -1,11 +1,12 @@
 import os
 import subprocess
+import argparse
 
 access_to_latency = {
     "MEMORY": 200,
-    "L1": 4,
-    "L2": 14,
-    "LLC": 54,
+    "L1": 5,
+    "L2": 20,
+    "LLC": 80,
     "PWC": 1,
     "ZERO": 0
 }
@@ -35,6 +36,8 @@ def calc_latency(line):
         else:
             print("Invalid stat: {}".format(stat))
     total_latency = cur_latency * frequency
+    
+    print("sub_latency: {} frequency: {}".format(cur_latency, frequency))
     return total_latency, frequency
 
 def parse_page_walk_latency(file_name):
@@ -49,6 +52,7 @@ def parse_page_walk_latency(file_name):
             sub_latency, frequency = calc_latency(line)
             total_latency += sub_latency
             total_requests += frequency
+            # print("sub_latency: {} frequency: {}".format(sub_latency, frequency))
     avg_latency = total_latency / total_requests
 
     print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
@@ -74,6 +78,15 @@ def get_dyna_results(folder):
         return None
 
 if __name__ == "__main__":
+    
+    parser = argparse.ArgumentParser(description='An example script with arguments.')
+    parser.add_argument('--file', type=str, help='An integer argument')
+
+    args = parser.parse_args()
+    if args.file:
+        parse_page_walk_latency(args.file)
+        exit(0)
+    
     arch = "x86"
     folder = "logs_{}".format(arch)
     bench_logs = get_dyna_results(folder)
