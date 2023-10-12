@@ -96,31 +96,15 @@ void qemu_file_reader_t::print_radix_trans_info(radix_trans_info & info)
         for (int i = 0; i < RADIX_LEVEL; i++) {
             printf("info.PTEs[%d]: %lx\n", i, info.PTEs[i]);
         }
-        printf("info.page_size: %lx\n", info.page_size);
         printf("info.access_type: %d\n", info.access_type);
         printf("info.access_size: %x\n", info.access_size);
-        printf("info.pc: %lx\n", info.pc);
         printf("info.success: %d\n", info.success);
     }
 }
 
 int
-qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
+qemu_file_reader_t::parse_qemu_line_radix(radix_trans_info & info)
 {
-    radix_trans_info info;
-    int parsed_n_var =
-        sscanf(line.c_str(),
-               "Radix Translate: vaddr=%lx PTE0=%lx PTE1=%lx PTE2=%lx PTE3=%lx paddr=%lx "
-               "page_size=%lx access=%d size=%d pc=%lx success=%d\n",
-               &info.vaddr, &info.PTEs[0], &info.PTEs[1], &info.PTEs[2], &info.PTEs[3],
-               &info.paddr, &info.page_size, &info.access_type, &info.access_size,
-               &info.pc, &info.success);
-
-    if (parsed_n_var != N_RADIX_VARIABLE) {
-        std::cerr << "error parsing line: " << line << std::endl;  
-        return -1;
-    }
-
     print_radix_trans_info(info);
 
     switch ((MMUAccessType) info.access_type)
@@ -166,13 +150,13 @@ qemu_file_reader_t::parse_qemu_line_radix(std::string &line)
 trace_entry_t *
 qemu_file_reader_t::read_next_entry()
 {
-    std::string line;
-    if (std::getline(fstream, line)) {
+    radix_trans_info info;
+
+    if (fstream) {
         
-        if(verbose >= 2)
-            std::cout << line << std::endl;
+        fstream.read((char *) &info, sizeof(info));
         
-        if (this->parse_qemu_line_radix(line) < 0) {
+        if (this->parse_qemu_line_radix(info) < 0) {
             return NULL;
         }
         return &entry_copy;

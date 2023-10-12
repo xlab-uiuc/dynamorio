@@ -57,11 +57,9 @@ struct radix_trans_info {
     uint64_t vaddr;
     uint64_t PTEs[RADIX_LEVEL];
     uint64_t paddr;
-    uint64_t page_size;
-    int access_type;
+    int32_t access_type;
     uint32_t access_size;
-    uint64_t pc;
-    int success;
+    int32_t success;
 };
 
 
@@ -80,7 +78,7 @@ protected:
     read_next_entry();
 
 private:
-    int parse_qemu_line_radix(std::string &line);
+    int parse_qemu_line_radix(radix_trans_info & info);
     void print_entry_copy(trace_entry_t & entry);
     void print_radix_trans_info(radix_trans_info & info);
     
