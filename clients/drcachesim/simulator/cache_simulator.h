@@ -160,6 +160,10 @@ protected:
     void print_page_walk_res(page_walk_hm_result_t & page_walk_res, int pwc_hit_level, int pgwalk_steps);
     void print_memref(const memref_t &memref);
 
+    void stats_memref(const memref_t &memref);
+    std::map<trace_type_t, uint64_t> kernel_memref_stats;
+    std::map<trace_type_t, uint64_t> user_memref_stats;
+    
     // The following unordered maps map a cache's name to a pointer to it.
     std::unordered_map<std::string, cache_t *> llcaches;     // LLC(s)
     std::unordered_map<std::string, cache_t *> other_caches; // Non-L1, non-LLC caches

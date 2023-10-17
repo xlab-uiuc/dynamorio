@@ -31,6 +31,7 @@
  */
 
 // Set properties of Page Walk Caches
+#include <cstdint>
 #define NUM_PWC 3
 #define PWC_ENTRY_SIZE 1
 const unsigned int PWC_ASSOC[] = { 1, 4, 4};
@@ -486,6 +487,40 @@ void cache_simulator_t::print_memref(const memref_t &memref)
     }
 }
 
+void update_stats(std::map<trace_type_t, uint64_t> & record, trace_type_t type) {
+    auto it = record.find(type);
+    if (it != record.end()) {
+        it->second++;
+    } else {
+        record.insert(std::make_pair(type, 1));
+    }
+}
+
+
+#define IS_KERNEL_MAP(addr) (addr >= 0xffff800000000000ULL )
+void cache_simulator_t::stats_memref(const memref_t &memref) {
+    uint64_t vaddr = 0;
+    trace_type_t type;
+    if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+        // new_memref.instr.addr = physical_page_addr + page_offset;
+        vaddr = memref.instr.addr;
+        type = memref.instr.type;
+    } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
+        // new_memref.data.addr  = physical_page_addr + page_offset;
+        vaddr = memref.data.addr;
+        type = memref.data.type;
+    } else {
+        /* only record I, R, W */
+        return;
+    }
+
+    if (IS_KERNEL_MAP(vaddr)) {
+        update_stats(this->kernel_memref_stats, type);
+    } else {
+        update_stats(this->user_memref_stats, type);
+    }
+}
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
@@ -547,7 +582,7 @@ cache_simulator_t::process_memref(const memref_t &memref)
     }
     
     print_memref(memref);
-    
+    stats_memref(memref);
     // We use a static scheduling of threads to cores, as it is
     // not practical to measure which core each thread actually
     // ran on for each memref.
@@ -969,6 +1004,22 @@ cache_simulator_t::print_results()
     std::cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
     std::cerr << "num_requests : " << num_request << std::endl 
               << "num_not_found : " << num_not_found << std::endl;
+
+    std::cerr << "kernel memory references: " << std::endl;
+    for (std::map<trace_type_t, uint64_t>::iterator it =
+             kernel_memref_stats.begin();
+         it != kernel_memref_stats.end(); it++) {
+
+        std::cerr << it->first << "," << it->second << std::endl;
+    }
+
+    std::cerr << "user memory references: " << std::endl;
+    for (std::map<trace_type_t, uint64_t>::iterator it =
+             user_memref_stats.begin();
+         it != user_memref_stats.end(); it++) {
+
+        std::cerr << it->first << "," << it->second << std::endl;
+    }
 
     std::cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
     std::cerr << "num_range_found : "     << num_range_found << std::endl 
