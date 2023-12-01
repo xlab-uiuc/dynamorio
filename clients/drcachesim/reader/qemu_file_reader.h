@@ -52,14 +52,21 @@ typedef enum MMUAccessType {
     MMU_INST_FETCH = 2
 } MMUAccessType;
 
-#define RADIX_LEVEL 4
+#define PAGE_TABLE_LEAVES 4
+
+#define BIN_RECORD_TYPE_MEM 'M' // User memory access, use MemRecord
+#define BIN_RECORD_TYPE_FEC 'F' // InsFetcher memory access, use MemRecord
+#define BIN_RECORD_TYPE_INS 'I' // InsDecoder record, use InsRecord
+
 struct radix_trans_info {
-    uint64_t vaddr;
-    uint64_t PTEs[RADIX_LEVEL];
-    uint64_t paddr;
-    int32_t access_type;
-    uint32_t access_size;
-    int32_t success;
+	uint8_t header;
+	uint8_t access_rw;
+	uint16_t access_cpu;
+	uint32_t access_sz;
+	uint64_t vaddr;
+	uint64_t paddr;
+	uint64_t pte;
+	uint64_t leaves[PAGE_TABLE_LEAVES];
 };
 
 

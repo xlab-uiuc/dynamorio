@@ -88,59 +88,62 @@ void qemu_file_reader_t::print_entry_copy(trace_entry_t & entry)
     } 
 }
 
-void qemu_file_reader_t::print_radix_trans_info(radix_trans_info & info)
+void qemu_file_reader_t::print_radix_trans_info(radix_trans_info & record)
 {
     if(verbose >= 2) {
-        printf("info.vaddr: %lx\n", info.vaddr);
-        printf("info.paddr: %lx\n", info.paddr);
-        for (int i = 0; i < RADIX_LEVEL; i++) {
-            printf("info.PTEs[%d]: %lx\n", i, info.PTEs[i]);
+        if (record.header == BIN_RECORD_TYPE_MEM) {
+            printf("%s: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, pte=%016lx, leaves=[%016lx, %016lx, %016lx, %016lx]\n",
+                record.access_rw ? "Load " : "Store", record.access_cpu, record.access_sz, record.vaddr, record.paddr, record.pte,
+                record.leaves[0], record.leaves[1], record.leaves[2], record.leaves[3]);
+        } else if (record.header == BIN_RECORD_TYPE_FEC) {
+            printf("Fetch: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, pte=%016lx, leaves=[%016lx, %016lx, %016lx, %016lx]\n",
+                record.access_cpu, record.access_sz, record.vaddr, record.paddr, record.pte,
+                record.leaves[0], record.leaves[1], record.leaves[2], record.leaves[3]);
+        } else {
+            printf("Unknown record type: %d\n", record.header);
         }
-        printf("info.access_type: %d\n", info.access_type);
-        printf("info.access_size: %x\n", info.access_size);
-        printf("info.success: %d\n", info.success);
     }
 }
 
-int
-qemu_file_reader_t::parse_qemu_line_radix(radix_trans_info & info)
+int get_entry_type(radix_trans_info & info, trace_entry_t & entry) 
+{
+    if (info.header == BIN_RECORD_TYPE_MEM) {
+        entry.type = info.access_rw ? TRACE_TYPE_READ  : TRACE_TYPE_WRITE;
+    } else if (info.header == BIN_RECORD_TYPE_FEC) {
+        entry.type = TRACE_TYPE_INSTR;
+    } else {
+        return -1;
+    }
+    return 0;
+}
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+int qemu_file_reader_t::parse_qemu_line_radix(radix_trans_info & info)
 {
     print_radix_trans_info(info);
 
-    switch ((MMUAccessType) info.access_type)
-    {
-    case MMU_DATA_LOAD:
-        entry_copy.type = TRACE_TYPE_READ;
-        break;
-    case MMU_DATA_STORE:
-        /* code */
-        entry_copy.type = TRACE_TYPE_WRITE;
-        break;
-    case MMU_INST_FETCH:
-        /* code */
-        entry_copy.type = TRACE_TYPE_INSTR;
-        break;
-    default:
-        break;
+    if (get_entry_type(info, entry_copy)){
+        return -1;
     }
 
     entry_copy.addr = info.vaddr;
-    /* TODO this may have to be fixed */
-    entry_copy.size = info.access_size;
+    // /* TODO this may have to be fixed */
+    entry_copy.size = info.access_sz;
     // entry_copy.pc = info.pc;
-    // entry.phys_addr = info.paddr;
+    entry_copy.phys_addr = info.paddr;
 
     entry_copy.pgtable_results.paddr = info.paddr;
     int i = 0;
-    for (; i < RADIX_LEVEL; i++) {
-        if (info.PTEs[i] != 0) {
-            entry_copy.pgtable_results.steps[i] = info.PTEs[i];
+    for (; i < MIN(MAX_MEMREF_STEPS, PAGE_TABLE_LEAVES); i++) {
+        if (info.leaves[i] != 0) {
+            entry_copy.pgtable_results.steps[i] = info.leaves[i];
         } else {
             break;
         }
     }
     entry_copy.pgtable_results.num_steps = i;
-    entry_copy.pgtable_results.success = info.success;
+    /* This by default will succeed if QEMU trace doesn't capture a failed page walk */
+    entry_copy.pgtable_results.success = 1;
 
     print_entry_copy(entry_copy);
 
