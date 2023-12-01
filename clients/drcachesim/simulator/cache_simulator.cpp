@@ -521,6 +521,54 @@ void cache_simulator_t::stats_memref(const memref_t &memref) {
     }
 }
 
+unsigned int
+cache_simulator_t::visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps)
+{
+    cache_result_t pwc_search_res = NOT_FOUND;
+    unsigned int pwc_hit_level = 0;
+    memref_t pwc_check_memref;
+    pwc_check_memref.data.type = TRACE_TYPE_READ;
+
+    /**
+     * Checks from the deepest level of PWC to the shallowest level. (level 3 -> 1)
+     * If it hits, memorize the level and stop searching.
+     * If it does not hit, continue searching.
+     * pwc_hit_level will be the highest level PWC that gives PWC hit
+     * For huge pages, pgwalk_steps == 3 or 2. For 4KB pages, pgwalk_steps == 4.
+     * For huge pages,  PWC only caches directory entries but not data page entries.
+     * For example, if pgwalk_steps == 3, it cannot reside in PWC level 3,
+     * we have to start search from PWC level 2.
+     */
+
+    unsigned int pwc_level_start = NUM_PWC;
+    if (pgwalk_steps < NUM_PAGE_TABLE_LEVELS) {
+        pwc_level_start = NUM_PWC - (NUM_PAGE_TABLE_LEVELS - pgwalk_steps);
+    }
+
+    for (unsigned int pwc_level = pwc_level_start; pwc_level >= 1; pwc_level--) {
+        pwc_check_memref.data.addr = full_vaddr >>
+            (NUM_PAGE_OFFSET_BITS +
+             ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS));
+        pwc_check_memref.data.size = 1;
+                
+        pwc_search_res = pw_caches[pwc_level - 1]->request(pwc_check_memref);
+        
+        // if found, memorize the pwc_level and stop searching
+        if (knobs.verbose >= 2) {
+            printf("addr %lx pwc_level %d pwc_search_res %d\n",
+                   pwc_check_memref.data.addr, pwc_level, pwc_search_res);
+        }
+
+        if (pwc_search_res == FOUND_L1) {
+            if (pwc_hit_level == 0) {
+                pwc_hit_level = pwc_level;
+                break;
+            }
+        }
+    }
+    return pwc_hit_level;
+}
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
@@ -679,41 +727,12 @@ cache_simulator_t::process_memref(const memref_t &memref)
       // reset page walk trajectory path 
       page_walk_res.clear();// Accumulates sources for each access during a page walk
 
+      // BEGIN PAGE WALK
+      // PT levels are counted from the root of the radix tree
+      //  Check PWCs
+      /* get pwc hit level */
+      unsigned int pwc_hit_level = visit_pwc(virtual_full_page_addr, pgwalk_steps);
 
-      //BEGIN PAGE WALK 
-      //PT levels are counted from the root of the radix tree
-      // Check PWCs
-      cache_result_t pwc_search_res = NOT_FOUND;
-      unsigned int pwc_hit_level = 0;
-      memref_t pwc_check_memref; 
-      pwc_check_memref.data.type = TRACE_TYPE_READ;
-      // search PWC starting from highest level
-      /* pwc_hit_level will be the highest level PWC that gives PWC hit */
-      for(unsigned int pwc_level = NUM_PWC; pwc_level >= 1; pwc_level--) {
-        pwc_check_memref.data.addr = virtual_full_page_addr >> ( NUM_PAGE_OFFSET_BITS + 
-                                                                  ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS)
-                                                                );
-        pwc_check_memref.data.size = 1; 
-        
-        if (pwc_level <= pgwalk_steps) {
-            /* bring to PWC only when PTE at step x is valid */
-            /* Invalid entries (PTEs beyond pgwalk_steps ) */
-            pwc_search_res = pw_caches[pwc_level-1]->request(pwc_check_memref);
-        } 
-           
-        // if found, memorize the pwc_level and stop searching 
-        if (knobs.verbose >= 2) {
-            printf("addr %lx pwc_level %d pwc_search_res %d\n", pwc_check_memref.data.addr, pwc_level, pwc_search_res);
-        }
-
-        if (pwc_search_res == FOUND_L1) {
-          if (pwc_hit_level == 0) {
-            pwc_hit_level = pwc_level;
-          }
-        }
-      }
-      // find a record in the host PT corresponding to the given address
-      
       for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
         if (level_host < pwc_hit_level) {
           // ignore these levels as they are bypassed due to PWC hit
