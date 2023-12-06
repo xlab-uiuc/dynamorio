@@ -1,7 +1,7 @@
 import os
 import subprocess
 import argparse
-
+import pandas as pd
 """
 CPU Caches:
   L1 Data 48K (x32)
@@ -94,7 +94,7 @@ def parse_page_walk_latency(file_name):
     avg_latency = total_latency / total_requests
 
     print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
-    # return seperate_idx
+    return avg_latency
 
 TRAILING_KEY = '_dyna.log'
 def get_dyna_results(folder):
@@ -136,9 +136,17 @@ if __name__ == "__main__":
     folder = os.path.join(parent_folder, arch)
     bench_logs = get_dyna_results(folder)
     
+
+    benches = []
+    latencies = []
     for log_name in bench_logs:
         bench = log_name[:log_name.find(TRAILING_KEY)]
         print("bench: {}".format(bench))
-        parse_page_walk_latency(os.path.join(folder, "{}".format(log_name)))
+        latency = parse_page_walk_latency(os.path.join(folder, "{}".format(log_name)))
 
+        benches.append(bench)
+        latencies.append(latency)
+
+    df = pd.DataFrame({'latency': latencies}, index=benches)
+    print(df)
 
