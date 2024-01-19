@@ -33,13 +33,14 @@ FREQ = 3 # GHz
 
 access_to_latency = {
     "MEMORY": 200,
-    "L1": 1.67 * FREQ,
-    "L2": 7.02 * FREQ,
-    "LLC": 31.1 * FREQ,
+    "L1": 4,
+    "L2": 14,
+    "LLC": 54,
     "PWC": 1,
     "ZERO": 0
 }
 
+# paper reference: https://dl.acm.org/doi/pdf/10.1145/3489525.3511689
 # access_to_latency = {
 #     "MEMORY": 200,
 #     "L1": 5,
