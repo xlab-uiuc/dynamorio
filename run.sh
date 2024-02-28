@@ -35,6 +35,8 @@ run_sim() {
 
         $SIMULATOR_DIR/build/bin64/drrun -t drcachesim \
             -qemu_mem_trace ${bin_path} \
+            -arch ${ARCH} \
+            -cores 1 \
             -warmup_refs $((100 * 1000000)) \
             -TLB_L1I_entries 128 \
             -TLB_L1I_assoc 8 \
