@@ -47,10 +47,13 @@ qemu_file_reader_t::qemu_file_reader_t()
     /* Empty. */
 }
 
-qemu_file_reader_t::qemu_file_reader_t(const char *file_name, int verbosity)
-    : fstream(file_name, std::ifstream::binary), verbose(verbosity)
+qemu_file_reader_t::qemu_file_reader_t(const char *file_name, int verbosity,
+                                       trans_arch a)
+    : fstream(file_name, std::ifstream::binary), verbose(verbosity), arch(a) 
 {
-    /* Empty. */
+    std::cout << "creating qemu_file_reader_t for " << file_name 
+        << " with verbosity " << verbosity
+        << " and arch " << a << std::endl;
 }
 
 bool
@@ -77,6 +80,15 @@ qemu_file_reader_t::~qemu_file_reader_t()
 }
 
 
+static void print_leaves_helper(uint64_t *leaves, int n)
+{
+    printf("[");
+    for (int i = 0; i < n; i++) {
+        printf(" %016lx ", leaves[i]);
+    }
+    printf("]");
+}
+
 void qemu_file_reader_t::print_entry_copy(trace_entry_t & entry)
 {   
     if(verbose >= 2) {
@@ -92,24 +104,60 @@ void qemu_file_reader_t::print_radix_trans_info(radix_trans_info & record)
 {
     if(verbose >= 2) {
         if (record.header == BIN_RECORD_TYPE_MEM) {
-            printf("%s: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, pte=%016lx, leaves=[%016lx, %016lx, %016lx, %016lx]\n",
-                record.access_rw ? "Load " : "Store", record.access_cpu, record.access_sz, record.vaddr, record.paddr, record.pte,
-                record.leaves[0], record.leaves[1], record.leaves[2], record.leaves[3]);
+            printf("%s: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, pte=%016lx, leaves=",
+                record.access_rw ? "Load " : "Store", record.access_cpu, record.access_sz, record.vaddr, record.paddr, record.pte);
+
+            print_leaves_helper(record.leaves, PAGE_TABLE_LEAVES);
+            printf("\n");
         } else if (record.header == BIN_RECORD_TYPE_FEC) {
-            printf("Fetch: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, pte=%016lx, leaves=[%016lx, %016lx, %016lx, %016lx]\n",
-                record.access_cpu, record.access_sz, record.vaddr, record.paddr, record.pte,
-                record.leaves[0], record.leaves[1], record.leaves[2], record.leaves[3]);
+            printf("Fetch: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, pte=%016lx, leaves=",
+                record.access_cpu, record.access_sz, record.vaddr, record.paddr, record.pte);
+            
+            print_leaves_helper(record.leaves, PAGE_TABLE_LEAVES);
+            printf("\n");
         } else {
             printf("Unknown record type: %d\n", record.header);
         }
     }
 }
 
-int get_entry_type(radix_trans_info & info, trace_entry_t & entry) 
+void qemu_file_reader_t::print_ecpt_trans_info(ecpt_trans_info &record)
 {
-    if (info.header == BIN_RECORD_TYPE_MEM) {
-        entry.type = info.access_rw ? TRACE_TYPE_READ  : TRACE_TYPE_WRITE;
-    } else if (info.header == BIN_RECORD_TYPE_FEC) {
+    if (verbose >= 2) {
+        if (record.header == BIN_RECORD_TYPE_MEM) {
+            printf("%s: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
+                   "pte=%016lx, leaves=",
+                   record.access_rw ? "Load " : "Store", record.access_cpu,
+                   record.access_sz, record.vaddr, record.paddr, record.pte);
+
+            print_leaves_helper(record.leaves, ECPT_TABLE_LEAVES);
+            printf(", cwt_leaves=");
+
+            print_leaves_helper(record.cwt_leaves, ECPT_CWT_LEAVES);
+            printf("\n");
+        } else if (record.header == BIN_RECORD_TYPE_FEC) {
+            printf("Fetch: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
+                   "pte=%016lx, leaves=",
+                   record.access_cpu, record.access_sz, record.vaddr, record.paddr,
+                   record.pte);
+
+            print_leaves_helper(record.leaves, ECPT_TABLE_LEAVES);
+            printf(", cwt_leaves=");
+
+            print_leaves_helper(record.cwt_leaves, ECPT_CWT_LEAVES);
+            printf("\n");
+
+        } else {
+            printf("Unknown record type: %d\n", record.header);
+        }
+    }
+}
+
+int get_entry_type(uint8_t header,  uint8_t access_rw, trace_entry_t & entry) 
+{
+    if (header == BIN_RECORD_TYPE_MEM) {
+        entry.type = access_rw ? TRACE_TYPE_READ  : TRACE_TYPE_WRITE;
+    } else if (header == BIN_RECORD_TYPE_FEC) {
         entry.type = TRACE_TYPE_INSTR;
     } else {
         return -1;
@@ -122,7 +170,7 @@ int qemu_file_reader_t::parse_qemu_line_radix(radix_trans_info & info)
 {
     print_radix_trans_info(info);
 
-    if (get_entry_type(info, entry_copy)){
+    if (get_entry_type(info.header, info.access_rw, entry_copy)){
         return -1;
     }
 
@@ -150,19 +198,66 @@ int qemu_file_reader_t::parse_qemu_line_radix(radix_trans_info & info)
     return 0;
 }
 
+int qemu_file_reader_t::parse_qemu_line_ecpt(ecpt_trans_info & info)
+{
+    print_ecpt_trans_info(info);
+
+    if (get_entry_type(info.header, info.access_rw, entry_copy)){
+        return -1;
+    }
+
+    entry_copy.addr = info.vaddr;
+    // /* TODO this may have to be fixed */
+    entry_copy.size = info.access_sz;
+    // entry_copy.pc = info.pc;
+    entry_copy.phys_addr = info.paddr;
+
+    entry_copy.pgtable_results.paddr = info.paddr;
+    int i = 0;
+
+    for (; i < ECPT_TABLE_LEAVES; i++) {
+        entry_copy.pgtable_results.steps[i] = info.leaves[i];
+    }
+
+    entry_copy.pgtable_results.num_steps = ECPT_TABLE_LEAVES;
+
+    for (i = 0; i < ECPT_CWT_LEAVES; i++) {
+        entry_copy.pgtable_results.aux_info.cwt_steps[i] = info.cwt_leaves[i];
+    }
+    entry_copy.pgtable_results.aux_info.n_cwt_steps = ECPT_CWT_LEAVES;
+    entry_copy.pgtable_results.aux_info.pmd_header.byte = info.pmd_header;
+    entry_copy.pgtable_results.aux_info.pud_header.byte = info.pud_header;
+
+    
+    /* This by default will succeed if QEMU trace doesn't capture a failed page walk */
+    entry_copy.pgtable_results.success = 1;
+
+    print_entry_copy(entry_copy);
+
+    return 0;
+}
+
 trace_entry_t *
 qemu_file_reader_t::read_next_entry()
 {
-    radix_trans_info info;
+    radix_trans_info radix_info;
+    ecpt_trans_info ecpt_info;
 
     if (fstream) {
         
-        fstream.read((char *) &info, sizeof(info));
-        
-        if (this->parse_qemu_line_radix(info) < 0) {
-            return NULL;
+        if (arch == RADIX) {
+            fstream.read((char *) &radix_info, sizeof(radix_info));
+            if (this->parse_qemu_line_radix(radix_info) < 0) {
+                return NULL;
+            }
+            return &entry_copy;
+        } else {
+            fstream.read((char *) &ecpt_info, sizeof(ecpt_info));
+            if (this->parse_qemu_line_ecpt(ecpt_info) < 0) {
+                return NULL;
+            }
+            return &entry_copy;
         }
-        return &entry_copy;
     } else {
         return NULL;
     }

@@ -65,5 +65,15 @@ void _memref_pgtable_results::print() const {
     for (uint32_t i = 0; i < num_steps; i++) {
         printf("steps[%d]: %lx ", i, steps[i]);
     }
+
+    if (aux_info.n_cwt_steps > 0 ) {
+        printf("cwt_leaves: ");
+        for (uint32_t i = 0; i < aux_info.n_cwt_steps; i++) {
+            printf(" %lx ", aux_info.cwt_steps[i]);
+        }
+        printf("pmd_header=%x  pud_header=%x\n", aux_info.pmd_header.byte,
+               aux_info.pud_header.byte);
+    }
+
     printf("success: %d\n", success);
 }

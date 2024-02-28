@@ -70,10 +70,37 @@ struct radix_trans_info {
 };
 
 
+#define ECPT_TABLE_LEAVES 6
+#define ECPT_CWT_LEAVES 4
+struct ecpt_trans_info {
+    uint8_t header;
+	uint8_t access_rw;
+	uint16_t access_cpu;
+	uint32_t access_sz;
+	uint64_t vaddr;
+	uint64_t paddr;
+	uint64_t pte;
+	uint64_t leaves[ECPT_TABLE_LEAVES];
+    uint64_t cwt_leaves[ECPT_CWT_LEAVES];
+    uint8_t pud_header;
+    uint8_t pmd_header;
+};
+
+union trans_info 
+{
+    struct radix_trans_info radix_info;
+    struct ecpt_trans_info ecpt_info;
+};
+
+enum trans_arch {
+    RADIX,
+    ECPT
+};
+
 class qemu_file_reader_t : public reader_t {
 public:
     qemu_file_reader_t();
-    explicit qemu_file_reader_t(const char *file_name, int verbosity);
+    explicit qemu_file_reader_t(const char *file_name, int verbosity, trans_arch a);
     virtual ~qemu_file_reader_t();
     virtual bool
     init();
@@ -86,12 +113,17 @@ protected:
 
 private:
     int parse_qemu_line_radix(radix_trans_info & info);
+    int parse_qemu_line_ecpt(ecpt_trans_info & info);
+
     void print_entry_copy(trace_entry_t & entry);
-    void print_radix_trans_info(radix_trans_info & info);
     
+    void print_radix_trans_info(radix_trans_info & info);
+    void print_ecpt_trans_info(ecpt_trans_info & info);
+
     std::ifstream fstream;
     trace_entry_t entry_copy;
     int verbose;
+    trans_arch arch;
 };
 
 #endif /* _QEMU_FILE_READER_H_ */

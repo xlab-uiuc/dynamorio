@@ -7,7 +7,7 @@ The trajectories data can be processed by a side script to calculate the page wa
 0. Build Docker environment
 ```bash
 sudo docker build -t dynamorio . 
-sudo docker run -it -v `pwd`:/dynamorio dynamorio:latest /bin/bash
+sudo docker run -it -v `pwd`:/dynamorio -v dynamorio:latest /bin/bash
 ```
 
 1. Set up environment variables
@@ -22,7 +22,10 @@ source source.sh
 
 3. Run the simulator
 ```bash
-bin64/drrun -t drcachesim -qemu_mem_trace ../mmu_1M.log 2>&1 | tee ../mmu_dyna_1M.log
+# bin64/drrun -t drcachesim -qemu_mem_trace ../mmu_1M.log 2>&1 | tee ../mmu_dyna_1M.log
+
+# debug run
+bin64/drrun -t drcachesim -qemu_mem_trace /linux_gen_ECPT/walk_log.bin -arch ecpt -verbose 5 > ../dyna.log 2>&1
 ```
 
 

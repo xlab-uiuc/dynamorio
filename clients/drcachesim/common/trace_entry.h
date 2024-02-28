@@ -266,12 +266,38 @@ type_is_prefetch(const trace_type_t type)
         type == TRACE_TYPE_HARDWARE_PREFETCH;
 }
 
-#define MAX_MEMREF_STEPS 4
+#define MAX_MEMREF_STEPS 12
+// #define MAX_MEMREF_STEPS 4
+
+typedef union cwt_header_byte
+{
+    struct  {
+        /* header info */
+        unsigned int present_1GB : 1;
+        unsigned int present_2MB : 1;
+        unsigned int present_4KB : 1;
+        unsigned int way_in_ecpt : 2;
+
+        /* bits for partial info */
+        unsigned int partial_vpn : 3;
+    } __attribute__((packed));
+    unsigned char byte;
+} cwt_header_t;
+
+#define MAX_AUX_INFO 4
+struct ecpt_auxilaries_t {
+    /* cannot use vector here since union member cannot contain non trivial data member */
+    addr_t cwt_steps[MAX_AUX_INFO];
+    cwt_header_t pmd_header;
+    cwt_header_t pud_header;
+    uint32_t n_cwt_steps;
+};
 
 struct _memref_pgtable_results {
-    // std::vector<addr_t> steps;
+
     addr_t steps[MAX_MEMREF_STEPS];
     addr_t paddr;
+    ecpt_auxilaries_t aux_info;
     uint32_t num_steps;
     int success;
     /* add a type field to disingtuish radix from ECPT */
