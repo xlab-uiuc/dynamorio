@@ -89,6 +89,7 @@ caching_device_t::request(const memref_t &memref_in) {
         if (parent != NULL)
             parent->stats->child_access(memref_in, true);
         access_update(last_block_idx, last_way);
+        res = FOUND_L1;
         return res;
     }
 
@@ -102,6 +103,7 @@ caching_device_t::request(const memref_t &memref_in) {
             memref.data.size = ((tag + 1) << block_size_bits) - memref.data.addr;
 
         for (way = 0; way < associativity; ++way) {
+            // printf ("Tag: %lx, Block: %d, Way: %d block_tag %lx\n", tag, block_idx, way, get_caching_device_block(block_idx, way).tag);
             if (get_caching_device_block(block_idx, way).tag == tag) {
                 stats->access(memref, true /*hit*/);
                 res = FOUND_L1;
