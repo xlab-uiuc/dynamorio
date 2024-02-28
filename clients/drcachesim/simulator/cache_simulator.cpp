@@ -538,6 +538,27 @@ void cache_simulator_t::print_page_walk_res_ecpt(page_walk_hm_result_t & page_wa
 }
 
 
+void cache_simulator_t::print_page_walk_stats(page_walk_hm_result_t & page_walk_res) {
+    std::vector<std::string> page_walk_res_str {
+        "MEMORY"
+        , "L1"
+        , "L2"
+        , "LLC"
+        , "WRONG"
+        , "RANGE_HIT"
+        , "RANGE_MISS"
+        , "PWC"
+        , "ZERO"
+    };
+    if (knobs.verbose >= 2) {
+        std::cerr << "Page walk result: ";
+        for(unsigned int i = 0; i < page_walk_res.size(); i++) {
+            std::cerr << page_walk_res_str[page_walk_res[i]] << ",";
+        }
+        std::cerr << std::endl;
+    }
+}
+
 void memref_t::print() const{
     if (type_is_instr(instr.type) || instr.type == TRACE_TYPE_PREFETCH_INSTR) {
         // new_memref.instr.addr = physical_page_addr + page_offset;
@@ -1184,6 +1205,42 @@ hit_info_t cache_simulator_t::visit_cwc(uint64_t full_vaddr,
                                     knobs.verbose, ways_to_visit);
 }
 
+void cache_simulator_t::cwt_back_fill_one_way(page_walk_hm_result_t & res, uint64_t cwt_entry_addr, int core)
+{
+    make_request(res, TRACE_TYPE_PE2, cwt_entry_addr, core);
+}
+
+void cache_simulator_t::cwt_back_fill(hit_info_t hit_info,
+                                 const _memref_pgtable_results &pgtable_result, int core)
+{
+
+    if (!hit_info.pmd_hit) {
+        page_walk_hm_result_t pmd_cwt_fetch_res;
+        for (uint32_t i = 0; i < CWT_2MB_N_WAY; i++) {
+            assert(i < pgtable_result.aux_info.n_cwt_steps);
+            cwt_back_fill_one_way(pmd_cwt_fetch_res, pgtable_result.aux_info.cwt_steps[i],
+                                  core);
+        }
+        if (knobs.verbose >= 2) {
+            printf("PMD CWT fetch   ");
+        }
+        print_page_walk_stats(pmd_cwt_fetch_res);
+    }
+
+    if (!hit_info.pud_hit) {
+        page_walk_hm_result_t pud_cwt_fetch_res;
+        for (uint32_t i = CWT_2MB_N_WAY; i < CWT_2MB_N_WAY + CWT_1GB_N_WAY; i++) {
+            assert(i < pgtable_result.aux_info.n_cwt_steps);
+            cwt_back_fill_one_way(pud_cwt_fetch_res, pgtable_result.aux_info.cwt_steps[i],
+                                  core);
+        }
+        if (knobs.verbose >= 2) {
+            printf("PUD CWT fetch   ");
+        }
+        print_page_walk_stats(pud_cwt_fetch_res);
+    }
+}
+
 bool
 cache_simulator_t::process_memref_ecpt(const memref_t &memref)
 {
@@ -1347,6 +1404,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         }
     }
 
+    hit_info_t hit_info = {false, false};
     // process TLB miss
     if (!is_TLB_hit) {
         if (knobs.verbose >= 2) {
@@ -1357,7 +1415,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         page_walk_res.clear(); // Accumulates sources for each access during a page walk
 
         std::set<uint32_t> ways_to_visit;
-        visit_cwc(virtual_full_page_addr, pgtable_results, ways_to_visit);
+        hit_info = visit_cwc(virtual_full_page_addr, pgtable_results, ways_to_visit);
 
         for (uint32_t i = 0; i < ECPT_TABLE_LEAVES; i++) {
             if (IN_SET(ways_to_visit, i)) {
@@ -1450,6 +1508,11 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
             error_string =
                 "Unhandled memref type " + std::to_string(new_memref.data.type);
             return false;
+        }
+
+        if (!is_TLB_hit) {
+            // back fill CWT
+            cwt_back_fill(hit_info, pgtable_results, core);
         }
 
         // Simulate contetnion in caches

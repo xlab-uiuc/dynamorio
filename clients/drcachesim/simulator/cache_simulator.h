@@ -175,11 +175,15 @@ protected:
     bool pmd_cwc_query(uint64_t full_vaddr);
 
     unsigned int visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps);
+    void cwt_back_fill_one_way(page_walk_hm_result_t & res, uint64_t cwt_entry_addr, int core);
+    void cwt_back_fill(hit_info_t hit_info, const _memref_pgtable_results &pgtable_result, int core);
+
     // void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
     void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int pgtable_addr, int core);
     void print_page_walk_res(page_walk_hm_result_t & page_walk_res, int pwc_hit_level, int pgwalk_steps);
     void print_page_walk_res_ecpt(page_walk_hm_result_t & page_walk_res, std::set<uint32_t> & ways_to_visit);
-    
+    void print_page_walk_stats(page_walk_hm_result_t & page_walk_res);
+
     void print_memref(const memref_t &memref);
 
     void stats_memref(const memref_t &memref);
