@@ -52,6 +52,11 @@
 #include <stdio.h>
 #include <assert.h>
 
+struct hit_info_t {
+  bool pmd_hit;
+  bool pud_hit;
+};
+
 class cache_simulator_t : public simulator_t {
 public:
     // This constructor is used when the cache hierarchy is configured
@@ -91,6 +96,8 @@ protected:
     cache_t **l2_caches;
     cache_t  *llc1;
     cache_t **pw_caches;
+
+    cache_t **cwc_caches;
 
     //TLB(s)
     tlb_simulator_t *tlb_sim;
@@ -161,7 +168,11 @@ protected:
     bool process_memref_radix(const memref_t &memref);
     bool process_memref_ecpt(const memref_t &memref);
 
-    void visit_cwc(uint64_t full_vaddr, std::set<uint32_t> & ways_to_visit);
+    hit_info_t visit_cwc(uint64_t full_vaddr, const _memref_pgtable_results &pgtable_result,
+              std::set<uint32_t> &ways_to_visit);
+    bool __cwc_query(uint64_t cwc_vpn, uint32_t cwc_idx);
+    bool pud_cwc_query(uint64_t full_vaddr);
+    bool pmd_cwc_query(uint64_t full_vaddr);
 
     unsigned int visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps);
     // void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);

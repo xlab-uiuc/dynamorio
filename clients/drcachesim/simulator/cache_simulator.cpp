@@ -32,10 +32,22 @@
 
 // Set properties of Page Walk Caches
 #include <cstdint>
+
+#define PUD_CWC_IDX 0
+#define PMD_CWC_IDX 1
+
+#define NUM_CWC 2
 #define NUM_PWC 3
 #define PWC_ENTRY_SIZE 1
+
 const unsigned int PWC_ASSOC[] = { 1, 4, 4};
 const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 32};
+
+#define CWC_ENTRY_SIZE 1
+const unsigned int CWC_ASSOC[] = { 2, 16};
+const unsigned int CWC_SIZE[] = { CWC_ENTRY_SIZE * 2, CWC_ENTRY_SIZE * 16};
+
+
 
 #define NUM_PAGE_TABLE_LEVELS 4 //Number of PT radix-tree levels
 #define PAGE_TABLE_ENTRY_SIZE 8 //PTE size in bytes
@@ -93,6 +105,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
     , l1_dcaches(NULL)
     , l2_caches(NULL)
     , pw_caches(NULL)
+    , cwc_caches(NULL)
     , is_warmed_up(false)
 {
     // XXX i#1703: get defaults from hardware being run on.
@@ -241,26 +254,54 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
         cache_name = "L1_D_Cache_" + std::to_string(i);
         all_caches[cache_name] = l1_dcaches[i];
     }
-    pw_caches =  new cache_t *[NUM_PWC];
-    for (unsigned int i = 0; i < NUM_PWC; i++) {
-        pw_caches[i] = create_cache(knobs.replace_policy);
-        if (pw_caches[i] == NULL) {
-            success = false;
-            return;
-        }
 
-        std::cerr << "Initialising PW cache with size: " << PWC_SIZE[i]
-                  << " with assoc: " << PWC_ASSOC[i]
-                  << " with line size: " << knobs.line_size << std::endl;
-        
-        if (!pw_caches[i]->init (PWC_ASSOC[i], PWC_ENTRY_SIZE,
-                                 PWC_SIZE[i], NULL,
-                                 new cache_stats_t("", warmup_enabled))) {
-            error_string = "Usage error: failed to initialize PW caches.  Ensure sizes "
-                           "and associativity are powers of 2 "
-                           "and that the total sizes are multiples of the line size.";
-            success = false;
-            return;
+    if (knobs.arch == RADIX) {
+        pw_caches =  new cache_t *[NUM_PWC];
+        for (unsigned int i = 0; i < NUM_PWC; i++) {
+            pw_caches[i] = create_cache(knobs.replace_policy);
+            if (pw_caches[i] == NULL) {
+                success = false;
+                return;
+            }
+
+            std::cerr << "Initialising PW cache with size: " << PWC_SIZE[i]
+                    << " with assoc: " << PWC_ASSOC[i]
+                    << " with line size: " << knobs.line_size << std::endl;
+            
+            if (!pw_caches[i]->init (PWC_ASSOC[i], PWC_ENTRY_SIZE,
+                                    PWC_SIZE[i], NULL,
+                                    new cache_stats_t("", warmup_enabled))) {
+                error_string = "Usage error: failed to initialize PW caches.  Ensure sizes "
+                            "and associativity are powers of 2 "
+                            "and that the total sizes are multiples of the line size.";
+                success = false;
+                return;
+            }
+        }
+    }
+
+    if (knobs.arch == ECPT) {
+        cwc_caches = new cache_t *[NUM_CWC];
+
+        for (unsigned int i = 0; i < NUM_CWC; i++) {
+            cwc_caches[i] = create_cache(knobs.replace_policy);
+            if (cwc_caches[i] == NULL) {
+                success = false;
+                return;
+            }
+
+            std::cerr << "Initialising CWC cache with size: " << CWC_SIZE[i]
+                    << " with assoc: " << CWC_ASSOC[i] << std::endl;
+            
+            if (!cwc_caches[i]->init (CWC_ASSOC[i], CWC_ENTRY_SIZE,
+                                    CWC_SIZE[i], NULL,
+                                    new cache_stats_t("", warmup_enabled))) {
+                error_string = "Usage error: failed to initialize PW caches.  Ensure sizes "
+                            "and associativity are powers of 2 "
+                            "and that the total sizes are multiples of the line size.";
+                success = false;
+                return;
+            }
         }
     }
 }
@@ -414,6 +455,9 @@ cache_simulator_t::~cache_simulator_t()
     }
     if (pw_caches != NULL) {
         delete[] pw_caches;
+    }
+    if (cwc_caches != NULL) {
+        delete[] cwc_caches;
     }
 }
 
@@ -945,16 +989,199 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
     return true;
 }
 
-static void get_ecpt_all_ways(std::set<uint32_t> & ways_to_visit)
+#define PAGE_SHIFT_4KB (12)
+#define PAGE_SHIFT_2MB (21)
+#define PAGE_SHIFT_1GB (30)
+#define PAGE_SHIFT_512GB (39)
+
+#define PAGE_SIZE_4KB (1ULL << PAGE_SHIFT_4KB)
+#define PAGE_SIZE_2MB (1ULL << PAGE_SHIFT_2MB)
+#define PAGE_SIZE_1GB (1ULL << PAGE_SHIFT_1GB)
+
+#define ECPT_CLUSTER_NBITS 3
+
+#define CWT_VPN_2MB_BITS 18
+#define CWT_VPN_1GB_BITS 9
+#define CWT_CLUSTER_NBITS 6
+
+#define VIRTUAL_ADDR_MASK (0x0000ffffffffffffULL)
+#define VADDR_TO_PAGE_NUM_NO_CLUSTER_4KB(x)   (((x) & VIRTUAL_ADDR_MASK) >> (PAGE_SHIFT_4KB))
+#define VADDR_TO_PAGE_NUM_NO_CLUSTER_2MB(x)   (((x) & VIRTUAL_ADDR_MASK) >> (PAGE_SHIFT_2MB))
+#define VADDR_TO_PAGE_NUM_NO_CLUSTER_1GB(x)   (((x) & VIRTUAL_ADDR_MASK) >> (PAGE_SHIFT_1GB))
+
+#define VADDR_TO_PAGE_NUM_4KB(x)   (VADDR_TO_PAGE_NUM_NO_CLUSTER_4KB(x) >> ECPT_CLUSTER_NBITS)
+#define VADDR_TO_PAGE_NUM_2MB(x)   (VADDR_TO_PAGE_NUM_NO_CLUSTER_2MB(x) >> ECPT_CLUSTER_NBITS)
+#define VADDR_TO_PAGE_NUM_1GB(x)   (VADDR_TO_PAGE_NUM_NO_CLUSTER_1GB(x) >> ECPT_CLUSTER_NBITS)
+
+#define VADDR_TO_CWT_VPN_2MB(x)  (VADDR_TO_PAGE_NUM_2MB(x) >> CWT_CLUSTER_NBITS)
+#define VADDR_TO_CWT_VPN_1GB(x)  (VADDR_TO_PAGE_NUM_1GB(x) >> CWT_CLUSTER_NBITS)
+
+#define ECPT_4K_WAY 3
+#define ECPT_2M_WAY 3
+#define ECPT_1G_WAY 0
+#define ECPT_4K_WAY_START 0
+#define ECPT_4K_WAY_END (ECPT_4K_WAY_START + ECPT_4K_WAY)
+#define ECPT_2M_WAY_START (ECPT_4K_WAY_START + ECPT_4K_WAY)
+#define ECPT_2M_WAY_END (ECPT_2M_WAY_START + ECPT_2M_WAY)
+#define ECPT_1G_WAY_START (ECPT_2M_WAY_START + ECPT_2M_WAY)
+#define ECPT_1G_WAY_END (ECPT_1G_WAY_START + ECPT_1G_WAY)
+
+
+#define CWT_2MB_N_WAY 2
+#define CWT_1GB_N_WAY 2
+
+bool cache_simulator_t::__cwc_query(uint64_t cwc_vpn, uint32_t cwc_idx)
 {
-    for (uint32_t i = 0; i < ECPT_TABLE_LEAVES; i++) {
+    memref_t cwc_check_memref;
+    cwc_check_memref.data.type = TRACE_TYPE_READ;
+    cwc_check_memref.data.addr = cwc_vpn;
+    /* Since we initialize each line with size of 1 */
+    cwc_check_memref.data.size = 1;
+
+    cache_result_t search_res = NOT_FOUND;
+
+    search_res = cwc_caches[cwc_idx]->request(cwc_check_memref);
+
+    if (knobs.verbose >= 2) {
+        printf("addr %lx cwc_idx %d search_res %d\n",
+                cwc_check_memref.data.addr, cwc_idx, search_res);
+    }
+
+    return search_res == FOUND_L1;
+}
+
+bool cache_simulator_t::pud_cwc_query(uint64_t full_vaddr)
+{
+    uint64_t cwc_vpn = VADDR_TO_CWT_VPN_1GB(full_vaddr);
+    uint32_t cwc_idx = PUD_CWC_IDX;
+    return __cwc_query(cwc_vpn, cwc_idx);
+}
+
+
+bool cache_simulator_t::pmd_cwc_query(uint64_t full_vaddr)
+{
+    uint64_t cwc_vpn = VADDR_TO_CWT_VPN_2MB(full_vaddr);
+    uint32_t cwc_idx = PMD_CWC_IDX;
+    return __cwc_query(cwc_vpn, cwc_idx);
+}
+
+/**
+ * @brief Note that we don't distinguish kernel and user ways here
+ *  because user and kernel ways will fall in their corresponding range.
+ *  Dynamorio ignore accesses to ways not in range from trace level.
+ * @param relative_way 
+ * @param page_size 
+ * @return uint64_t 
+ */
+static uint32_t relative_way_to_abs_ecpt_way(uint32_t relative_way, uint64_t page_size)
+{
+    if (page_size == PAGE_SIZE_4KB) {
+        return relative_way;
+    } else if (page_size == PAGE_SIZE_2MB) {
+        return relative_way + ECPT_4K_WAY_END;
+    } else if (page_size == PAGE_SIZE_1GB) {
+        return relative_way + ECPT_2M_WAY_END;
+    } else {
+        return 0;
+    }
+}
+
+static void fill_ways_range(uint32_t start, uint32_t end, std::set<uint32_t> & ways_to_visit)
+{
+    for (uint32_t i = start; i < end; i++) {
         ways_to_visit.insert(i);
     }
 }
 
-void cache_simulator_t::visit_cwc(uint64_t full_vaddr, std::set<uint32_t> & ways_to_visit)
+static void get_ecpt_all_ways(std::set<uint32_t> & ways_to_visit)
 {
-    get_ecpt_all_ways(ways_to_visit);
+    fill_ways_range(0, ECPT_1G_WAY_END, ways_to_visit);
+}
+
+hit_info_t cwc_fill_finish_helper(hit_info_t hit_res, uint64_t addr, cwt_header_t pud_cwc_res,
+                       cwt_header_t pmd_cwc_res, int verbosity,
+                       std::set<uint32_t> ways_to_visit)
+{
+    if (verbosity >= 2) {
+        printf("CWC LOAD: addr=%lx"
+                " pud_hit=%d (p1G=%d, p2M=%d, p4K=%d, rel_way=%d), pmd_hit=%d (p2M=%d, p4K=%d, rel_way=%d)\n",
+                addr, hit_res.pud_hit,
+                pud_cwc_res.present_1GB, pud_cwc_res.present_2MB,
+                pud_cwc_res.present_4KB, pud_cwc_res.way_in_ecpt,
+                hit_res.pmd_hit,
+                pmd_cwc_res.present_2MB, pmd_cwc_res.present_4KB, pmd_cwc_res.way_in_ecpt);
+        printf(" ways to visit: ways=[ ");
+
+        for (auto it = ways_to_visit.begin(); it != ways_to_visit.end(); ++it) {
+            printf("%d ", *it);
+        }
+        printf("]\n");
+    }
+    return hit_res;
+}
+
+hit_info_t cache_simulator_t::visit_cwc(uint64_t full_vaddr,
+                             const _memref_pgtable_results &pgtable_result,
+                             std::set<uint32_t> &ways_to_visit)
+{   
+    hit_info_t hit_res = {false, false};
+    cwt_header_t pmd_cwc_res = {0};
+    cwt_header_t pud_cwc_res = {0};
+
+
+    bool pud_cwc_hit = pud_cwc_query(full_vaddr);
+    pud_cwc_res = pgtable_result.aux_info.pud_header;
+    hit_res.pud_hit = pud_cwc_hit;
+
+    if (pud_cwc_hit) {
+        if (pud_cwc_res.present_1GB) {
+            uint32_t abs_way =
+                relative_way_to_abs_ecpt_way(pud_cwc_res.way_in_ecpt, PAGE_SIZE_1GB);
+
+            ways_to_visit.insert(abs_way);
+            return cwc_fill_finish_helper(hit_res, full_vaddr, pud_cwc_res, pmd_cwc_res,
+                                    knobs.verbose, ways_to_visit);
+            
+        }
+
+        /* PUD 4K only */
+        if (!!pud_cwc_res.present_4KB && !pud_cwc_res.present_2MB) {
+            // fill_4K_ways_range(is_kernel, possible_ways, n_ways);
+            fill_ways_range(ECPT_4K_WAY_START, ECPT_4K_WAY_END, ways_to_visit);
+            return cwc_fill_finish_helper(hit_res, full_vaddr, pud_cwc_res, pmd_cwc_res,
+                                    knobs.verbose, ways_to_visit);
+        }
+    }
+
+    bool pmd_cwc_hit = pmd_cwc_query(full_vaddr);
+    pmd_cwc_res = pgtable_result.aux_info.pmd_header;
+    hit_res.pmd_hit = pmd_cwc_hit;
+
+    if (pmd_cwc_hit) {
+        if (pmd_cwc_res.present_2MB) {
+            uint32_t abs_way = relative_way_to_abs_ecpt_way(pmd_cwc_res.way_in_ecpt,PAGE_SIZE_2MB);
+            ways_to_visit.insert(abs_way);
+        }
+
+        if (pmd_cwc_res.present_4KB) {
+            fill_ways_range(ECPT_4K_WAY_START, ECPT_4K_WAY_END, ways_to_visit);
+        }
+    } else {
+        if (pud_cwc_hit && pud_cwc_res.present_2MB) {
+            fill_ways_range(ECPT_2M_WAY_START, ECPT_2M_WAY_END, ways_to_visit);
+        }
+
+        if (pud_cwc_hit && pud_cwc_res.present_4KB) {
+            fill_ways_range(ECPT_4K_WAY_START, ECPT_4K_WAY_END, ways_to_visit);
+        }
+    }
+
+    if (!pmd_cwc_hit && !pud_cwc_hit) {
+        get_ecpt_all_ways(ways_to_visit);
+    }
+
+    return cwc_fill_finish_helper(hit_res, full_vaddr, pud_cwc_res, pmd_cwc_res,
+                                    knobs.verbose, ways_to_visit);
 }
 
 bool
@@ -1130,7 +1357,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         page_walk_res.clear(); // Accumulates sources for each access during a page walk
 
         std::set<uint32_t> ways_to_visit;
-        visit_cwc(virtual_full_page_addr, ways_to_visit);
+        visit_cwc(virtual_full_page_addr, pgtable_results, ways_to_visit);
 
         for (uint32_t i = 0; i < ECPT_TABLE_LEAVES; i++) {
             if (IN_SET(ways_to_visit, i)) {
