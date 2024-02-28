@@ -48,6 +48,7 @@
 #include "../tools/view_create.h"
 #include "../tracer/raw2trace.h"
 #include <fstream>
+#include <iostream>
 
 /* Get the path to the modules.log file by examining
  * 1. the module_file option
@@ -116,6 +117,16 @@ get_cache_simulator_knobs()
     knobs->sim_refs = op_sim_refs.get_value();
     knobs->verbose = op_verbose.get_value();
     knobs->cpu_scheduling = op_cpu_scheduling.get_value();
+    
+    if (op_trans_arch.get_value() == "radix") {
+        knobs->arch = RADIX;
+    } else if (op_trans_arch.get_value() == "ecpt") {
+        knobs->arch = ECPT;
+    } else {
+        std::cerr << "invalid arch" + op_trans_arch.get_value();
+    }
+
+     
     return knobs;
 }
 

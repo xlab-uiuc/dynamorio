@@ -37,6 +37,9 @@
 #define _CACHE_SIMULATOR_H_ 1
 
 #include <unordered_map>
+#include <vector>
+#include <set>
+
 #include "simulator.h"
 #include "cache_simulator_create.h"
 #include "cache_stats.h"
@@ -155,10 +158,17 @@ protected:
     hm_full_statistic_t hm_full_statistic;
     page_walk_hm_result_t page_walk_res;
 
+    bool process_memref_radix(const memref_t &memref);
+    bool process_memref_ecpt(const memref_t &memref);
+
+    void visit_cwc(uint64_t full_vaddr, std::set<uint32_t> & ways_to_visit);
+
     unsigned int visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps);
     // void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int base_addr, long long unsigned int addr_to_find, int level, int core);
     void make_request(page_walk_hm_result_t& page_walk_res, trace_type_t type, long long unsigned int pgtable_addr, int core);
     void print_page_walk_res(page_walk_hm_result_t & page_walk_res, int pwc_hit_level, int pgwalk_steps);
+    void print_page_walk_res_ecpt(page_walk_hm_result_t & page_walk_res, std::set<uint32_t> & ways_to_visit);
+    
     void print_memref(const memref_t &memref);
 
     void stats_memref(const memref_t &memref);

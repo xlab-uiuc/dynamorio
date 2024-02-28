@@ -39,6 +39,7 @@
 #include "analysis_tool.h"
 #include "tlb_simulator_create.h"
 
+#include "../reader/qemu_file_reader.h"
 /**
  * @file drmemtrace/cache_simulator_create.h
  * @brief DrMemtrace cache simulator creation.
@@ -101,6 +102,8 @@ struct cache_simulator_knobs_t {
     unsigned int num_ranges;
     unsigned int contention_L1;
     unsigned int contention_LLC;
+
+    trans_arch arch;
 };
 
 /** Creates an instance of a cache simulator with a 3-level hierarchy and TLBs. */
