@@ -129,38 +129,50 @@ def calc_latency_with_way(line):
         saved_latency = (overall_latency - correct_latency) * frequency
         total_saved_latency = total_saved_latency + saved_latency
 
-    cur_latency = correct_latency
+    cor_latency_with_hash = correct_latency
 
-    cur_latency += HASH_LATENCY
-    cur_latency += PUD_CWC_LATENCY
-    cur_latency += PMD_CWC_LATENCY
+    cor_latency_with_hash += HASH_LATENCY
+    cor_latency_with_hash += PUD_CWC_LATENCY
+    cor_latency_with_hash += PMD_CWC_LATENCY
 
-    total_latency = cur_latency * frequency
+    max_latency_with_hash = overall_latency
+    max_latency_with_hash += HASH_LATENCY
+    max_latency_with_hash += PUD_CWC_LATENCY
+    max_latency_with_hash += PMD_CWC_LATENCY
+    
+    
+    # total_latency = cur_latency * frequency
     
     # print("sub_latency: {} frequency: {}".format(cur_latency, frequency))
-    return total_latency, frequency
+    # return total_latency, frequency
+    return cor_latency_with_hash, max_latency_with_hash, frequency
 
 def parse_page_walk_latency(file_name):
     start_line = find_start_line(file_name)
     global total_saved_latency
-    total_latency = 0
+    total_latency_max = 0
+    total_latency_correct = 0
     total_requests = 0
     print("start from line: {}".format(start_line))
     with open(file_name, 'r') as file:
         for index, line in enumerate(file):
             if index <= start_line:
                 continue
-            sub_latency, frequency = calc_latency_with_way(line)
+            correct_latency, max_latency, frequency = calc_latency_with_way(line)
             # print("latency breakdown: {} frequency: {}".format(sub_latency / frequency, frequency))
-            total_latency += sub_latency
+            total_latency_max += max_latency * frequency
+            total_latency_correct += correct_latency * frequency
+            
             total_requests += frequency
             # print("sub_latency: {} frequency: {}".format(sub_latency, frequency))
-    avg_latency = total_latency / total_requests
 
-    print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
-    print("total_saved_latency: {} avg_reduction {}".format(total_saved_latency, total_saved_latency / total_requests))
-    total_saved_latency = 0
-    return avg_latency
+    avg_latency_max = total_latency_max / total_requests
+    avg_latency_correct = total_latency_correct / total_requests
+    
+    print("avg_latency_max: {} total_request: {}".format(avg_latency_max, total_requests))
+    print("avg_latency_early_return: {} total_request: {}".format(avg_latency_correct, total_requests))
+    
+    return avg_latency_max, avg_latency_correct
 
 TRAILING_KEY = '_dyna.log'
 def get_dyna_results(folder):
@@ -214,6 +226,6 @@ if __name__ == "__main__":
         benches.append(bench)
         latencies.append(latency)
 
-    df = pd.DataFrame({'latency': latencies}, index=benches)
+    df = pd.DataFrame(latencies, columns=['avg_latency', "avg_latency early return"], index=benches)
     print(df)
 
