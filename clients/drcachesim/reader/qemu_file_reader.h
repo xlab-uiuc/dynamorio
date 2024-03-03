@@ -82,6 +82,7 @@ struct ecpt_trans_info {
 	uint64_t pte;
 	uint64_t leaves[ECPT_TABLE_LEAVES];
     uint64_t cwt_leaves[ECPT_CWT_LEAVES];
+    uint16_t selected_ecpt_way;
     uint8_t pud_header;
     uint8_t pmd_header;
 };

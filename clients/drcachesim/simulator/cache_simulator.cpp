@@ -1187,6 +1187,7 @@ hit_info_t cache_simulator_t::visit_cwc(uint64_t full_vaddr,
         if (pmd_cwc_res.present_4KB) {
             fill_ways_range(ECPT_4K_WAY_START, ECPT_4K_WAY_END, ways_to_visit);
         }
+
     } else {
         if (pud_cwc_hit && pud_cwc_res.present_2MB) {
             fill_ways_range(ECPT_2M_WAY_START, ECPT_2M_WAY_END, ways_to_visit);
@@ -1198,6 +1199,14 @@ hit_info_t cache_simulator_t::visit_cwc(uint64_t full_vaddr,
     }
 
     if (!pmd_cwc_hit && !pud_cwc_hit) {
+        get_ecpt_all_ways(ways_to_visit);
+    }
+
+    if (!IN_SET(ways_to_visit, pgtable_result.aux_info.selected_ecpt_way)) {
+        if (knobs.verbose >= 2) {
+            printf("Selected way %d not in ways to visit\n",
+                    pgtable_result.aux_info.selected_ecpt_way);
+        }
         get_ecpt_all_ways(ways_to_visit);
     }
 
@@ -1250,7 +1259,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
     if ((num_request_shifted >> SIMULATOR_HEARTBEAT_FREQ) > 0) {
         num_request_shifted = 0;
         std::cerr << "Heartbeat. " << num_request << " references processed.\n";
-        print_results();
+        // print_results();
     }
 
     if (knobs.skip_refs > 0) {
@@ -1439,7 +1448,19 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         } else {
             hm_full_statistic.insert(std::make_pair(page_walk_res, 1));
         }
-    }
+
+        if (knobs.ecpt_early_return) {
+            auto res_way_pair = std::make_pair(page_walk_res, (uint64_t) pgtable_results.aux_info.selected_ecpt_way);
+
+            auto with_way_it = hm_full_stats_with_way.find(res_way_pair);
+            if (with_way_it != hm_full_stats_with_way.end()) {
+                with_way_it->second++;
+            } else {
+                hm_full_stats_with_way.insert(std::make_pair(res_way_pair, 1));
+            }
+        }
+        
+    }   
 
     /* search result for data paddr */
     cache_result_t search_res;
@@ -1589,6 +1610,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         }
         // clear the hm_statistic_map
         hm_full_statistic.clear();
+        hm_full_stats_with_way.clear();
     } else {
         knobs.sim_refs--;
     }
@@ -1761,6 +1783,20 @@ cache_simulator_t::print_results()
         std::cerr << print_hm_stats[it->first[i]] << ",";
       }
       std::cerr << "\t" << it->second << std::endl;
+    }
+
+    std::cerr << "~~~~~~ full stats with way ~~~~~~" << std::endl;
+    for (hm_full_stats_with_way_t::iterator it = hm_full_stats_with_way.begin();
+         it != hm_full_stats_with_way.end(); it++) {
+        page_walk_hm_result_t walk_res = it->first.first;
+        uint64_t way = it->first.second;
+        for (unsigned int i = 0; i < walk_res.size(); i++) {
+            std::cerr << print_hm_stats[walk_res[i]] << ",";
+        }
+
+        std::cerr << way;
+
+        std::cerr << "\t" << it->second << std::endl;
     }
 
     return true;

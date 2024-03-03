@@ -65,6 +65,7 @@ extern droption_t<std::string> op_infile;
 extern droption_t<std::string> op_indir;
 extern droption_t<std::string> op_qemu_mem_trace;
 extern droption_t<std::string> op_trans_arch;
+extern droption_t<bool> op_ecpt_early_return;
 extern droption_t<std::string> op_module_file;
 extern droption_t<unsigned int> op_num_cores;
 extern droption_t<unsigned int> op_line_size;

@@ -162,8 +162,13 @@ protected:
   
     typedef std::vector<cache_result_t> page_walk_hm_result_t;
     typedef std::map< page_walk_hm_result_t, uint64_t> hm_full_statistic_t;
+
+    /* <result, selected_way -> frequency> */
+    typedef std::map<std::pair<page_walk_hm_result_t, uint64_t>, uint64_t> hm_full_stats_with_way_t;
+
     hm_full_statistic_t hm_full_statistic;
     page_walk_hm_result_t page_walk_res;
+    hm_full_stats_with_way_t hm_full_stats_with_way;
 
     bool process_memref_radix(const memref_t &memref);
     bool process_memref_ecpt(const memref_t &memref);

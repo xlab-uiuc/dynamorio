@@ -125,7 +125,7 @@ get_cache_simulator_knobs()
     } else {
         std::cerr << "invalid arch" + op_trans_arch.get_value();
     }
-
+    knobs->ecpt_early_return = op_ecpt_early_return.get_value();
      
     return knobs;
 }

@@ -104,6 +104,7 @@ struct cache_simulator_knobs_t {
     unsigned int contention_LLC;
 
     trans_arch arch;
+    bool ecpt_early_return;
 };
 
 /** Creates an instance of a cache simulator with a 3-level hierarchy and TLBs. */

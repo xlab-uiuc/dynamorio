@@ -67,6 +67,7 @@ void _memref_pgtable_results::print() const {
     }
 
     if (aux_info.n_cwt_steps > 0 ) {
+        printf("selected_ecpt_way: %d ", aux_info.selected_ecpt_way);
         printf("cwt_leaves: ");
         for (uint32_t i = 0; i < aux_info.n_cwt_steps; i++) {
             printf(" %lx ", aux_info.cwt_steps[i]);

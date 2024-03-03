@@ -131,7 +131,7 @@ void qemu_file_reader_t::print_ecpt_trans_info(ecpt_trans_info &record)
                    record.access_sz, record.vaddr, record.paddr, record.pte);
 
             print_leaves_helper(record.leaves, ECPT_TABLE_LEAVES);
-            printf(", cwt_leaves=");
+            printf("ecpt_way=%d, cwt_leaves=", record.selected_ecpt_way);
 
             print_leaves_helper(record.cwt_leaves, ECPT_CWT_LEAVES);
             printf("\n");
@@ -142,7 +142,7 @@ void qemu_file_reader_t::print_ecpt_trans_info(ecpt_trans_info &record)
                    record.pte);
 
             print_leaves_helper(record.leaves, ECPT_TABLE_LEAVES);
-            printf(", cwt_leaves=");
+            printf("ecpt_way=%d, cwt_leaves=", record.selected_ecpt_way);
 
             print_leaves_helper(record.cwt_leaves, ECPT_CWT_LEAVES);
             printf("\n");
@@ -227,7 +227,7 @@ int qemu_file_reader_t::parse_qemu_line_ecpt(ecpt_trans_info & info)
     entry_copy.pgtable_results.aux_info.n_cwt_steps = ECPT_CWT_LEAVES;
     entry_copy.pgtable_results.aux_info.pmd_header.byte = info.pmd_header;
     entry_copy.pgtable_results.aux_info.pud_header.byte = info.pud_header;
-
+    entry_copy.pgtable_results.aux_info.selected_ecpt_way = info.selected_ecpt_way;
     
     /* This by default will succeed if QEMU trace doesn't capture a failed page walk */
     entry_copy.pgtable_results.success = 1;

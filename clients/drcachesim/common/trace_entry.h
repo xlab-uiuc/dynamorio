@@ -288,6 +288,7 @@ typedef union cwt_header_byte
 struct ecpt_auxilaries_t {
     /* cannot use vector here since union member cannot contain non trivial data member */
     addr_t cwt_steps[MAX_AUX_INFO];
+    uint16_t selected_ecpt_way;
     cwt_header_t pmd_header;
     cwt_header_t pud_header;
     uint32_t n_cwt_steps;
