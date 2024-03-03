@@ -186,20 +186,21 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='An example script with arguments.')
     parser.add_argument('--file', type=str, help='An integer argument')
-    parser.add_argument('--arch', type=str, help='arch folder to parse')
+    parser.add_argument('--folder', type=str, help='arch folder to parse')
     
     args = parser.parse_args()
     if args.file:
         parse_page_walk_latency(args.file)
         exit(0)
-    
-    arch = "radix"
-    if args.arch:   
-        arch = args.arch
+   
+    folder = args.folder
+    # arch = "radix"
+    # if args.arch:   
+    #    arch = args.arch
     
     # this assume you run in container
-    parent_folder="/data1/collect_trace_fast"
-    folder = os.path.join(parent_folder, arch)
+    # parent_folder="/data1/collect_trace_fast"
+    # folder = os.path.join(parent_folder, arch)
     bench_logs = get_dyna_results(folder)
     
 
