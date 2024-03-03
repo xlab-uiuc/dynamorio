@@ -43,6 +43,8 @@ access_to_latency = {
 HASH_LATENCY = 2
 PUD_CWC_LATENCY = 4
 PMD_CWC_LATENCY = 4
+
+total_saved_latency = 0
 # paper reference: https://dl.acm.org/doi/pdf/10.1145/3489525.3511689
 # access_to_latency = {
 #     "MEMORY": 200,
@@ -53,13 +55,14 @@ PMD_CWC_LATENCY = 4
 #     "ZERO": 0
 # }
 
-
+# START_KEY="~~~~~~~~~~~~~~~"
+START_KEY="~~~~~~ full stats with way ~~~~~~"
 
 def find_start_line(file_name):
     seperate_idx = 0
     with open(file_name, 'r') as file:
         for index, line in enumerate(file):
-            if line.startswith("~~~~~~~~~~~~~~~"):
+            if line.startswith(START_KEY):
                 seperate_idx = index
     return seperate_idx
 
@@ -90,16 +93,64 @@ def calc_latency(line):
     # print("sub_latency: {} frequency: {}".format(cur_latency, frequency))
     return total_latency, frequency
 
+
+def calc_latency_with_way(line):
+    # print("line: {}".format(line))
+    elements = line.strip().split(',')
+    global total_saved_latency
+    stats = []
+
+    cur_latency = 0
+    frequency = 0 
+    ecpt_way = 0
+    # print("elements: {}".format(elements))
+    numbers = elements[-1].split('\t')
+
+    try:
+        ecpt_way = int(numbers[0].strip())
+        frequency = int(numbers[1].strip())
+    except ValueError:
+        print("Invalid string, cannot convert to integer, numbers={}".format(numbers))
+    
+    for ele in elements[:-1]:
+        if ele in access_to_latency:
+            # cur_latency += access_to_latency[stat]
+            stats.append(access_to_latency[ele])
+        else:
+            print("Invalid stat: {}".format(ele))
+    
+    # print("stats: {} ecpt_way: {} frequency: {}".format(stats, ecpt_way, frequency))
+
+    correct_latency = stats[ecpt_way]
+    overall_latency = max(stats)
+
+    # print("correct_latency: {} overall_latency: {}".format(correct_latency, overall_latency))
+    if correct_latency < overall_latency:
+        saved_latency = (overall_latency - correct_latency) * frequency
+        total_saved_latency = total_saved_latency + saved_latency
+
+    cur_latency = correct_latency
+
+    cur_latency += HASH_LATENCY
+    cur_latency += PUD_CWC_LATENCY
+    cur_latency += PMD_CWC_LATENCY
+
+    total_latency = cur_latency * frequency
+    
+    # print("sub_latency: {} frequency: {}".format(cur_latency, frequency))
+    return total_latency, frequency
+
 def parse_page_walk_latency(file_name):
     start_line = find_start_line(file_name)
+    global total_saved_latency
     total_latency = 0
     total_requests = 0
-    
+    print("start from line: {}".format(start_line))
     with open(file_name, 'r') as file:
         for index, line in enumerate(file):
             if index <= start_line:
                 continue
-            sub_latency, frequency = calc_latency(line)
+            sub_latency, frequency = calc_latency_with_way(line)
             # print("latency breakdown: {} frequency: {}".format(sub_latency / frequency, frequency))
             total_latency += sub_latency
             total_requests += frequency
@@ -107,6 +158,8 @@ def parse_page_walk_latency(file_name):
     avg_latency = total_latency / total_requests
 
     print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
+    print("total_saved_latency: {} avg_reduction {}".format(total_saved_latency, total_saved_latency / total_requests))
+    total_saved_latency = 0
     return avg_latency
 
 TRAILING_KEY = '_dyna.log'
