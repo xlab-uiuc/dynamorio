@@ -2,6 +2,9 @@ import os
 import subprocess
 import argparse
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
 """
 CPU Caches:
   L1 Data 48K (x32)
@@ -135,6 +138,8 @@ def calc_latency_with_way(line):
     cor_latency_with_hash += PUD_CWC_LATENCY
     cor_latency_with_hash += PMD_CWC_LATENCY
 
+    parallel_latency = correct_latency + HASH_LATENCY + max(PUD_CWC_LATENCY, PMD_CWC_LATENCY)
+    
     max_latency_with_hash = overall_latency
     max_latency_with_hash += HASH_LATENCY
     max_latency_with_hash += PUD_CWC_LATENCY
@@ -145,7 +150,30 @@ def calc_latency_with_way(line):
     
     # print("sub_latency: {} frequency: {}".format(cur_latency, frequency))
     # return total_latency, frequency
-    return cor_latency_with_hash, max_latency_with_hash, frequency
+    return cor_latency_with_hash, max_latency_with_hash, parallel_latency, frequency
+
+def plot_histogram(frequency_dict, file_name):
+    """Plot a histogram using a frequency dictionary."""
+    # Extracting keys and values from the dictionary
+    values = list(frequency_dict.keys())
+    frequencies = list(frequency_dict.values())
+    
+    total_freq = sum(frequencies)
+    freq_percent = np.array(frequencies) / total_freq
+    
+    # Plotting the histogram
+    plt.figure(figsize=(10, 6))
+    plt.bar(values, freq_percent, color='skyblue')
+    plt.xlabel('Value')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of Value Frequencies')
+    plt.xticks(values)
+    plt.grid(axis='y')
+    
+    # Show the plot
+    print("save to file: {}".format(file_name))
+    plt.savefig(file_name + '.png')
+
 
 def parse_page_walk_latency(file_name):
     start_line = find_start_line(file_name)
@@ -153,31 +181,58 @@ def parse_page_walk_latency(file_name):
     total_latency_max = 0
     total_latency_correct = 0
     total_requests = 0
+    total_latency_parallel = 0
     print("start from line: {}".format(start_line))
+
+    max_latency_to_freq = {}
+    correct_latency_to_freq = {}
+    parallel_latency_to_freq = {}
     with open(file_name, 'r') as file:
         for index, line in enumerate(file):
             if index <= start_line:
                 continue
-            correct_latency, max_latency, frequency = calc_latency_with_way(line)
+            correct_latency, max_latency, parallel_latency, frequency = calc_latency_with_way(line)
             # print("latency breakdown: {} frequency: {}".format(sub_latency / frequency, frequency))
             total_latency_max += max_latency * frequency
             total_latency_correct += correct_latency * frequency
-            
+            total_latency_parallel += parallel_latency * frequency
+
+            if correct_latency not in correct_latency_to_freq:
+                correct_latency_to_freq[correct_latency] = frequency
+            else:
+                correct_latency_to_freq[correct_latency] += frequency
+
+            if max_latency not in max_latency_to_freq:
+                max_latency_to_freq[max_latency] = frequency
+            else:
+                max_latency_to_freq[max_latency] += frequency
+
+            if parallel_latency not in parallel_latency_to_freq:
+                parallel_latency_to_freq[parallel_latency] = frequency
+            else:
+                parallel_latency_to_freq[parallel_latency] += frequency
+
             total_requests += frequency
             # print("sub_latency: {} frequency: {}".format(sub_latency, frequency))
 
     avg_latency_max = total_latency_max / total_requests
     avg_latency_correct = total_latency_correct / total_requests
-    
+    avg_latency_parallel = total_latency_parallel / total_requests
+
+    plot_histogram(max_latency_to_freq, file_name + "_max")
+    plot_histogram(correct_latency_to_freq, file_name + "_correct")
+    plot_histogram(parallel_latency_to_freq, file_name + "_parallel")
+
     print("avg_latency_max: {} total_request: {}".format(avg_latency_max, total_requests))
     print("avg_latency_early_return: {} total_request: {}".format(avg_latency_correct, total_requests))
-    
-    return avg_latency_max, avg_latency_correct
+    print("avg_latency_parallel: {} total_request: {}".format(avg_latency_parallel, total_requests))
+
+    return avg_latency_max, avg_latency_correct, avg_latency_parallel
 
 TRAILING_KEY = '_dyna.log'
 def get_dyna_results(folder):
     print('folder: {}'.format(folder))
-    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(TRAILING_KEY) ]
+    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(TRAILING_KEY) + ' | grep -v png' ]
     try:
         # Run the grep command and capture the stdout and stderr
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -215,6 +270,7 @@ if __name__ == "__main__":
     # folder = os.path.join(parent_folder, arch)
     bench_logs = get_dyna_results(folder)
     
+    print("bench_logs: {}".format(bench_logs))
 
     benches = []
     latencies = []
@@ -226,6 +282,7 @@ if __name__ == "__main__":
         benches.append(bench)
         latencies.append(latency)
 
-    df = pd.DataFrame(latencies, columns=['avg_latency', "avg_latency early return"], index=benches)
+    df = pd.DataFrame(latencies, columns=['avg_latency', "avg_latency early return", "avg latency parallel CWC"], index=benches)
     print(df)
-
+    print('save to file: {}'.format(os.path.join(folder, "page_walk_latency.csv")))
+    df.to_csv(os.path.join(folder, "page_walk_latency.csv"))
