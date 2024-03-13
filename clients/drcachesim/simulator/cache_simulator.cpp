@@ -618,6 +618,7 @@ void cache_simulator_t::stats_memref(const memref_t &memref) {
     }
 }
 
+#define VIRTUAL_ADDR_MASK (0x0000fffffffff000ULL)
 unsigned int
 cache_simulator_t::visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps)
 {
@@ -643,7 +644,7 @@ cache_simulator_t::visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps)
     }
 
     for (unsigned int pwc_level = pwc_level_start; pwc_level >= 1; pwc_level--) {
-        pwc_check_memref.data.addr = full_vaddr >>
+        pwc_check_memref.data.addr = (full_vaddr & VIRTUAL_ADDR_MASK) >>
             (NUM_PAGE_OFFSET_BITS +
              ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS));
         pwc_check_memref.data.size = 1;
@@ -652,8 +653,8 @@ cache_simulator_t::visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps)
         
         // if found, memorize the pwc_level and stop searching
         if (knobs.verbose >= 2) {
-            printf("addr %lx pwc_level %d pwc_search_res %d\n",
-                   pwc_check_memref.data.addr, pwc_level, pwc_search_res);
+            printf("full_addr %016lx addr %lx pw_caches[%d] pwc_search_res %d\n",
+                   full_vaddr, pwc_check_memref.data.addr, pwc_level - 1, pwc_search_res);
         }
 
         if (pwc_search_res == FOUND_L1) {
@@ -688,7 +689,7 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
     if ((num_request_shifted >> SIMULATOR_HEARTBEAT_FREQ) > 0) {
       num_request_shifted = 0;
       std::cerr << "Heartbeat. " << num_request << " references processed.\n";
-      print_results();
+    //   print_results();
     }
 
     if (knobs.skip_refs > 0) {
@@ -1025,7 +1026,6 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
 #define CWT_VPN_1GB_BITS 9
 #define CWT_CLUSTER_NBITS 6
 
-#define VIRTUAL_ADDR_MASK (0x0000ffffffffffffULL)
 #define VADDR_TO_PAGE_NUM_NO_CLUSTER_4KB(x)   (((x) & VIRTUAL_ADDR_MASK) >> (PAGE_SHIFT_4KB))
 #define VADDR_TO_PAGE_NUM_NO_CLUSTER_2MB(x)   (((x) & VIRTUAL_ADDR_MASK) >> (PAGE_SHIFT_2MB))
 #define VADDR_TO_PAGE_NUM_NO_CLUSTER_1GB(x)   (((x) & VIRTUAL_ADDR_MASK) >> (PAGE_SHIFT_1GB))
@@ -1738,6 +1738,25 @@ cache_simulator_t::print_results()
         std::cerr << caches_it.first << " stats:" << std::endl;
         caches_it.second->get_stats()->print_stats("    ");
     }
+
+
+    if (knobs.arch == ECPT) {
+        // Print CWC stats.
+        for (unsigned int i = 0; i < NUM_CWC; i++) {
+            std::cerr << " CWC " << i << " stats:" << std::endl;
+            cwc_caches[i]->get_stats()->print_stats("    ");
+        }
+    } 
+    
+    if (knobs.arch == RADIX) {
+        // Print PWC stats.
+        
+        for (unsigned int i = 0; i < NUM_PWC; i++) {
+            std::cerr << " PWC " << i << " stats:" << std::endl;
+            pw_caches[i]->get_stats()->print_stats("    ");
+        }
+    }
+    
     std::cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
     std::cerr << "num_requests : " << num_request << std::endl 
               << "num_not_found : " << num_not_found << std::endl;
@@ -1785,20 +1804,22 @@ cache_simulator_t::print_results()
       std::cerr << "\t" << it->second << std::endl;
     }
 
-    std::cerr << "~~~~~~ full stats with way ~~~~~~" << std::endl;
-    for (hm_full_stats_with_way_t::iterator it = hm_full_stats_with_way.begin();
-         it != hm_full_stats_with_way.end(); it++) {
-        page_walk_hm_result_t walk_res = it->first.first;
-        uint64_t way = it->first.second;
-        for (unsigned int i = 0; i < walk_res.size(); i++) {
-            std::cerr << print_hm_stats[walk_res[i]] << ",";
+    if (knobs.arch == ECPT) {
+        std::cerr << "~~~~~~ full stats with way ~~~~~~" << std::endl;
+        for (hm_full_stats_with_way_t::iterator it = hm_full_stats_with_way.begin();
+            it != hm_full_stats_with_way.end(); it++) {
+            page_walk_hm_result_t walk_res = it->first.first;
+            uint64_t way = it->first.second;
+            for (unsigned int i = 0; i < walk_res.size(); i++) {
+                std::cerr << print_hm_stats[walk_res[i]] << ",";
+            }
+
+            std::cerr << way;
+
+            std::cerr << "\t" << it->second << std::endl;
         }
-
-        std::cerr << way;
-
-        std::cerr << "\t" << it->second << std::endl;
     }
-
+    
     return true;
 }
 
