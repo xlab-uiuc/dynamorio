@@ -4,6 +4,7 @@ import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import shutil
 
 """
 CPU Caches:
@@ -58,6 +59,8 @@ total_saved_latency = 0
 #     "ZERO": 0
 # }
 
+OUTPUT_FOLDER = "results/ecpt"
+
 # START_KEY="~~~~~~~~~~~~~~~"
 START_KEY="~~~~~~ full stats with way ~~~~~~"
 
@@ -97,7 +100,7 @@ def calc_latency(line):
     return total_latency, frequency
 
 
-def calc_latency_with_way(line):
+def calc_latency_with_way(line, cache_to_freq):
     # print("line: {}".format(line))
     elements = line.strip().split(',')
     global total_saved_latency
@@ -119,6 +122,7 @@ def calc_latency_with_way(line):
         if ele in access_to_latency:
             # cur_latency += access_to_latency[stat]
             stats.append(access_to_latency[ele])
+            cache_to_freq[ele] += frequency
         else:
             print("Invalid stat: {}".format(ele))
     
@@ -152,7 +156,7 @@ def calc_latency_with_way(line):
     # return total_latency, frequency
     return cor_latency_with_hash, max_latency_with_hash, parallel_latency, frequency
 
-def plot_histogram(frequency_dict, file_name):
+def plot_histogram(frequency_dict, file_name, log_scale=False, shape=(10, 6)):
     """Plot a histogram using a frequency dictionary."""
     # Extracting keys and values from the dictionary
     values = list(frequency_dict.keys())
@@ -162,18 +166,26 @@ def plot_histogram(frequency_dict, file_name):
     freq_percent = np.array(frequencies) / total_freq
     
     # Plotting the histogram
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=shape)
     plt.bar(values, freq_percent, color='skyblue')
     plt.xlabel('Value')
     plt.ylabel('Frequency')
-    plt.title('Histogram of Value Frequencies')
-    plt.xticks(values)
+    plt.title(file_name.split('/')[-1] + ' Histogram')
+    
+    if log_scale:
+        plt.xscale('log')
+    # plt.xscale('log')  # Setting the x-axis to log scale   
+    plt.xticks(values, labels=[str(v) for v in values])  # Ensuring tick labels are properly formatted
+
+    # plt.xticks(values)
     plt.grid(axis='y')
     
     # Show the plot
-    print("save to file: {}".format(file_name))
+    print("save to file: {}.png".format(file_name))
     plt.savefig(file_name + '.png')
-
+    plt.close()
+    
+    shutil.copy(file_name + '.png', OUTPUT_FOLDER)
 
 def parse_page_walk_latency(file_name):
     start_line = find_start_line(file_name)
@@ -187,11 +199,21 @@ def parse_page_walk_latency(file_name):
     max_latency_to_freq = {}
     correct_latency_to_freq = {}
     parallel_latency_to_freq = {}
+    
+    base_dict = {
+        "ZERO": 0,
+        "L1": 0,
+        "L2": 0,
+        "LLC": 0,
+        "PWC": 0,
+        "MEMORY" : 0
+    }
+    
     with open(file_name, 'r') as file:
         for index, line in enumerate(file):
             if index <= start_line:
                 continue
-            correct_latency, max_latency, parallel_latency, frequency = calc_latency_with_way(line)
+            correct_latency, max_latency, parallel_latency, frequency = calc_latency_with_way(line, base_dict)
             # print("latency breakdown: {} frequency: {}".format(sub_latency / frequency, frequency))
             total_latency_max += max_latency * frequency
             total_latency_correct += correct_latency * frequency
@@ -223,10 +245,14 @@ def parse_page_walk_latency(file_name):
     plot_histogram(correct_latency_to_freq, file_name + "_correct")
     plot_histogram(parallel_latency_to_freq, file_name + "_parallel")
 
+    plot_histogram(base_dict, file_name + "_cache_access")
+
     print("avg_latency_max: {} total_request: {}".format(avg_latency_max, total_requests))
     print("avg_latency_early_return: {} total_request: {}".format(avg_latency_correct, total_requests))
     print("avg_latency_parallel: {} total_request: {}".format(avg_latency_parallel, total_requests))
 
+    shutil.copy(file_name, OUTPUT_FOLDER)
+    
     return avg_latency_max, avg_latency_correct, avg_latency_parallel
 
 TRAILING_KEY = '_dyna.log'
