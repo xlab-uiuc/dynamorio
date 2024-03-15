@@ -2,6 +2,10 @@ import os
 import subprocess
 import argparse
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import shutil
+
 """
 CPU Caches:
   L1 Data 48K (x32)
@@ -50,6 +54,8 @@ access_to_latency = {
 #     "ZERO": 0
 # }
 
+OUTPUT_FOLDER = "results/radix"
+
 def find_start_line(file_name):
     seperate_idx = 0
     with open(file_name, 'r') as file:
@@ -59,48 +65,118 @@ def find_start_line(file_name):
     return seperate_idx
 
 # sample format: ZERO,ZERO,PWC,MEMORY,   497
-def calc_latency(line):
+def calc_latency(line, per_layer_latency):
     stats = line.strip().split(',')
 
     cur_latency = 0
     frequency = 0 
+
     try:
         frequency = int(stats[-1].strip())
     except ValueError:
         print("Invalid string, cannot convert to integer")
     
-    for stat in stats[:-1]:
+    for idx, stat in enumerate(stats[:-1]):
         if stat in access_to_latency:
             cur_latency += access_to_latency[stat]
+
+            assert(idx < 4)
+            per_layer_latency[idx][stat] += frequency
+        
         else:
             print("Invalid stat: {}".format(stat))
-    total_latency = cur_latency * frequency
+    # total_latency = cur_latency * frequency
     
     # print("sub_latency: {} frequency: {}".format(cur_latency, frequency))
-    return total_latency, frequency
+        
+    return cur_latency, frequency
+
+def plot_histogram(frequency_dict, file_name, log_scale=False, shape=(10, 6)):
+    """Plot a histogram using a frequency dictionary."""
+    # Extracting keys and values from the dictionary
+    values = list(frequency_dict.keys())
+    frequencies = list(frequency_dict.values())
+    
+    total_freq = sum(frequencies)
+    freq_percent = np.array(frequencies) / total_freq
+    
+    # Plotting the histogram
+    plt.figure(figsize=shape)
+    plt.bar(values, freq_percent, color='skyblue')
+    plt.xlabel('Value')
+    plt.ylabel('Frequency')
+    plt.title(file_name.split('/')[-1] + ' Histogram')
+    
+    if log_scale:
+        plt.xscale('log')
+    # plt.xscale('log')  # Setting the x-axis to log scale   
+    plt.xticks(values, labels=[str(v) for v in values])  # Ensuring tick labels are properly formatted
+
+    # plt.xticks(values)
+    plt.grid(axis='y')
+    
+    # Show the plot
+    print("save to file: {}.png".format(file_name))
+    plt.savefig(file_name + '.png')
+    plt.close()
+    
+    shutil.copy(file_name + '.png', OUTPUT_FOLDER)
+    
 
 def parse_page_walk_latency(file_name):
     start_line = find_start_line(file_name)
     total_latency = 0
     total_requests = 0
     
+    latency_to_freq = {}
+    
+    base_dict = {
+        "ZERO": 0,
+        "L1": 0,
+        "L2": 0,
+        "LLC": 0,
+        "PWC": 0,
+        "MEMORY" : 0
+    }
+
+    per_layer_latency = [
+        base_dict.copy(),
+        base_dict.copy(),
+        base_dict.copy(),
+        base_dict.copy()
+    ]
+    
+    
     with open(file_name, 'r') as file:
         for index, line in enumerate(file):
             if index <= start_line:
                 continue
-            sub_latency, frequency = calc_latency(line)
-            total_latency += sub_latency
+            sub_latency, frequency = calc_latency(line, per_layer_latency)
+            
+            if sub_latency in latency_to_freq:
+                latency_to_freq[sub_latency] += frequency
+            else: 
+                latency_to_freq[sub_latency] = frequency
+            
+            total_latency += sub_latency * frequency
             total_requests += frequency
             # print("sub_latency: {} frequency: {}".format(sub_latency, frequency))
     avg_latency = total_latency / total_requests
 
+    for idx, layer in enumerate(per_layer_latency):
+        print("layer: {} latency: {}".format(idx, layer))
+        plot_histogram(layer, file_name + "_level_{}".format(idx))
+
+    plot_histogram(latency_to_freq, file_name, log_scale=True, shape=(50, 10))
     print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
+    
+    shutil.copy(file_name, OUTPUT_FOLDER)
     return avg_latency
 
 TRAILING_KEY = '_dyna.log'
 def get_dyna_results(folder):
     print('folder: {}'.format(folder))
-    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(TRAILING_KEY) ]
+    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(TRAILING_KEY) + ' | grep -v png' ]
     try:
         # Run the grep command and capture the stdout and stderr
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -121,25 +197,25 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='An example script with arguments.')
     parser.add_argument('--file', type=str, help='An integer argument')
-    parser.add_argument('--arch', type=str, help='arch folder to parse')
+    parser.add_argument('--folder', type=str, help='arch folder to parse')
     
     args = parser.parse_args()
     if args.file:
         parse_page_walk_latency(args.file)
         exit(0)
     
-    arch = "radix"
-    if args.arch:   
-        arch = args.arch
+    folder = args.folder
     
     # this assume you run in container
-    parent_folder="/data1/collect_trace_fast"
-    folder = os.path.join(parent_folder, arch)
+    # parent_folder="/data1/collect_trace_fast"
+    # folder = os.path.join(parent_folder, arch)
     bench_logs = get_dyna_results(folder)
     
 
     benches = []
     latencies = []
+    
+    print("bench_logs: {}".format(bench_logs))
     for log_name in bench_logs:
         bench = log_name[:log_name.find(TRAILING_KEY)]
         print("bench: {}".format(bench))
