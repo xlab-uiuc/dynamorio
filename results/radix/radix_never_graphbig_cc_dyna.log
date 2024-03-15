@@ -1,0 +1,728 @@
+Initialising a TLB with size: 128
+Initialising a TLB with size: 64
+Initialising a TLB with size: 2048
+Initialising PT from file: 
+Initialising memory references from file: /start_point/data2/collect_trace_fast/radix/radix_never_graphbig_cc_walk_log.bin
+Initialising a cache with size: 25165824 with assoc: 12 with line size: 64
+Initialising for core 0
+Initialising L2 cache with size: 1310720 with assoc: 20 with line size: 64
+Initialising L1 I cache with size: 32768 with assoc: 8 with line size: 64
+Initialising L1 D cache with size: 49152 with assoc: 12 with line size: 64
+Initialising a cache with size: 1310720 with assoc: 20 with line size: 64
+Initialising a cache with size: 32768 with assoc: 8 with line size: 64
+Initialising a cache with size: 49152 with assoc: 12 with line size: 64
+Initialising PW cache with size: 2 with assoc: 1 with line size: 64
+Initialising a cache with size: 2 with assoc: 1 with line size: 1
+Initialising PW cache with size: 4 with assoc: 4 with line size: 64
+Initialising a cache with size: 4 with assoc: 4 with line size: 1
+Initialising PW cache with size: 32 with assoc: 4 with line size: 64
+Initialising a cache with size: 32 with assoc: 4 with line size: 1
+op_qemu_mem_trace=/start_point/data2/collect_trace_fast/radix/radix_never_graphbig_cc_walk_log.bin
+creating qemu_file_reader_t for /start_point/data2/collect_trace_fast/radix/radix_never_graphbig_cc_walk_log.bin with verbosity 0 and arch 0
+Done with qemu tracer
+Heartbeat. 4194304 references processed.
+Heartbeat. 8388608 references processed.
+Heartbeat. 12582912 references processed.
+Heartbeat. 16777216 references processed.
+Heartbeat. 20971520 references processed.
+Heartbeat. 25165824 references processed.
+Heartbeat. 29360128 references processed.
+Heartbeat. 33554432 references processed.
+Heartbeat. 37748736 references processed.
+Heartbeat. 41943040 references processed.
+Heartbeat. 46137344 references processed.
+Cache simulation warmed up
+Heartbeat. 50331648 references processed.
+Heartbeat. 54525952 references processed.
+Heartbeat. 58720256 references processed.
+Heartbeat. 62914560 references processed.
+Heartbeat. 67108864 references processed.
+Heartbeat. 71303168 references processed.
+Heartbeat. 75497472 references processed.
+Heartbeat. 79691776 references processed.
+Heartbeat. 83886080 references processed.
+Heartbeat. 88080384 references processed.
+Heartbeat. 92274688 references processed.
+Heartbeat. 96468992 references processed.
+Finished warmup of TLB
+Heartbeat. 100663296 references processed.
+Heartbeat. 104857600 references processed.
+Heartbeat. 109051904 references processed.
+Heartbeat. 113246208 references processed.
+Heartbeat. 117440512 references processed.
+Heartbeat. 121634816 references processed.
+Heartbeat. 125829120 references processed.
+Heartbeat. 130023424 references processed.
+Heartbeat. 134217728 references processed.
+Heartbeat. 138412032 references processed.
+Heartbeat. 142606336 references processed.
+Heartbeat. 146800640 references processed.
+Heartbeat. 150994944 references processed.
+Heartbeat. 155189248 references processed.
+Heartbeat. 159383552 references processed.
+Heartbeat. 163577856 references processed.
+Heartbeat. 167772160 references processed.
+Heartbeat. 171966464 references processed.
+Heartbeat. 176160768 references processed.
+Heartbeat. 180355072 references processed.
+Heartbeat. 184549376 references processed.
+Heartbeat. 188743680 references processed.
+Heartbeat. 192937984 references processed.
+Heartbeat. 197132288 references processed.
+Heartbeat. 201326592 references processed.
+Heartbeat. 205520896 references processed.
+Heartbeat. 209715200 references processed.
+Heartbeat. 213909504 references processed.
+Heartbeat. 218103808 references processed.
+Heartbeat. 222298112 references processed.
+Heartbeat. 226492416 references processed.
+Heartbeat. 230686720 references processed.
+Heartbeat. 234881024 references processed.
+Heartbeat. 239075328 references processed.
+Heartbeat. 243269632 references processed.
+Heartbeat. 247463936 references processed.
+Heartbeat. 251658240 references processed.
+Heartbeat. 255852544 references processed.
+Heartbeat. 260046848 references processed.
+Heartbeat. 264241152 references processed.
+Heartbeat. 268435456 references processed.
+Heartbeat. 272629760 references processed.
+Heartbeat. 276824064 references processed.
+Heartbeat. 281018368 references processed.
+Heartbeat. 285212672 references processed.
+Heartbeat. 289406976 references processed.
+Heartbeat. 293601280 references processed.
+Heartbeat. 297795584 references processed.
+Heartbeat. 301989888 references processed.
+Heartbeat. 306184192 references processed.
+Heartbeat. 310378496 references processed.
+Heartbeat. 314572800 references processed.
+Heartbeat. 318767104 references processed.
+Heartbeat. 322961408 references processed.
+Heartbeat. 327155712 references processed.
+Heartbeat. 331350016 references processed.
+Heartbeat. 335544320 references processed.
+Heartbeat. 339738624 references processed.
+Heartbeat. 343932928 references processed.
+Heartbeat. 348127232 references processed.
+Heartbeat. 352321536 references processed.
+Heartbeat. 356515840 references processed.
+Heartbeat. 360710144 references processed.
+Heartbeat. 364904448 references processed.
+Heartbeat. 369098752 references processed.
+Heartbeat. 373293056 references processed.
+Heartbeat. 377487360 references processed.
+Heartbeat. 381681664 references processed.
+Heartbeat. 385875968 references processed.
+Heartbeat. 390070272 references processed.
+Heartbeat. 394264576 references processed.
+Heartbeat. 398458880 references processed.
+Heartbeat. 402653184 references processed.
+Heartbeat. 406847488 references processed.
+Heartbeat. 411041792 references processed.
+Heartbeat. 415236096 references processed.
+Heartbeat. 419430400 references processed.
+Heartbeat. 423624704 references processed.
+Heartbeat. 427819008 references processed.
+Heartbeat. 432013312 references processed.
+Heartbeat. 436207616 references processed.
+Heartbeat. 440401920 references processed.
+Heartbeat. 444596224 references processed.
+Heartbeat. 448790528 references processed.
+Heartbeat. 452984832 references processed.
+Heartbeat. 457179136 references processed.
+Heartbeat. 461373440 references processed.
+Heartbeat. 465567744 references processed.
+Heartbeat. 469762048 references processed.
+Heartbeat. 473956352 references processed.
+Heartbeat. 478150656 references processed.
+Heartbeat. 482344960 references processed.
+Heartbeat. 486539264 references processed.
+Heartbeat. 490733568 references processed.
+Heartbeat. 494927872 references processed.
+Heartbeat. 499122176 references processed.
+Heartbeat. 503316480 references processed.
+Heartbeat. 507510784 references processed.
+Heartbeat. 511705088 references processed.
+Heartbeat. 515899392 references processed.
+Heartbeat. 520093696 references processed.
+Heartbeat. 524288000 references processed.
+Heartbeat. 528482304 references processed.
+Heartbeat. 532676608 references processed.
+Heartbeat. 536870912 references processed.
+Heartbeat. 541065216 references processed.
+Heartbeat. 545259520 references processed.
+Heartbeat. 549453824 references processed.
+Heartbeat. 553648128 references processed.
+Heartbeat. 557842432 references processed.
+Heartbeat. 562036736 references processed.
+Heartbeat. 566231040 references processed.
+Heartbeat. 570425344 references processed.
+Heartbeat. 574619648 references processed.
+Heartbeat. 578813952 references processed.
+Heartbeat. 583008256 references processed.
+Heartbeat. 587202560 references processed.
+Heartbeat. 591396864 references processed.
+Heartbeat. 595591168 references processed.
+Heartbeat. 599785472 references processed.
+Heartbeat. 603979776 references processed.
+Heartbeat. 608174080 references processed.
+Heartbeat. 612368384 references processed.
+Heartbeat. 616562688 references processed.
+Heartbeat. 620756992 references processed.
+Heartbeat. 624951296 references processed.
+Heartbeat. 629145600 references processed.
+Heartbeat. 633339904 references processed.
+Heartbeat. 637534208 references processed.
+Heartbeat. 641728512 references processed.
+Heartbeat. 645922816 references processed.
+Heartbeat. 650117120 references processed.
+Heartbeat. 654311424 references processed.
+Heartbeat. 658505728 references processed.
+Heartbeat. 662700032 references processed.
+Heartbeat. 666894336 references processed.
+Heartbeat. 671088640 references processed.
+Heartbeat. 675282944 references processed.
+Heartbeat. 679477248 references processed.
+Heartbeat. 683671552 references processed.
+Heartbeat. 687865856 references processed.
+Heartbeat. 692060160 references processed.
+Heartbeat. 696254464 references processed.
+Heartbeat. 700448768 references processed.
+Heartbeat. 704643072 references processed.
+Heartbeat. 708837376 references processed.
+Heartbeat. 713031680 references processed.
+Heartbeat. 717225984 references processed.
+Heartbeat. 721420288 references processed.
+Heartbeat. 725614592 references processed.
+Heartbeat. 729808896 references processed.
+Heartbeat. 734003200 references processed.
+Heartbeat. 738197504 references processed.
+Heartbeat. 742391808 references processed.
+Heartbeat. 746586112 references processed.
+Heartbeat. 750780416 references processed.
+Heartbeat. 754974720 references processed.
+Heartbeat. 759169024 references processed.
+Heartbeat. 763363328 references processed.
+Heartbeat. 767557632 references processed.
+Heartbeat. 771751936 references processed.
+Heartbeat. 775946240 references processed.
+Heartbeat. 780140544 references processed.
+Heartbeat. 784334848 references processed.
+Heartbeat. 788529152 references processed.
+Heartbeat. 792723456 references processed.
+Heartbeat. 796917760 references processed.
+Heartbeat. 801112064 references processed.
+Heartbeat. 805306368 references processed.
+Heartbeat. 809500672 references processed.
+Heartbeat. 813694976 references processed.
+Heartbeat. 817889280 references processed.
+Heartbeat. 822083584 references processed.
+Heartbeat. 826277888 references processed.
+Heartbeat. 830472192 references processed.
+Heartbeat. 834666496 references processed.
+Heartbeat. 838860800 references processed.
+Heartbeat. 843055104 references processed.
+Heartbeat. 847249408 references processed.
+Heartbeat. 851443712 references processed.
+Heartbeat. 855638016 references processed.
+Heartbeat. 859832320 references processed.
+Heartbeat. 864026624 references processed.
+Heartbeat. 868220928 references processed.
+Heartbeat. 872415232 references processed.
+Heartbeat. 876609536 references processed.
+Heartbeat. 880803840 references processed.
+Heartbeat. 884998144 references processed.
+Heartbeat. 889192448 references processed.
+Heartbeat. 893386752 references processed.
+Heartbeat. 897581056 references processed.
+Heartbeat. 901775360 references processed.
+Heartbeat. 905969664 references processed.
+Heartbeat. 910163968 references processed.
+Heartbeat. 914358272 references processed.
+Heartbeat. 918552576 references processed.
+Heartbeat. 922746880 references processed.
+Heartbeat. 926941184 references processed.
+Heartbeat. 931135488 references processed.
+Heartbeat. 935329792 references processed.
+Trace is truncated
+TLB simulation results:
+Core #0 (1 thread(s))
+  TLB-L1I stats:
+    Hits:                        559660672
+    Misses:                          15998
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.00%
+  TLB-L1D stats:
+    Hits:                        214007321
+    Misses:                       63550692
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                       22.90%
+  TLB-LL stats:
+    Hits:                         20441177
+    Misses:                       43125513
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Local miss rate:                 67.84%
+    Child hits:                  773667993
+    Total miss rate:                  5.15%
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Cache simulation results:
+Core #0 (1 thread(s))
+  L1I stats:
+    Warmup hits:                  45619773
+    Warmup misses:                   47179
+    Hits:                        848312440
+    Misses:                          91343
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.01%
+  L1D stats:
+    Warmup hits:                  12052899
+    Warmup misses:                 4673510
+    Hits:                        181433876
+    Misses:                      112801618
+    Invalidations:                       0
+    Hits PT level     1:               70176
+    Misses PT level   1:              135544
+    Hits PT level     2:              493416
+    Misses PT level   2:              297129
+    Hits PT level     3:            16732035
+    Misses PT level   3:             4704018
+    Hits PT level     4:            12986977
+    Misses PT level   4:            32248862
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Prefetch hits:                17289713
+    Prefetch misses:             132897458
+    Miss rate:                       38.34%
+  L2 stats:
+    Warmup hits:                    986873
+    Warmup misses:                 3733816
+    Hits:                         15078384
+    Misses:                       97814577
+    Invalidations:                       0
+    Hits PT level     1:              131251
+    Misses PT level   1:                4293
+    Hits PT level     2:              293003
+    Misses PT level   2:                4126
+    Hits PT level     3:             4157475
+    Misses PT level   3:              546543
+    Hits PT level     4:            18324462
+    Misses PT level   4:            13924400
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Prefetch hits:                29716488
+    Prefetch misses:             103180970
+    Local miss rate:                 86.64%
+    Child hits:                 1077318633
+    Total miss rate:                  8.22%
+LLC stats:
+    Warmup hits:                    693425
+    Warmup misses:                 3040391
+    Hits:                         17330955
+    Misses:                       80483622
+    Invalidations:                       0
+    Hits PT level     1:                3954
+    Misses PT level   1:                 339
+    Hits PT level     2:                3651
+    Misses PT level   2:                 475
+    Hits PT level     3:              533563
+    Misses PT level   3:               12980
+    Hits PT level     4:            12509960
+    Misses PT level   4:             1414440
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Prefetch hits:                29785924
+    Prefetch misses:              73395046
+    Local miss rate:                 82.28%
+    Child hits:                   67701063
+    Total miss rate:                 48.63%
+ PWC 0 stats:
+    Warmup hits:                         0
+    Warmup misses:                       0
+    Hits:                           602322
+    Misses:                         213737
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                       26.19%
+ PWC 1 stats:
+    Warmup hits:                         0
+    Warmup misses:                       0
+    Hits:                         21446000
+    Misses:                         816059
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        3.67%
+ PWC 2 stats:
+    Warmup hits:                         0
+    Warmup misses:                       0
+    Hits:                         24657203
+    Misses:                       22229554
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                       47.41%
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+num_requests : 937234683
+num_not_found : 0
+kernel memory references: 
+0,3229133
+1,2618946
+16,10120916
+user memory references: 
+0,270203328
+1,34910492
+16,616151868
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+num_range_found : 0
+num_range_not_found : 0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MEMORY,MEMORY,MEMORY,MEMORY,	6
+MEMORY,MEMORY,MEMORY,ZERO,	7
+MEMORY,MEMORY,L1,L2,	4
+MEMORY,MEMORY,L2,L2,	1
+MEMORY,MEMORY,LLC,ZERO,	23
+MEMORY,L1,MEMORY,MEMORY,	2
+MEMORY,L1,L1,MEMORY,	1
+MEMORY,L1,L1,L1,	1
+MEMORY,L1,L2,MEMORY,	12
+MEMORY,L1,L2,L1,	1
+MEMORY,L1,L2,L2,	4
+MEMORY,L1,L2,LLC,	1
+MEMORY,L1,LLC,MEMORY,	27
+MEMORY,L1,LLC,L2,	1
+MEMORY,L2,L1,MEMORY,	1
+MEMORY,L2,L1,L1,	4
+MEMORY,L2,L1,L2,	36
+MEMORY,L2,L1,ZERO,	2
+MEMORY,L2,L2,MEMORY,	9
+MEMORY,L2,L2,L1,	3
+MEMORY,L2,L2,L2,	14
+MEMORY,L2,L2,ZERO,	4
+MEMORY,L2,LLC,MEMORY,	30
+MEMORY,L2,LLC,LLC,	2
+MEMORY,LLC,MEMORY,ZERO,	17
+MEMORY,LLC,L1,L1,	5
+MEMORY,LLC,L1,L2,	14
+MEMORY,LLC,L2,L1,	2
+MEMORY,LLC,L2,L2,	9
+MEMORY,LLC,L2,ZERO,	1
+MEMORY,LLC,LLC,MEMORY,	1
+MEMORY,LLC,LLC,L2,	2
+MEMORY,LLC,LLC,ZERO,	92
+L1,MEMORY,MEMORY,MEMORY,	1
+L1,MEMORY,L2,L2,	1
+L1,MEMORY,LLC,MEMORY,	2
+L1,L1,MEMORY,MEMORY,	82
+L1,L1,MEMORY,L1,	2
+L1,L1,MEMORY,L2,	1
+L1,L1,MEMORY,LLC,	4
+L1,L1,L1,MEMORY,	1212
+L1,L1,L1,L1,	4754
+L1,L1,L1,L2,	20462
+L1,L1,L1,LLC,	392
+L1,L1,L2,MEMORY,	13851
+L1,L1,L2,L1,	556
+L1,L1,L2,L2,	2085
+L1,L1,L2,LLC,	1967
+L1,L1,LLC,MEMORY,	8951
+L1,L1,LLC,L1,	7
+L1,L1,LLC,L2,	60
+L1,L1,LLC,LLC,	388
+L1,L2,MEMORY,MEMORY,	30
+L1,L2,MEMORY,L1,	1
+L1,L2,L1,MEMORY,	41
+L1,L2,L1,L1,	1857
+L1,L2,L1,L2,	7683
+L1,L2,L1,LLC,	69
+L1,L2,L2,MEMORY,	1240
+L1,L2,L2,L1,	369
+L1,L2,L2,L2,	1497
+L1,L2,L2,LLC,	64
+L1,L2,LLC,MEMORY,	2399
+L1,L2,LLC,L1,	6
+L1,L2,LLC,L2,	39
+L1,L2,LLC,LLC,	73
+L1,LLC,L1,L1,	1
+L1,LLC,L1,L2,	7
+L1,LLC,L1,LLC,	1
+L1,LLC,L2,MEMORY,	9
+L1,LLC,L2,L2,	4
+L1,LLC,L2,LLC,	1
+L1,LLC,LLC,MEMORY,	4
+L1,LLC,LLC,L2,	1
+L1,LLC,LLC,ZERO,	2
+L2,MEMORY,MEMORY,MEMORY,	2
+L2,MEMORY,L1,L1,	4
+L2,MEMORY,L1,L2,	24
+L2,MEMORY,L1,LLC,	1
+L2,MEMORY,L2,MEMORY,	3
+L2,MEMORY,L2,L1,	1
+L2,MEMORY,L2,L2,	8
+L2,MEMORY,L2,LLC,	1
+L2,MEMORY,LLC,MEMORY,	1
+L2,MEMORY,LLC,L2,	1
+L2,MEMORY,LLC,ZERO,	3
+L2,L1,MEMORY,MEMORY,	307
+L2,L1,MEMORY,L1,	1
+L2,L1,MEMORY,L2,	2
+L2,L1,MEMORY,LLC,	2
+L2,L1,L1,MEMORY,	383
+L2,L1,L1,L1,	2416
+L2,L1,L1,L2,	6996
+L2,L1,L1,LLC,	167
+L2,L1,L2,MEMORY,	9649
+L2,L1,L2,L1,	1176
+L2,L1,L2,L2,	4393
+L2,L1,L2,LLC,	720
+L2,L1,LLC,MEMORY,	20296
+L2,L1,LLC,L1,	5
+L2,L1,LLC,L2,	70
+L2,L1,LLC,LLC,	570
+L2,L2,MEMORY,MEMORY,	262
+L2,L2,MEMORY,L1,	2
+L2,L2,MEMORY,L2,	11
+L2,L2,MEMORY,LLC,	7
+L2,L2,MEMORY,ZERO,	1
+L2,L2,L1,MEMORY,	150
+L2,L2,L1,L1,	8081
+L2,L2,L1,L2,	35694
+L2,L2,L1,LLC,	226
+L2,L2,L1,ZERO,	1
+L2,L2,L2,MEMORY,	6168
+L2,L2,L2,L1,	2553
+L2,L2,L2,L2,	11917
+L2,L2,L2,LLC,	411
+L2,L2,L2,ZERO,	115
+L2,L2,LLC,MEMORY,	16573
+L2,L2,LLC,L1,	98
+L2,L2,LLC,L2,	423
+L2,L2,LLC,LLC,	387
+L2,L2,LLC,ZERO,	54
+L2,LLC,MEMORY,MEMORY,	2
+L2,LLC,MEMORY,ZERO,	4
+L2,LLC,L1,MEMORY,	1
+L2,LLC,L1,L1,	79
+L2,LLC,L1,L2,	433
+L2,LLC,L1,LLC,	1
+L2,LLC,L2,MEMORY,	7
+L2,LLC,L2,L1,	28
+L2,LLC,L2,L2,	130
+L2,LLC,L2,LLC,	1
+L2,LLC,L2,ZERO,	70
+L2,LLC,LLC,MEMORY,	7
+L2,LLC,LLC,L2,	11
+L2,LLC,LLC,ZERO,	141
+LLC,MEMORY,MEMORY,MEMORY,	2
+LLC,MEMORY,MEMORY,ZERO,	38
+LLC,MEMORY,L1,L1,	5
+LLC,MEMORY,L1,L2,	29
+LLC,MEMORY,L2,L1,	3
+LLC,MEMORY,L2,L2,	6
+LLC,MEMORY,LLC,ZERO,	128
+LLC,L1,MEMORY,MEMORY,	8
+LLC,L1,L1,MEMORY,	4
+LLC,L1,L1,L1,	25
+LLC,L1,L1,L2,	39
+LLC,L1,L1,LLC,	2
+LLC,L1,L2,MEMORY,	89
+LLC,L1,L2,L1,	7
+LLC,L1,L2,L2,	41
+LLC,L1,L2,LLC,	18
+LLC,L1,LLC,MEMORY,	284
+LLC,L1,LLC,L2,	2
+LLC,L1,LLC,LLC,	6
+LLC,L2,MEMORY,MEMORY,	6
+LLC,L2,MEMORY,L1,	1
+LLC,L2,MEMORY,L2,	1
+LLC,L2,MEMORY,ZERO,	1
+LLC,L2,L1,MEMORY,	1
+LLC,L2,L1,L1,	99
+LLC,L2,L1,L2,	405
+LLC,L2,L1,LLC,	4
+LLC,L2,L1,ZERO,	1
+LLC,L2,L2,MEMORY,	114
+LLC,L2,L2,L1,	37
+LLC,L2,L2,L2,	140
+LLC,L2,L2,LLC,	13
+LLC,L2,L2,ZERO,	55
+LLC,L2,LLC,MEMORY,	349
+LLC,L2,LLC,L1,	1
+LLC,L2,LLC,L2,	7
+LLC,L2,LLC,LLC,	10
+LLC,L2,LLC,ZERO,	65
+LLC,LLC,MEMORY,ZERO,	190
+LLC,LLC,L1,L1,	54
+LLC,LLC,L1,L2,	263
+LLC,LLC,L2,MEMORY,	1
+LLC,LLC,L2,L1,	18
+LLC,LLC,L2,L2,	81
+LLC,LLC,L2,ZERO,	67
+LLC,LLC,LLC,L2,	6
+LLC,LLC,LLC,ZERO,	1228
+PWC,MEMORY,MEMORY,MEMORY,	4
+PWC,MEMORY,MEMORY,LLC,	5
+PWC,MEMORY,MEMORY,ZERO,	44
+PWC,MEMORY,L2,MEMORY,	3
+PWC,MEMORY,L2,L2,	3
+PWC,MEMORY,LLC,MEMORY,	17
+PWC,MEMORY,LLC,LLC,	1
+PWC,MEMORY,LLC,ZERO,	93
+PWC,L1,MEMORY,MEMORY,	3079
+PWC,L1,MEMORY,L2,	13
+PWC,L1,MEMORY,LLC,	135
+PWC,L1,MEMORY,ZERO,	16
+PWC,L1,L1,MEMORY,	7455
+PWC,L1,L1,L1,	3394
+PWC,L1,L1,L2,	5044
+PWC,L1,L1,LLC,	1581
+PWC,L1,L2,MEMORY,	128231
+PWC,L1,L2,L1,	5135
+PWC,L1,L2,L2,	28346
+PWC,L1,L2,LLC,	14492
+PWC,L1,L2,ZERO,	128
+PWC,L1,LLC,MEMORY,	186839
+PWC,L1,LLC,L1,	8
+PWC,L1,LLC,L2,	403
+PWC,L1,LLC,LLC,	6213
+PWC,L1,LLC,ZERO,	402
+PWC,L2,MEMORY,MEMORY,	2111
+PWC,L2,MEMORY,L2,	10
+PWC,L2,MEMORY,LLC,	29
+PWC,L2,MEMORY,ZERO,	4
+PWC,L2,L1,MEMORY,	714
+PWC,L2,L1,L1,	567
+PWC,L2,L1,L2,	1346
+PWC,L2,L1,LLC,	176
+PWC,L2,L1,ZERO,	1
+PWC,L2,L2,MEMORY,	43035
+PWC,L2,L2,L1,	1805
+PWC,L2,L2,L2,	15413
+PWC,L2,L2,LLC,	2989
+PWC,L2,L2,ZERO,	6
+PWC,L2,LLC,MEMORY,	121537
+PWC,L2,LLC,L1,	3
+PWC,L2,LLC,L2,	247
+PWC,L2,LLC,LLC,	3049
+PWC,L2,LLC,ZERO,	44
+PWC,LLC,MEMORY,MEMORY,	4
+PWC,LLC,MEMORY,ZERO,	114
+PWC,LLC,L1,MEMORY,	3
+PWC,LLC,L1,L2,	3
+PWC,LLC,L2,MEMORY,	48
+PWC,LLC,L2,L2,	10
+PWC,LLC,L2,LLC,	9
+PWC,LLC,L2,ZERO,	2
+PWC,LLC,LLC,MEMORY,	20
+PWC,LLC,LLC,L2,	2
+PWC,LLC,LLC,LLC,	3
+PWC,LLC,LLC,ZERO,	437
+ZERO,PWC,MEMORY,MEMORY,	2343
+ZERO,PWC,MEMORY,L1,	81
+ZERO,PWC,MEMORY,L2,	1374
+ZERO,PWC,MEMORY,LLC,	2295
+ZERO,PWC,MEMORY,ZERO,	316
+ZERO,PWC,L1,MEMORY,	402729
+ZERO,PWC,L1,L1,	1070469
+ZERO,PWC,L1,L2,	6351425
+ZERO,PWC,L1,LLC,	8774858
+ZERO,PWC,L1,ZERO,	20135
+ZERO,PWC,L2,MEMORY,	184812
+ZERO,PWC,L2,L1,	190376
+ZERO,PWC,L2,L2,	1337973
+ZERO,PWC,L2,LLC,	2144434
+ZERO,PWC,L2,ZERO,	479
+ZERO,PWC,LLC,MEMORY,	136719
+ZERO,PWC,LLC,L1,	659
+ZERO,PWC,LLC,L2,	7495
+ZERO,PWC,LLC,LLC,	14239
+ZERO,PWC,LLC,ZERO,	2297
+ZERO,ZERO,PWC,MEMORY,	112157
+ZERO,ZERO,PWC,L1,	11692217
+ZERO,ZERO,PWC,L2,	10482297
+ZERO,ZERO,PWC,LLC,	1539943
