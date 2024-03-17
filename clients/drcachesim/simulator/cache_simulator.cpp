@@ -1618,6 +1618,23 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
     return true;
 }
 
+/**
+ * @brief Process a hit at a certain level of the page table
+ *  start level: 0 -> L1, 1 -> L2, 2 -> LLC
+ *  search_res: the result of the search at the current level
+ *  e.g. if start_level = 0, we start from L1, so FOUND_L1(1) means hit at L1
+ *      if start_level = 1, we start from L2, so FOUND_L1(1) means hit at L2,
+ *      so we need to add 1 to the result to get the correct level.
+ */
+static cache_result_t process_hit_level(cache_result_t search_res, int start_level)
+{
+    if (search_res != NOT_FOUND) {
+        return static_cast<cache_result_t>(static_cast<int>(search_res) + start_level);
+    } else {
+        return search_res;  
+    }
+}
+
 void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res, 
                                      trace_type_t type, 
                                      long long unsigned int pgtable_addr, /* phys addr of the page table */
@@ -1646,8 +1663,21 @@ void cache_simulator_t::make_request(page_walk_hm_result_t& page_walk_res,
   /* TODO: this needs to be fixed we directly acquire the paddr of page table now */
   page_walk_memref.data.addr = pgtable_addr;
                              
-  page_walk_memref.data.size = 1; 
-  page_walk_res.push_back(l1_dcaches[core]->request(page_walk_memref));
+  page_walk_memref.data.size = 1;
+
+    cache_result_t search_res;
+    if (knobs.mmu_to_l2) {
+        search_res = l2_caches[core]->request(page_walk_memref);
+        search_res = process_hit_level(search_res, 1);
+    } else {
+        search_res = l1_dcaches[core]->request(page_walk_memref);
+        search_res = process_hit_level(search_res, 0);
+    }
+
+  page_walk_res.push_back((search_res));
+  if (knobs.verbose >= 2) {
+    printf("page_walk_res.back() %d\n", page_walk_res.back());
+  }
 
   if (knobs.verbose >= 2) {
     std::cerr << "Done walk Type: " << type 

@@ -126,7 +126,8 @@ get_cache_simulator_knobs()
         std::cerr << "invalid arch" + op_trans_arch.get_value();
     }
     knobs->ecpt_early_return = op_ecpt_early_return.get_value();
-     
+    knobs->mmu_to_l2 = op_mmu_to_l2.get_value();
+
     return knobs;
 }
 
