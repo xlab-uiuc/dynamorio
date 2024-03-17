@@ -2,7 +2,7 @@ Initialising a TLB with size: 128
 Initialising a TLB with size: 64
 Initialising a TLB with size: 2048
 Initialising PT from file: 
-Initialising memory references from file: /start_point/data2/collect_trace_fast/ecpt/ecpt_never_graphbig_dfs_walk_log.bin
+Initialising memory references from file: /start_point/data1/collect_trace_fast/ecpt/ecpt_never_graphbig_dfs_walk_log.bin
 Initialising a cache with size: 25165824 with assoc: 12 with line size: 64
 Initialising for core 0
 Initialising L2 cache with size: 1310720 with assoc: 20 with line size: 64
@@ -15,8 +15,8 @@ Initialising CWC cache with size: 2 with assoc: 2
 Initialising a cache with size: 2 with assoc: 2 with line size: 1
 Initialising CWC cache with size: 16 with assoc: 16
 Initialising a cache with size: 16 with assoc: 16 with line size: 1
-op_qemu_mem_trace=/start_point/data2/collect_trace_fast/ecpt/ecpt_never_graphbig_dfs_walk_log.bin
-creating qemu_file_reader_t for /start_point/data2/collect_trace_fast/ecpt/ecpt_never_graphbig_dfs_walk_log.bin with verbosity 0 and arch 1
+op_qemu_mem_trace=/start_point/data1/collect_trace_fast/ecpt/ecpt_never_graphbig_dfs_walk_log.bin
+creating qemu_file_reader_t for /start_point/data1/collect_trace_fast/ecpt/ecpt_never_graphbig_dfs_walk_log.bin with verbosity 0 and arch 1
 Done with qemu tracer
 Heartbeat. 4194304 references processed.
 Heartbeat. 8388608 references processed.
@@ -287,568 +287,12 @@ Heartbeat. 1107296256 references processed.
 Heartbeat. 1111490560 references processed.
 Heartbeat. 1115684864 references processed.
 Heartbeat. 1119879168 references processed.
-Heartbeat. 1124073472 references processed.
-Heartbeat. 1128267776 references processed.
-Heartbeat. 1132462080 references processed.
-Heartbeat. 1136656384 references processed.
-Heartbeat. 1140850688 references processed.
-Heartbeat. 1145044992 references processed.
-Heartbeat. 1149239296 references processed.
-Heartbeat. 1153433600 references processed.
-Heartbeat. 1157627904 references processed.
-Heartbeat. 1161822208 references processed.
-Heartbeat. 1166016512 references processed.
-Heartbeat. 1170210816 references processed.
-Heartbeat. 1174405120 references processed.
-Heartbeat. 1178599424 references processed.
-Heartbeat. 1182793728 references processed.
-Heartbeat. 1186988032 references processed.
-Heartbeat. 1191182336 references processed.
-Heartbeat. 1195376640 references processed.
-Heartbeat. 1199570944 references processed.
-Heartbeat. 1203765248 references processed.
-Heartbeat. 1207959552 references processed.
-Heartbeat. 1212153856 references processed.
-Heartbeat. 1216348160 references processed.
-Heartbeat. 1220542464 references processed.
-Heartbeat. 1224736768 references processed.
-Heartbeat. 1228931072 references processed.
-Heartbeat. 1233125376 references processed.
-Heartbeat. 1237319680 references processed.
-Heartbeat. 1241513984 references processed.
-Heartbeat. 1245708288 references processed.
-Heartbeat. 1249902592 references processed.
-Heartbeat. 1254096896 references processed.
-Heartbeat. 1258291200 references processed.
-Heartbeat. 1262485504 references processed.
-Heartbeat. 1266679808 references processed.
-Heartbeat. 1270874112 references processed.
-Heartbeat. 1275068416 references processed.
-Heartbeat. 1279262720 references processed.
-Heartbeat. 1283457024 references processed.
-Heartbeat. 1287651328 references processed.
-Heartbeat. 1291845632 references processed.
-Heartbeat. 1296039936 references processed.
-Heartbeat. 1300234240 references processed.
-Heartbeat. 1304428544 references processed.
-Heartbeat. 1308622848 references processed.
-Heartbeat. 1312817152 references processed.
-Heartbeat. 1317011456 references processed.
-Heartbeat. 1321205760 references processed.
-Heartbeat. 1325400064 references processed.
-Heartbeat. 1329594368 references processed.
-Heartbeat. 1333788672 references processed.
-Heartbeat. 1337982976 references processed.
-Heartbeat. 1342177280 references processed.
-Heartbeat. 1346371584 references processed.
-Heartbeat. 1350565888 references processed.
-Heartbeat. 1354760192 references processed.
-Heartbeat. 1358954496 references processed.
-Heartbeat. 1363148800 references processed.
-Heartbeat. 1367343104 references processed.
-Heartbeat. 1371537408 references processed.
-Heartbeat. 1375731712 references processed.
-Heartbeat. 1379926016 references processed.
-Heartbeat. 1384120320 references processed.
-Heartbeat. 1388314624 references processed.
-Heartbeat. 1392508928 references processed.
-Heartbeat. 1396703232 references processed.
-Heartbeat. 1400897536 references processed.
-Heartbeat. 1405091840 references processed.
-Heartbeat. 1409286144 references processed.
-Heartbeat. 1413480448 references processed.
-Heartbeat. 1417674752 references processed.
-Heartbeat. 1421869056 references processed.
-Heartbeat. 1426063360 references processed.
-Heartbeat. 1430257664 references processed.
-Heartbeat. 1434451968 references processed.
-Heartbeat. 1438646272 references processed.
-Heartbeat. 1442840576 references processed.
-Heartbeat. 1447034880 references processed.
-Heartbeat. 1451229184 references processed.
-Heartbeat. 1455423488 references processed.
-Heartbeat. 1459617792 references processed.
-Heartbeat. 1463812096 references processed.
-Heartbeat. 1468006400 references processed.
-Heartbeat. 1472200704 references processed.
-Heartbeat. 1476395008 references processed.
-Heartbeat. 1480589312 references processed.
-Heartbeat. 1484783616 references processed.
-Heartbeat. 1488977920 references processed.
-Heartbeat. 1493172224 references processed.
-Heartbeat. 1497366528 references processed.
-Heartbeat. 1501560832 references processed.
-Heartbeat. 1505755136 references processed.
-Heartbeat. 1509949440 references processed.
-Heartbeat. 1514143744 references processed.
-Heartbeat. 1518338048 references processed.
-Heartbeat. 1522532352 references processed.
-Heartbeat. 1526726656 references processed.
-Heartbeat. 1530920960 references processed.
-Heartbeat. 1535115264 references processed.
-Heartbeat. 1539309568 references processed.
-Heartbeat. 1543503872 references processed.
-Heartbeat. 1547698176 references processed.
-Heartbeat. 1551892480 references processed.
-Heartbeat. 1556086784 references processed.
-Heartbeat. 1560281088 references processed.
-Heartbeat. 1564475392 references processed.
-Heartbeat. 1568669696 references processed.
-Heartbeat. 1572864000 references processed.
-Heartbeat. 1577058304 references processed.
-Heartbeat. 1581252608 references processed.
-Heartbeat. 1585446912 references processed.
-Heartbeat. 1589641216 references processed.
-Heartbeat. 1593835520 references processed.
-Heartbeat. 1598029824 references processed.
-Heartbeat. 1602224128 references processed.
-Heartbeat. 1606418432 references processed.
-Heartbeat. 1610612736 references processed.
-Heartbeat. 1614807040 references processed.
-Heartbeat. 1619001344 references processed.
-Heartbeat. 1623195648 references processed.
-Heartbeat. 1627389952 references processed.
-Heartbeat. 1631584256 references processed.
-Heartbeat. 1635778560 references processed.
-Heartbeat. 1639972864 references processed.
-Heartbeat. 1644167168 references processed.
-Heartbeat. 1648361472 references processed.
-Heartbeat. 1652555776 references processed.
-Heartbeat. 1656750080 references processed.
-Heartbeat. 1660944384 references processed.
-Heartbeat. 1665138688 references processed.
-Heartbeat. 1669332992 references processed.
-Heartbeat. 1673527296 references processed.
-Heartbeat. 1677721600 references processed.
-Heartbeat. 1681915904 references processed.
-Heartbeat. 1686110208 references processed.
-Heartbeat. 1690304512 references processed.
-Heartbeat. 1694498816 references processed.
-Heartbeat. 1698693120 references processed.
-Heartbeat. 1702887424 references processed.
-Heartbeat. 1707081728 references processed.
-Heartbeat. 1711276032 references processed.
-Heartbeat. 1715470336 references processed.
-Heartbeat. 1719664640 references processed.
-Heartbeat. 1723858944 references processed.
-Heartbeat. 1728053248 references processed.
-Heartbeat. 1732247552 references processed.
-Heartbeat. 1736441856 references processed.
-Heartbeat. 1740636160 references processed.
-Heartbeat. 1744830464 references processed.
-Heartbeat. 1749024768 references processed.
-Heartbeat. 1753219072 references processed.
-Heartbeat. 1757413376 references processed.
-Heartbeat. 1761607680 references processed.
-Heartbeat. 1765801984 references processed.
-Heartbeat. 1769996288 references processed.
-Heartbeat. 1774190592 references processed.
-Heartbeat. 1778384896 references processed.
-Heartbeat. 1782579200 references processed.
-Heartbeat. 1786773504 references processed.
-Heartbeat. 1790967808 references processed.
-Heartbeat. 1795162112 references processed.
-Heartbeat. 1799356416 references processed.
-Heartbeat. 1803550720 references processed.
-Heartbeat. 1807745024 references processed.
-Heartbeat. 1811939328 references processed.
-Heartbeat. 1816133632 references processed.
-Heartbeat. 1820327936 references processed.
-Heartbeat. 1824522240 references processed.
-Heartbeat. 1828716544 references processed.
-Heartbeat. 1832910848 references processed.
-Heartbeat. 1837105152 references processed.
-Heartbeat. 1841299456 references processed.
-Heartbeat. 1845493760 references processed.
-Heartbeat. 1849688064 references processed.
-Heartbeat. 1853882368 references processed.
-Heartbeat. 1858076672 references processed.
-Heartbeat. 1862270976 references processed.
-Heartbeat. 1866465280 references processed.
-Heartbeat. 1870659584 references processed.
-Heartbeat. 1874853888 references processed.
-Heartbeat. 1879048192 references processed.
-Heartbeat. 1883242496 references processed.
-Heartbeat. 1887436800 references processed.
-Heartbeat. 1891631104 references processed.
-Heartbeat. 1895825408 references processed.
-Heartbeat. 1900019712 references processed.
-Heartbeat. 1904214016 references processed.
-Heartbeat. 1908408320 references processed.
-Heartbeat. 1912602624 references processed.
-Heartbeat. 1916796928 references processed.
-Heartbeat. 1920991232 references processed.
-Heartbeat. 1925185536 references processed.
-Heartbeat. 1929379840 references processed.
-Heartbeat. 1933574144 references processed.
-Heartbeat. 1937768448 references processed.
-Heartbeat. 1941962752 references processed.
-Heartbeat. 1946157056 references processed.
-Heartbeat. 1950351360 references processed.
-Heartbeat. 1954545664 references processed.
-Heartbeat. 1958739968 references processed.
-Heartbeat. 1962934272 references processed.
-Heartbeat. 1967128576 references processed.
-Heartbeat. 1971322880 references processed.
-Heartbeat. 1975517184 references processed.
-Heartbeat. 1979711488 references processed.
-Heartbeat. 1983905792 references processed.
-Heartbeat. 1988100096 references processed.
-Heartbeat. 1992294400 references processed.
-Heartbeat. 1996488704 references processed.
-Heartbeat. 2000683008 references processed.
-Heartbeat. 2004877312 references processed.
-Heartbeat. 2009071616 references processed.
-Heartbeat. 2013265920 references processed.
-Heartbeat. 2017460224 references processed.
-Heartbeat. 2021654528 references processed.
-Heartbeat. 2025848832 references processed.
-Heartbeat. 2030043136 references processed.
-Heartbeat. 2034237440 references processed.
-Heartbeat. 2038431744 references processed.
-Heartbeat. 2042626048 references processed.
-Heartbeat. 2046820352 references processed.
-Heartbeat. 2051014656 references processed.
-Heartbeat. 2055208960 references processed.
-Heartbeat. 2059403264 references processed.
-Heartbeat. 2063597568 references processed.
-Heartbeat. 2067791872 references processed.
-Heartbeat. 2071986176 references processed.
-Heartbeat. 2076180480 references processed.
-Heartbeat. 2080374784 references processed.
-Heartbeat. 2084569088 references processed.
-Heartbeat. 2088763392 references processed.
-Heartbeat. 2092957696 references processed.
-Heartbeat. 2097152000 references processed.
-Heartbeat. 2101346304 references processed.
-Heartbeat. 2105540608 references processed.
-Heartbeat. 2109734912 references processed.
-Heartbeat. 2113929216 references processed.
-Heartbeat. 2118123520 references processed.
-Heartbeat. 2122317824 references processed.
-Heartbeat. 2126512128 references processed.
-Heartbeat. 2130706432 references processed.
-Heartbeat. 2134900736 references processed.
-Heartbeat. 2139095040 references processed.
-Heartbeat. 2143289344 references processed.
-Heartbeat. 2147483648 references processed.
-Heartbeat. 2151677952 references processed.
-Heartbeat. 2155872256 references processed.
-Heartbeat. 2160066560 references processed.
-Heartbeat. 2164260864 references processed.
-Heartbeat. 2168455168 references processed.
-Heartbeat. 2172649472 references processed.
-Heartbeat. 2176843776 references processed.
-Heartbeat. 2181038080 references processed.
-Heartbeat. 2185232384 references processed.
-Heartbeat. 2189426688 references processed.
-Heartbeat. 2193620992 references processed.
-Heartbeat. 2197815296 references processed.
-Heartbeat. 2202009600 references processed.
-Heartbeat. 2206203904 references processed.
-Heartbeat. 2210398208 references processed.
-Heartbeat. 2214592512 references processed.
-Heartbeat. 2218786816 references processed.
-Heartbeat. 2222981120 references processed.
-Heartbeat. 2227175424 references processed.
-Heartbeat. 2231369728 references processed.
-Heartbeat. 2235564032 references processed.
-Heartbeat. 2239758336 references processed.
-Heartbeat. 2243952640 references processed.
-Heartbeat. 2248146944 references processed.
-Heartbeat. 2252341248 references processed.
-Heartbeat. 2256535552 references processed.
-Heartbeat. 2260729856 references processed.
-Heartbeat. 2264924160 references processed.
-Heartbeat. 2269118464 references processed.
-Heartbeat. 2273312768 references processed.
-Heartbeat. 2277507072 references processed.
-Heartbeat. 2281701376 references processed.
-Heartbeat. 2285895680 references processed.
-Heartbeat. 2290089984 references processed.
-Heartbeat. 2294284288 references processed.
-Heartbeat. 2298478592 references processed.
-Heartbeat. 2302672896 references processed.
-Heartbeat. 2306867200 references processed.
-Heartbeat. 2311061504 references processed.
-Heartbeat. 2315255808 references processed.
-Heartbeat. 2319450112 references processed.
-Heartbeat. 2323644416 references processed.
-Heartbeat. 2327838720 references processed.
-Heartbeat. 2332033024 references processed.
-Heartbeat. 2336227328 references processed.
-Heartbeat. 2340421632 references processed.
-Heartbeat. 2344615936 references processed.
-Heartbeat. 2348810240 references processed.
-Heartbeat. 2353004544 references processed.
-Heartbeat. 2357198848 references processed.
-Heartbeat. 2361393152 references processed.
-Heartbeat. 2365587456 references processed.
-Heartbeat. 2369781760 references processed.
-Heartbeat. 2373976064 references processed.
-Heartbeat. 2378170368 references processed.
-Heartbeat. 2382364672 references processed.
-Heartbeat. 2386558976 references processed.
-Heartbeat. 2390753280 references processed.
-Heartbeat. 2394947584 references processed.
-Heartbeat. 2399141888 references processed.
-Heartbeat. 2403336192 references processed.
-Heartbeat. 2407530496 references processed.
-Heartbeat. 2411724800 references processed.
-Heartbeat. 2415919104 references processed.
-Heartbeat. 2420113408 references processed.
-Heartbeat. 2424307712 references processed.
-Heartbeat. 2428502016 references processed.
-Heartbeat. 2432696320 references processed.
-Heartbeat. 2436890624 references processed.
-Heartbeat. 2441084928 references processed.
-Heartbeat. 2445279232 references processed.
-Heartbeat. 2449473536 references processed.
-Heartbeat. 2453667840 references processed.
-Heartbeat. 2457862144 references processed.
-Heartbeat. 2462056448 references processed.
-Heartbeat. 2466250752 references processed.
-Heartbeat. 2470445056 references processed.
-Heartbeat. 2474639360 references processed.
-Heartbeat. 2478833664 references processed.
-Heartbeat. 2483027968 references processed.
-Heartbeat. 2487222272 references processed.
-Heartbeat. 2491416576 references processed.
-Heartbeat. 2495610880 references processed.
-Heartbeat. 2499805184 references processed.
-Heartbeat. 2503999488 references processed.
-Heartbeat. 2508193792 references processed.
-Heartbeat. 2512388096 references processed.
-Heartbeat. 2516582400 references processed.
-Heartbeat. 2520776704 references processed.
-Heartbeat. 2524971008 references processed.
-Heartbeat. 2529165312 references processed.
-Heartbeat. 2533359616 references processed.
-Heartbeat. 2537553920 references processed.
-Heartbeat. 2541748224 references processed.
-Heartbeat. 2545942528 references processed.
-Heartbeat. 2550136832 references processed.
-Heartbeat. 2554331136 references processed.
-Heartbeat. 2558525440 references processed.
-Heartbeat. 2562719744 references processed.
-Heartbeat. 2566914048 references processed.
-Heartbeat. 2571108352 references processed.
-Heartbeat. 2575302656 references processed.
-Heartbeat. 2579496960 references processed.
-Heartbeat. 2583691264 references processed.
-Heartbeat. 2587885568 references processed.
-Heartbeat. 2592079872 references processed.
-Heartbeat. 2596274176 references processed.
-Heartbeat. 2600468480 references processed.
-Heartbeat. 2604662784 references processed.
-Heartbeat. 2608857088 references processed.
-Heartbeat. 2613051392 references processed.
-Heartbeat. 2617245696 references processed.
-Heartbeat. 2621440000 references processed.
-Heartbeat. 2625634304 references processed.
-Heartbeat. 2629828608 references processed.
-Heartbeat. 2634022912 references processed.
-Heartbeat. 2638217216 references processed.
-Heartbeat. 2642411520 references processed.
-Heartbeat. 2646605824 references processed.
-Heartbeat. 2650800128 references processed.
-Heartbeat. 2654994432 references processed.
-Heartbeat. 2659188736 references processed.
-Heartbeat. 2663383040 references processed.
-Heartbeat. 2667577344 references processed.
-Heartbeat. 2671771648 references processed.
-Heartbeat. 2675965952 references processed.
-Heartbeat. 2680160256 references processed.
-Heartbeat. 2684354560 references processed.
-Heartbeat. 2688548864 references processed.
-Heartbeat. 2692743168 references processed.
-Heartbeat. 2696937472 references processed.
-Heartbeat. 2701131776 references processed.
-Heartbeat. 2705326080 references processed.
-Heartbeat. 2709520384 references processed.
-Heartbeat. 2713714688 references processed.
-Heartbeat. 2717908992 references processed.
-Heartbeat. 2722103296 references processed.
-Heartbeat. 2726297600 references processed.
-Heartbeat. 2730491904 references processed.
-Heartbeat. 2734686208 references processed.
-Heartbeat. 2738880512 references processed.
-Heartbeat. 2743074816 references processed.
-Heartbeat. 2747269120 references processed.
-Heartbeat. 2751463424 references processed.
-Heartbeat. 2755657728 references processed.
-Heartbeat. 2759852032 references processed.
-Heartbeat. 2764046336 references processed.
-Heartbeat. 2768240640 references processed.
-Heartbeat. 2772434944 references processed.
-Heartbeat. 2776629248 references processed.
-Heartbeat. 2780823552 references processed.
-Heartbeat. 2785017856 references processed.
-Heartbeat. 2789212160 references processed.
-Heartbeat. 2793406464 references processed.
-Heartbeat. 2797600768 references processed.
-Heartbeat. 2801795072 references processed.
-Heartbeat. 2805989376 references processed.
-Heartbeat. 2810183680 references processed.
-Heartbeat. 2814377984 references processed.
-Heartbeat. 2818572288 references processed.
-Heartbeat. 2822766592 references processed.
-Heartbeat. 2826960896 references processed.
-Heartbeat. 2831155200 references processed.
-Heartbeat. 2835349504 references processed.
-Heartbeat. 2839543808 references processed.
-Heartbeat. 2843738112 references processed.
-Heartbeat. 2847932416 references processed.
-Heartbeat. 2852126720 references processed.
-Heartbeat. 2856321024 references processed.
-Heartbeat. 2860515328 references processed.
-Heartbeat. 2864709632 references processed.
-Heartbeat. 2868903936 references processed.
-Heartbeat. 2873098240 references processed.
-Heartbeat. 2877292544 references processed.
-Heartbeat. 2881486848 references processed.
-Heartbeat. 2885681152 references processed.
-Heartbeat. 2889875456 references processed.
-Heartbeat. 2894069760 references processed.
-Heartbeat. 2898264064 references processed.
-Heartbeat. 2902458368 references processed.
-Heartbeat. 2906652672 references processed.
-Heartbeat. 2910846976 references processed.
-Heartbeat. 2915041280 references processed.
-Heartbeat. 2919235584 references processed.
-Heartbeat. 2923429888 references processed.
-Heartbeat. 2927624192 references processed.
-Heartbeat. 2931818496 references processed.
-Heartbeat. 2936012800 references processed.
-Heartbeat. 2940207104 references processed.
-Heartbeat. 2944401408 references processed.
-Heartbeat. 2948595712 references processed.
-Heartbeat. 2952790016 references processed.
-Heartbeat. 2956984320 references processed.
-Heartbeat. 2961178624 references processed.
-Heartbeat. 2965372928 references processed.
-Heartbeat. 2969567232 references processed.
-Heartbeat. 2973761536 references processed.
-Heartbeat. 2977955840 references processed.
-Heartbeat. 2982150144 references processed.
-Heartbeat. 2986344448 references processed.
-Heartbeat. 2990538752 references processed.
-Heartbeat. 2994733056 references processed.
-Heartbeat. 2998927360 references processed.
-Heartbeat. 3003121664 references processed.
-Heartbeat. 3007315968 references processed.
-Heartbeat. 3011510272 references processed.
-Heartbeat. 3015704576 references processed.
-Heartbeat. 3019898880 references processed.
-Heartbeat. 3024093184 references processed.
-Heartbeat. 3028287488 references processed.
-Heartbeat. 3032481792 references processed.
-Heartbeat. 3036676096 references processed.
-Heartbeat. 3040870400 references processed.
-Heartbeat. 3045064704 references processed.
-Heartbeat. 3049259008 references processed.
-Heartbeat. 3053453312 references processed.
-Heartbeat. 3057647616 references processed.
-Heartbeat. 3061841920 references processed.
-Heartbeat. 3066036224 references processed.
-Heartbeat. 3070230528 references processed.
-Heartbeat. 3074424832 references processed.
-Heartbeat. 3078619136 references processed.
-Heartbeat. 3082813440 references processed.
-Heartbeat. 3087007744 references processed.
-Heartbeat. 3091202048 references processed.
-Heartbeat. 3095396352 references processed.
-Heartbeat. 3099590656 references processed.
-Heartbeat. 3103784960 references processed.
-Heartbeat. 3107979264 references processed.
-Heartbeat. 3112173568 references processed.
-Heartbeat. 3116367872 references processed.
-Heartbeat. 3120562176 references processed.
-Heartbeat. 3124756480 references processed.
-Heartbeat. 3128950784 references processed.
-Heartbeat. 3133145088 references processed.
-Heartbeat. 3137339392 references processed.
-Heartbeat. 3141533696 references processed.
-Heartbeat. 3145728000 references processed.
-Heartbeat. 3149922304 references processed.
-Heartbeat. 3154116608 references processed.
-Heartbeat. 3158310912 references processed.
-Heartbeat. 3162505216 references processed.
-Heartbeat. 3166699520 references processed.
-Heartbeat. 3170893824 references processed.
-Heartbeat. 3175088128 references processed.
-Heartbeat. 3179282432 references processed.
-Heartbeat. 3183476736 references processed.
-Heartbeat. 3187671040 references processed.
-Heartbeat. 3191865344 references processed.
-Heartbeat. 3196059648 references processed.
-Heartbeat. 3200253952 references processed.
-Heartbeat. 3204448256 references processed.
-Heartbeat. 3208642560 references processed.
-Heartbeat. 3212836864 references processed.
-Heartbeat. 3217031168 references processed.
-Heartbeat. 3221225472 references processed.
-Heartbeat. 3225419776 references processed.
-Heartbeat. 3229614080 references processed.
-Heartbeat. 3233808384 references processed.
-Heartbeat. 3238002688 references processed.
-Heartbeat. 3242196992 references processed.
-Heartbeat. 3246391296 references processed.
-Heartbeat. 3250585600 references processed.
-Heartbeat. 3254779904 references processed.
-Heartbeat. 3258974208 references processed.
-Heartbeat. 3263168512 references processed.
-Heartbeat. 3267362816 references processed.
-Heartbeat. 3271557120 references processed.
-Heartbeat. 3275751424 references processed.
-Heartbeat. 3279945728 references processed.
-Heartbeat. 3284140032 references processed.
-Heartbeat. 3288334336 references processed.
-Heartbeat. 3292528640 references processed.
-Heartbeat. 3296722944 references processed.
-Heartbeat. 3300917248 references processed.
-Heartbeat. 3305111552 references processed.
-Heartbeat. 3309305856 references processed.
-Heartbeat. 3313500160 references processed.
-Heartbeat. 3317694464 references processed.
-Heartbeat. 3321888768 references processed.
-Heartbeat. 3326083072 references processed.
-Heartbeat. 3330277376 references processed.
-Heartbeat. 3334471680 references processed.
-Heartbeat. 3338665984 references processed.
-Heartbeat. 3342860288 references processed.
-Heartbeat. 3347054592 references processed.
-Heartbeat. 3351248896 references processed.
-Heartbeat. 3355443200 references processed.
-Heartbeat. 3359637504 references processed.
-Heartbeat. 3363831808 references processed.
-Heartbeat. 3368026112 references processed.
-Heartbeat. 3372220416 references processed.
-Heartbeat. 3376414720 references processed.
-Heartbeat. 3380609024 references processed.
-Heartbeat. 3384803328 references processed.
-Heartbeat. 3388997632 references processed.
-Heartbeat. 3393191936 references processed.
-Heartbeat. 3397386240 references processed.
-Heartbeat. 3401580544 references processed.
-Heartbeat. 3405774848 references processed.
-Heartbeat. 3409969152 references processed.
-Heartbeat. 3414163456 references processed.
-Heartbeat. 3418357760 references processed.
-Heartbeat. 3422552064 references processed.
-Heartbeat. 3426746368 references processed.
-Heartbeat. 3430940672 references processed.
-Heartbeat. 3435134976 references processed.
-Heartbeat. 3439329280 references processed.
-Heartbeat. 3443523584 references processed.
-Heartbeat. 3447717888 references processed.
-Heartbeat. 3451912192 references processed.
 Trace is truncated
 TLB simulation results:
 Core #0 (1 thread(s))
   TLB-L1I stats:
-    Hits:                       1305476557
-    Misses:                        1800900
+    Hits:                        684706027
+    Misses:                          19424
     Invalidations:                       0
     Hits PT level     1:                   0
     Misses PT level   1:                   0
@@ -862,10 +306,10 @@ Core #0 (1 thread(s))
     Misses PT level   5:                   0
     Hits PT level     6:                   0
     Misses PT level   6:                   0
-    Miss rate:                        0.14%
+    Miss rate:                        0.00%
   TLB-L1D stats:
-    Hits:                       1954664219
-    Misses:                       93954377
+    Hits:                        273535840
+    Misses:                       64179143
     Invalidations:                       0
     Hits PT level     1:                   0
     Misses PT level   1:                   0
@@ -879,10 +323,10 @@ Core #0 (1 thread(s))
     Misses PT level   5:                   0
     Hits PT level     6:                   0
     Misses PT level   6:                   0
-    Miss rate:                        4.59%
+    Miss rate:                       19.00%
   TLB-LL stats:
-    Hits:                         53431427
-    Misses:                       42323850
+    Hits:                         25400065
+    Misses:                       38798502
     Invalidations:                       0
     Hits PT level     1:                   0
     Misses PT level   1:                   0
@@ -896,17 +340,17 @@ Core #0 (1 thread(s))
     Misses PT level   5:                   0
     Hits PT level     6:                   0
     Misses PT level   6:                   0
-    Local miss rate:                 44.20%
-    Child hits:                 3260140776
-    Total miss rate:                  1.26%
+    Local miss rate:                 60.44%
+    Child hits:                  958241867
+    Total miss rate:                  3.79%
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Cache simulation results:
 Core #0 (1 thread(s))
   L1I stats:
-    Warmup hits:                  18569723
-    Warmup misses:                  896800
-    Hits:                       1279756388
-    Misses:                       47035313
+    Warmup hits:                  40619104
+    Warmup misses:                   60342
+    Hits:                        839663417
+    Misses:                          77954
     Invalidations:                       0
     Hits PT level     1:                   0
     Misses PT level   1:                   0
@@ -920,17 +364,17 @@ Core #0 (1 thread(s))
     Misses PT level   5:                   0
     Hits PT level     6:                   0
     Misses PT level   6:                   0
-    Miss rate:                        3.55%
+    Miss rate:                        0.01%
   L1D stats:
-    Warmup hits:                  29133862
-    Warmup misses:                 1400866
-    Hits:                       1942123263
-    Misses:                      137061675
+    Warmup hits:                  12825673
+    Warmup misses:                 3545835
+    Hits:                        241004951
+    Misses:                      113138822
     Invalidations:                       0
-    Hits PT level     1:            27344734
-    Misses PT level   1:           101556514
-    Hits PT level     2:            82769977
-    Misses PT level   2:             2344747
+    Hits PT level     1:            25868786
+    Misses PT level   1:            95830454
+    Hits PT level     2:            79548037
+    Misses PT level   2:             1459871
     Hits PT level     3:                   0
     Misses PT level   3:                   0
     Hits PT level     4:                   0
@@ -939,19 +383,19 @@ Core #0 (1 thread(s))
     Misses PT level   5:                   0
     Hits PT level     6:                   0
     Misses PT level   6:                   0
-    Prefetch hits:                21866052
-    Prefetch misses:             219096884
-    Miss rate:                        6.59%
+    Prefetch hits:                14947381
+    Prefetch misses:             195481766
+    Miss rate:                       31.95%
   L2 stats:
-    Warmup hits:                   1322623
-    Warmup misses:                  975043
-    Hits:                         84725237
-    Misses:                       99371751
+    Warmup hits:                    432828
+    Warmup misses:                 3173349
+    Hits:                         19021568
+    Misses:                       94195208
     Invalidations:                       0
-    Hits PT level     1:            47814850
-    Misses PT level   1:            53741664
-    Hits PT level     2:             2304553
-    Misses PT level   2:               40194
+    Hits PT level     1:            44077257
+    Misses PT level   1:            51753197
+    Hits PT level     2:             1431153
+    Misses PT level   2:               28718
     Hits PT level     3:                   0
     Misses PT level   3:                   0
     Hits PT level     4:                   0
@@ -960,21 +404,21 @@ Core #0 (1 thread(s))
     Misses PT level   5:                   0
     Hits PT level     6:                   0
     Misses PT level   6:                   0
-    Prefetch hits:                76225698
-    Prefetch misses:             142871186
-    Local miss rate:                 53.98%
-    Child hits:                 3353860414
-    Total miss rate:                  2.81%
+    Prefetch hits:                57710886
+    Prefetch misses:             137770880
+    Local miss rate:                 83.20%
+    Child hits:                 1201032572
+    Total miss rate:                  7.17%
 LLC stats:
-    Warmup hits:                    140385
-    Warmup misses:                  834658
-    Hits:                         17033966
-    Misses:                       82337785
+    Warmup hits:                    429433
+    Warmup misses:                 2743916
+    Hits:                         13940226
+    Misses:                       80254982
     Invalidations:                       0
-    Hits PT level     1:            41997303
-    Misses PT level   1:            11744361
-    Hits PT level     2:               36296
-    Misses PT level   2:                3898
+    Hits PT level     1:            40230933
+    Misses PT level   1:            11522264
+    Hits PT level     2:               25705
+    Misses PT level   2:                3013
     Hits PT level     3:                   0
     Misses PT level   3:                   0
     Hits PT level     4:                   0
@@ -983,1713 +427,978 @@ LLC stats:
     Misses PT level   5:                   0
     Hits PT level     6:                   0
     Misses PT level   6:                   0
-    Prefetch hits:                56866411
-    Prefetch misses:              86004775
-    Local miss rate:                 82.86%
-    Child hits:                  211070338
-    Total miss rate:                 26.52%
+    Prefetch hits:                53868199
+    Prefetch misses:              83902681
+    Local miss rate:                 85.20%
+    Child hits:                  122240864
+    Total miss rate:                 37.08%
+ CWC 0 stats:
+    Warmup hits:                         0
+    Warmup misses:                       0
+    Hits:                         41807612
+    Misses:                           7540
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.02%
+ CWC 1 stats:
+    Warmup hits:                         0
+    Warmup misses:                       0
+    Hits:                            47877
+    Misses:                             21
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.04%
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-num_requests : 3455896053
+num_requests : 1122440434
 num_not_found : 0
 kernel memory references: 
-0,1086572968
-1,658635714
-16,1091516497
+0,3586719
+1,2711317
+16,13143246
 user memory references: 
-0,298751227
-1,65677920
-16,254741727
+0,298698251
+1,65518992
+16,738781909
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 num_range_found : 0
 num_range_not_found : 0
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,	60
-MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,	6
-MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,	1
-MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,	10
-MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,	53
-MEMORY,MEMORY,MEMORY,L1,L1,L1,	1964
-MEMORY,MEMORY,MEMORY,L1,L1,L2,	35
-MEMORY,MEMORY,MEMORY,L1,L2,L1,	48
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,	17
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,	2
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,	3
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,	7
+MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,	9
+MEMORY,MEMORY,MEMORY,L1,L1,L1,	226
+MEMORY,MEMORY,MEMORY,L1,L1,L2,	14
+MEMORY,MEMORY,MEMORY,L1,L2,L1,	3
 MEMORY,MEMORY,MEMORY,L1,L2,L2,	1
-MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,	827
-MEMORY,MEMORY,MEMORY,L2,L1,L1,	64
-MEMORY,MEMORY,MEMORY,L2,L1,L2,	8
-MEMORY,MEMORY,MEMORY,L2,L2,MEMORY,	1
-MEMORY,MEMORY,MEMORY,L2,L2,L1,	34
-MEMORY,MEMORY,MEMORY,L2,L2,L2,	137
-MEMORY,MEMORY,MEMORY,L2,L2,LLC,	1
-MEMORY,MEMORY,MEMORY,L2,LLC,L2,	5
-MEMORY,MEMORY,MEMORY,L2,LLC,LLC,	2
-MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,	257
-MEMORY,MEMORY,MEMORY,LLC,MEMORY,MEMORY,	1
-MEMORY,MEMORY,MEMORY,LLC,MEMORY,L2,	1
-MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,	2
-MEMORY,MEMORY,MEMORY,LLC,L2,L2,	9
-MEMORY,MEMORY,MEMORY,LLC,L2,LLC,	4
-MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,	1
+MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,	107
+MEMORY,MEMORY,MEMORY,L2,L1,L1,	4
+MEMORY,MEMORY,MEMORY,L2,L2,L1,	9
+MEMORY,MEMORY,MEMORY,L2,L2,L2,	4
+MEMORY,MEMORY,MEMORY,L2,LLC,L2,	3
+MEMORY,MEMORY,MEMORY,L2,LLC,LLC,	7
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,	10
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,MEMORY,	2
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,	5
+MEMORY,MEMORY,MEMORY,LLC,L2,LLC,	2
+MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,	4
 MEMORY,MEMORY,MEMORY,LLC,LLC,L2,	1
 MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,	66
-MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,	493
-MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,	1874568
-MEMORY,MEMORY,L1,L1,ZERO,ZERO,	1
-MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,	1109
-MEMORY,MEMORY,L2,MEMORY,MEMORY,L2,	1
-MEMORY,MEMORY,L2,MEMORY,L2,LLC,	1
-MEMORY,MEMORY,L2,L1,ZERO,ZERO,	3
-MEMORY,MEMORY,L2,L2,L2,L2,	2
-MEMORY,MEMORY,L2,L2,ZERO,ZERO,	6
-MEMORY,MEMORY,L2,LLC,L2,MEMORY,	1
-MEMORY,MEMORY,L2,LLC,LLC,L2,	1
-MEMORY,MEMORY,L2,LLC,ZERO,ZERO,	1
-MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,	23775
-MEMORY,MEMORY,LLC,MEMORY,MEMORY,MEMORY,	1
-MEMORY,MEMORY,LLC,MEMORY,MEMORY,LLC,	7
-MEMORY,MEMORY,LLC,MEMORY,L2,L2,	1
-MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,	1
-MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,	17
-MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,	23
-MEMORY,MEMORY,LLC,L1,L1,L1,	155
-MEMORY,MEMORY,LLC,L1,L2,L1,	8
-MEMORY,MEMORY,LLC,L1,L2,L2,	1
-MEMORY,MEMORY,LLC,L1,ZERO,ZERO,	37
-MEMORY,MEMORY,LLC,L2,L1,L1,	13
-MEMORY,MEMORY,LLC,L2,L1,L2,	1
-MEMORY,MEMORY,LLC,L2,L2,L1,	7
-MEMORY,MEMORY,LLC,L2,L2,L2,	39
-MEMORY,MEMORY,LLC,L2,L2,LLC,	1
+MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,	22
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,	1854439
+MEMORY,MEMORY,L1,L1,L1,L1,	2
+MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,	1034
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,	24293
+MEMORY,MEMORY,LLC,MEMORY,MEMORY,LLC,	1
+MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,	10
+MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,	22
+MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,	16
+MEMORY,MEMORY,LLC,L1,L1,L1,	318
+MEMORY,MEMORY,LLC,L1,L1,L2,	6
+MEMORY,MEMORY,LLC,L1,ZERO,ZERO,	176
+MEMORY,MEMORY,LLC,L2,L1,L1,	17
+MEMORY,MEMORY,LLC,L2,L2,L2,	1
 MEMORY,MEMORY,LLC,L2,LLC,L2,	1
-MEMORY,MEMORY,LLC,L2,ZERO,ZERO,	25
-MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,	8
-MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,	8
-MEMORY,MEMORY,LLC,LLC,LLC,LLC,	36
-MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,	88
-MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,	598760
-MEMORY,L1,MEMORY,L1,L1,L1,	3
-MEMORY,L1,MEMORY,L1,ZERO,ZERO,	1
-MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,	1011
-MEMORY,L1,L2,ZERO,ZERO,ZERO,	10
-MEMORY,L1,LLC,ZERO,ZERO,ZERO,	537
-MEMORY,L2,MEMORY,L1,L1,L1,	7
-MEMORY,L2,MEMORY,L1,L1,L2,	1
-MEMORY,L2,MEMORY,L1,ZERO,ZERO,	1
-MEMORY,L2,MEMORY,L2,L2,L2,	5
-MEMORY,L2,MEMORY,LLC,L2,MEMORY,	2
-MEMORY,L2,MEMORY,LLC,L2,L2,	1
-MEMORY,L2,MEMORY,LLC,LLC,LLC,	1
-MEMORY,L2,MEMORY,LLC,ZERO,ZERO,	1
-MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,	23441
-MEMORY,L2,L1,L2,ZERO,ZERO,	1
-MEMORY,L2,L1,ZERO,ZERO,ZERO,	15
-MEMORY,L2,L2,MEMORY,L2,MEMORY,	1
-MEMORY,L2,L2,MEMORY,L2,L2,	3
-MEMORY,L2,L2,MEMORY,ZERO,ZERO,	3
-MEMORY,L2,L2,L1,L1,L1,	15
-MEMORY,L2,L2,L1,L1,L2,	2
-MEMORY,L2,L2,L1,L2,L1,	2
-MEMORY,L2,L2,L2,MEMORY,L2,	3
-MEMORY,L2,L2,L2,L1,L1,	1
-MEMORY,L2,L2,L2,L1,L2,	1
-MEMORY,L2,L2,L2,L2,MEMORY,	2
-MEMORY,L2,L2,L2,L2,L1,	2
-MEMORY,L2,L2,L2,L2,L2,	61
-MEMORY,L2,L2,L2,L2,LLC,	3
-MEMORY,L2,L2,L2,LLC,L2,	3
-MEMORY,L2,L2,L2,LLC,LLC,	2
-MEMORY,L2,L2,L2,ZERO,ZERO,	37
-MEMORY,L2,L2,LLC,L2,L2,	7
-MEMORY,L2,L2,LLC,L2,LLC,	2
-MEMORY,L2,L2,LLC,LLC,L2,	2
-MEMORY,L2,L2,LLC,ZERO,ZERO,	17
-MEMORY,L2,L2,ZERO,ZERO,ZERO,	2890
-MEMORY,L2,LLC,MEMORY,MEMORY,LLC,	1
-MEMORY,L2,LLC,MEMORY,L2,L2,	2
-MEMORY,L2,LLC,MEMORY,ZERO,ZERO,	1
-MEMORY,L2,LLC,L1,L1,L1,	5
-MEMORY,L2,LLC,L2,L2,MEMORY,	1
-MEMORY,L2,LLC,L2,L2,L2,	5
-MEMORY,L2,LLC,L2,L2,LLC,	1
-MEMORY,L2,LLC,L2,LLC,L2,	2
-MEMORY,L2,LLC,L2,ZERO,ZERO,	4
-MEMORY,L2,LLC,LLC,MEMORY,MEMORY,	1
-MEMORY,L2,LLC,LLC,L2,L2,	3
-MEMORY,L2,LLC,LLC,LLC,L2,	1
-MEMORY,L2,LLC,LLC,LLC,LLC,	2
-MEMORY,L2,LLC,LLC,ZERO,ZERO,	10
-MEMORY,L2,LLC,ZERO,ZERO,ZERO,	13822
-MEMORY,LLC,MEMORY,MEMORY,MEMORY,MEMORY,	2
-MEMORY,LLC,MEMORY,MEMORY,L2,L2,	2
-MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,	6
-MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,	72
-MEMORY,LLC,MEMORY,L1,L1,L1,	92
-MEMORY,LLC,MEMORY,L1,L2,L1,	1
-MEMORY,LLC,MEMORY,L1,ZERO,ZERO,	29
-MEMORY,LLC,MEMORY,L2,L1,L1,	4
-MEMORY,LLC,MEMORY,L2,L2,L2,	16
-MEMORY,LLC,MEMORY,L2,ZERO,ZERO,	24
-MEMORY,LLC,MEMORY,LLC,LLC,MEMORY,	4
-MEMORY,LLC,MEMORY,LLC,LLC,LLC,	12
-MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,	152
-MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,	599735
-MEMORY,LLC,L1,ZERO,ZERO,ZERO,	534
-MEMORY,LLC,L2,MEMORY,LLC,L2,	1
-MEMORY,LLC,L2,MEMORY,ZERO,ZERO,	1
-MEMORY,LLC,L2,L1,L1,L1,	6
-MEMORY,LLC,L2,L2,L2,L2,	5
-MEMORY,LLC,L2,L2,LLC,LLC,	1
-MEMORY,LLC,L2,L2,ZERO,ZERO,	10
-MEMORY,LLC,L2,LLC,ZERO,ZERO,	4
-MEMORY,LLC,L2,ZERO,ZERO,ZERO,	14257
-MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,	2
-MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,	6
-MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,	3
-MEMORY,LLC,LLC,MEMORY,LLC,LLC,	25
-MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,	79
-MEMORY,LLC,LLC,L1,L1,L1,	91
-MEMORY,LLC,LLC,L1,L1,L2,	1
-MEMORY,LLC,LLC,L1,L2,L1,	4
-MEMORY,LLC,LLC,L1,L2,L2,	1
-MEMORY,LLC,LLC,L1,LLC,LLC,	1
-MEMORY,LLC,LLC,L1,ZERO,ZERO,	34
-MEMORY,LLC,LLC,L2,L1,L1,	3
-MEMORY,LLC,LLC,L2,L1,L2,	3
-MEMORY,LLC,LLC,L2,L2,L1,	5
-MEMORY,LLC,LLC,L2,L2,L2,	19
-MEMORY,LLC,LLC,L2,ZERO,ZERO,	42
-MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,	4
-MEMORY,LLC,LLC,LLC,MEMORY,LLC,	7
-MEMORY,LLC,LLC,LLC,LLC,MEMORY,	8
-MEMORY,LLC,LLC,LLC,LLC,L2,	1
-MEMORY,LLC,LLC,LLC,LLC,LLC,	82
-MEMORY,LLC,LLC,LLC,ZERO,ZERO,	224
-MEMORY,LLC,LLC,ZERO,ZERO,ZERO,	732075
-L1,MEMORY,MEMORY,L1,ZERO,ZERO,	3
-L1,MEMORY,MEMORY,L2,ZERO,ZERO,	1
-L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,	1057
-L1,MEMORY,L1,ZERO,ZERO,ZERO,	1
-L1,MEMORY,L2,L2,ZERO,ZERO,	1
-L1,MEMORY,L2,ZERO,ZERO,ZERO,	15
-L1,MEMORY,LLC,LLC,ZERO,ZERO,	1
-L1,MEMORY,LLC,ZERO,ZERO,ZERO,	578
+MEMORY,MEMORY,LLC,LLC,MEMORY,MEMORY,	4
+MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,	10
+MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,	29
+MEMORY,MEMORY,LLC,LLC,LLC,LLC,	120
+MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,	40
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,	580162
+MEMORY,L1,MEMORY,L1,L1,L1,	1
+MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,	1022
+MEMORY,L1,L1,ZERO,ZERO,ZERO,	2
+MEMORY,L1,L2,ZERO,ZERO,ZERO,	22
+MEMORY,L1,LLC,ZERO,ZERO,ZERO,	559
+MEMORY,L2,MEMORY,L1,L1,L1,	1
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,	24604
+MEMORY,L2,L1,ZERO,ZERO,ZERO,	27
+MEMORY,L2,L2,ZERO,ZERO,ZERO,	3578
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,	14538
+MEMORY,LLC,MEMORY,MEMORY,LLC,MEMORY,	2
+MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,	8
+MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,	21
+MEMORY,LLC,MEMORY,L1,L1,L1,	254
+MEMORY,LLC,MEMORY,L1,L1,L2,	16
+MEMORY,LLC,MEMORY,L1,L2,L2,	1
+MEMORY,LLC,MEMORY,L1,ZERO,ZERO,	83
+MEMORY,LLC,MEMORY,L2,L1,L1,	2
+MEMORY,LLC,MEMORY,LLC,MEMORY,MEMORY,	1
+MEMORY,LLC,MEMORY,LLC,MEMORY,LLC,	4
+MEMORY,LLC,MEMORY,LLC,LLC,MEMORY,	8
+MEMORY,LLC,MEMORY,LLC,LLC,LLC,	35
+MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,	35
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,	592596
+MEMORY,LLC,L1,ZERO,ZERO,ZERO,	507
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,	14326
+MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,	5
+MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,	17
+MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,	32
+MEMORY,LLC,LLC,MEMORY,LLC,LLC,	89
+MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,	58
+MEMORY,LLC,LLC,L1,L1,L1,	1010
+MEMORY,LLC,LLC,L1,L1,L2,	22
+MEMORY,LLC,LLC,L1,L2,L1,	1
+MEMORY,LLC,LLC,L1,ZERO,ZERO,	554
+MEMORY,LLC,LLC,L2,L1,L1,	47
+MEMORY,LLC,LLC,L2,ZERO,ZERO,	1
+MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,	18
+MEMORY,LLC,LLC,LLC,MEMORY,LLC,	60
+MEMORY,LLC,LLC,LLC,L2,L2,	1
+MEMORY,LLC,LLC,LLC,LLC,MEMORY,	96
+MEMORY,LLC,LLC,LLC,LLC,LLC,	423
+MEMORY,LLC,LLC,LLC,ZERO,ZERO,	170
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,	717258
+L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,	1047
+L1,MEMORY,L1,ZERO,ZERO,ZERO,	2
+L1,MEMORY,L2,ZERO,ZERO,ZERO,	40
+L1,MEMORY,LLC,ZERO,ZERO,ZERO,	622
 L1,L1,MEMORY,ZERO,ZERO,ZERO,	3
-L1,L1,L1,L1,L1,L1,	80159
-L1,L1,L1,L1,L1,L2,	3
-L1,L1,L1,L1,L2,L1,	106
-L1,L1,L1,L1,L2,L2,	1
-L1,L1,L1,L1,ZERO,ZERO,	1536
-L1,L1,L1,L2,L1,L1,	132
-L1,L1,L1,L2,L1,L2,	1
-L1,L1,L1,L2,L2,L1,	31
-L1,L1,L1,L2,ZERO,ZERO,	62
-L1,L1,L1,ZERO,ZERO,ZERO,	7120269
-L1,L1,L2,L1,L1,L1,	747
-L1,L1,L2,L1,L2,L1,	57
-L1,L1,L2,L1,L2,L2,	2
-L1,L1,L2,L1,ZERO,ZERO,	9
-L1,L1,L2,L2,L1,L1,	37
-L1,L1,L2,L2,L2,L1,	29
-L1,L1,L2,L2,ZERO,ZERO,	16
-L1,L1,L2,ZERO,ZERO,ZERO,	487375
-L1,L1,LLC,ZERO,ZERO,ZERO,	116
-L1,L2,MEMORY,LLC,ZERO,ZERO,	3
-L1,L2,MEMORY,ZERO,ZERO,ZERO,	16
-L1,L2,L1,L1,L1,L1,	494
-L1,L2,L1,L1,L2,L1,	38
-L1,L2,L1,L1,ZERO,ZERO,	9
-L1,L2,L1,L2,L1,L1,	21
-L1,L2,L1,L2,L2,L1,	10
-L1,L2,L1,L2,ZERO,ZERO,	7
-L1,L2,L1,ZERO,ZERO,ZERO,	506415
-L1,L2,L2,MEMORY,ZERO,ZERO,	2
-L1,L2,L2,L1,L1,L1,	543
-L1,L2,L2,L1,L1,L2,	1
-L1,L2,L2,L1,L2,L1,	31
-L1,L2,L2,L1,L2,L2,	1
-L1,L2,L2,L1,ZERO,ZERO,	9
-L1,L2,L2,L2,MEMORY,L2,	1
-L1,L2,L2,L2,L1,L1,	15
+L1,L1,L1,L1,L1,L1,	5606
+L1,L1,L1,L1,L1,L2,	77
+L1,L1,L1,L1,L2,L1,	4
+L1,L1,L1,L1,ZERO,ZERO,	1634
+L1,L1,L1,L2,L1,L1,	211
+L1,L1,L1,L2,L1,L2,	227
+L1,L1,L1,L2,L2,L1,	2
+L1,L1,L1,ZERO,ZERO,ZERO,	6829142
+L1,L1,L2,L1,L1,L1,	731
+L1,L1,L2,L1,L1,L2,	1
+L1,L1,L2,L1,ZERO,ZERO,	126
+L1,L1,L2,ZERO,ZERO,ZERO,	466115
+L1,L1,LLC,ZERO,ZERO,ZERO,	356
+L1,L2,MEMORY,ZERO,ZERO,ZERO,	27
+L1,L2,L1,L1,L1,L1,	133
+L1,L2,L1,L1,L1,L2,	17
+L1,L2,L1,L1,ZERO,ZERO,	395
+L1,L2,L1,L2,L1,L1,	44
+L1,L2,L1,L2,L1,L2,	54
+L1,L2,L1,L2,ZERO,ZERO,	3
+L1,L2,L1,ZERO,ZERO,ZERO,	474833
+L1,L2,L2,L1,L1,L1,	948
+L1,L2,L2,L1,ZERO,ZERO,	178
 L1,L2,L2,L2,L1,L2,	1
-L1,L2,L2,L2,L2,L1,	28
-L1,L2,L2,L2,L2,L2,	158
-L1,L2,L2,L2,ZERO,ZERO,	719
-L1,L2,L2,LLC,ZERO,ZERO,	25
-L1,L2,L2,ZERO,ZERO,ZERO,	764165
-L1,L2,LLC,MEMORY,ZERO,ZERO,	1
-L1,L2,LLC,L2,ZERO,ZERO,	6
-L1,L2,LLC,LLC,ZERO,ZERO,	3
-L1,L2,LLC,ZERO,ZERO,ZERO,	1227
-L1,LLC,MEMORY,ZERO,ZERO,ZERO,	578
-L1,LLC,L1,ZERO,ZERO,ZERO,	112
-L1,LLC,L2,L2,L2,L2,	1
-L1,LLC,L2,L2,ZERO,ZERO,	6
-L1,LLC,L2,LLC,ZERO,ZERO,	3
-L1,LLC,L2,ZERO,ZERO,ZERO,	1275
-L1,LLC,LLC,L2,ZERO,ZERO,	1
-L1,LLC,LLC,ZERO,ZERO,ZERO,	5168
-L2,MEMORY,MEMORY,L1,ZERO,ZERO,	3
-L2,MEMORY,MEMORY,L2,L2,L2,	3
-L2,MEMORY,MEMORY,L2,ZERO,ZERO,	1
-L2,MEMORY,MEMORY,LLC,MEMORY,MEMORY,	1
-L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,	25335
-L2,MEMORY,L1,ZERO,ZERO,ZERO,	23
-L2,MEMORY,L2,MEMORY,L2,L2,	1
-L2,MEMORY,L2,MEMORY,LLC,L2,	1
-L2,MEMORY,L2,MEMORY,ZERO,ZERO,	1
-L2,MEMORY,L2,L1,L1,L1,	27
-L2,MEMORY,L2,L2,L1,L2,	1
-L2,MEMORY,L2,L2,L2,MEMORY,	1
-L2,MEMORY,L2,L2,L2,L1,	2
-L2,MEMORY,L2,L2,L2,L2,	52
-L2,MEMORY,L2,L2,L2,LLC,	3
-L2,MEMORY,L2,L2,LLC,L2,	4
-L2,MEMORY,L2,L2,LLC,LLC,	1
-L2,MEMORY,L2,L2,ZERO,ZERO,	46
-L2,MEMORY,L2,LLC,MEMORY,MEMORY,	1
-L2,MEMORY,L2,LLC,L2,L2,	4
-L2,MEMORY,L2,LLC,LLC,MEMORY,	1
-L2,MEMORY,L2,LLC,LLC,L2,	2
-L2,MEMORY,L2,LLC,LLC,LLC,	2
-L2,MEMORY,L2,LLC,ZERO,ZERO,	13
-L2,MEMORY,L2,ZERO,ZERO,ZERO,	3088
-L2,MEMORY,LLC,MEMORY,MEMORY,MEMORY,	1
-L2,MEMORY,LLC,MEMORY,LLC,L2,	1
-L2,MEMORY,LLC,L1,L1,L1,	20
-L2,MEMORY,LLC,L1,L1,L2,	1
-L2,MEMORY,LLC,L2,MEMORY,L2,	2
-L2,MEMORY,LLC,L2,L2,L2,	11
-L2,MEMORY,LLC,L2,L2,LLC,	3
-L2,MEMORY,LLC,L2,LLC,LLC,	2
-L2,MEMORY,LLC,L2,ZERO,ZERO,	13
-L2,MEMORY,LLC,LLC,L2,L2,	1
-L2,MEMORY,LLC,LLC,L2,LLC,	2
-L2,MEMORY,LLC,LLC,LLC,LLC,	1
-L2,MEMORY,LLC,LLC,ZERO,ZERO,	10
-L2,MEMORY,LLC,ZERO,ZERO,ZERO,	15531
-L2,L1,MEMORY,ZERO,ZERO,ZERO,	16
-L2,L1,L1,L1,L1,L1,	62
-L2,L1,L1,L1,L1,L2,	1
+L1,L2,L2,L2,ZERO,ZERO,	1
+L1,L2,L2,ZERO,ZERO,ZERO,	805354
+L1,L2,LLC,ZERO,ZERO,ZERO,	4281
+L1,LLC,MEMORY,ZERO,ZERO,ZERO,	574
+L1,LLC,L1,ZERO,ZERO,ZERO,	341
+L1,LLC,L2,ZERO,ZERO,ZERO,	4393
+L1,LLC,LLC,ZERO,ZERO,ZERO,	5482
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,	25001
+L2,MEMORY,L1,ZERO,ZERO,ZERO,	24
+L2,MEMORY,L2,ZERO,ZERO,ZERO,	3447
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,	15325
+L2,L1,MEMORY,ZERO,ZERO,ZERO,	26
+L2,L1,L1,L1,L1,L1,	7
 L2,L1,L1,L1,L2,L1,	3
-L2,L1,L1,L1,ZERO,ZERO,	12
-L2,L1,L1,L2,L1,L1,	2
-L2,L1,L1,L2,L1,L2,	1
-L2,L1,L1,L2,L2,L1,	1
-L2,L1,L1,L2,ZERO,ZERO,	14
-L2,L1,L1,ZERO,ZERO,ZERO,	500604
-L2,L1,L2,L1,L1,L1,	177
-L2,L1,L2,L1,L2,L1,	4
-L2,L1,L2,L1,ZERO,ZERO,	14
-L2,L1,L2,L2,L1,L1,	2
-L2,L1,L2,L2,L1,L2,	1
-L2,L1,L2,L2,L2,L1,	4
-L2,L1,L2,L2,L2,L2,	9
-L2,L1,L2,L2,L2,LLC,	1
-L2,L1,L2,L2,ZERO,ZERO,	175
-L2,L1,L2,LLC,ZERO,ZERO,	1
-L2,L1,L2,ZERO,ZERO,ZERO,	771780
-L2,L1,LLC,L1,L1,L1,	1
-L2,L1,LLC,ZERO,ZERO,ZERO,	1143
-L2,L2,MEMORY,MEMORY,MEMORY,L2,	1
-L2,L2,MEMORY,MEMORY,L2,L2,	6
-L2,L2,MEMORY,MEMORY,L2,LLC,	1
-L2,L2,MEMORY,MEMORY,ZERO,ZERO,	1
-L2,L2,MEMORY,L1,L1,L1,	16
-L2,L2,MEMORY,L1,L1,L2,	2
-L2,L2,MEMORY,L2,MEMORY,L2,	2
-L2,L2,MEMORY,L2,L1,L1,	2
-L2,L2,MEMORY,L2,L2,MEMORY,	1
-L2,L2,MEMORY,L2,L2,L2,	57
-L2,L2,MEMORY,L2,L2,LLC,	2
-L2,L2,MEMORY,L2,LLC,L2,	3
-L2,L2,MEMORY,L2,LLC,LLC,	2
-L2,L2,MEMORY,L2,ZERO,ZERO,	45
-L2,L2,MEMORY,LLC,MEMORY,L2,	1
-L2,L2,MEMORY,LLC,L2,L2,	8
-L2,L2,MEMORY,LLC,LLC,LLC,	2
-L2,L2,MEMORY,LLC,ZERO,ZERO,	15
-L2,L2,MEMORY,ZERO,ZERO,ZERO,	3109
-L2,L2,L1,L1,L1,L1,	26
-L2,L2,L1,L1,L2,L1,	2
-L2,L2,L1,L1,ZERO,ZERO,	7
-L2,L2,L1,L2,L1,L1,	3
-L2,L2,L1,L2,L2,L2,	9
-L2,L2,L1,L2,ZERO,ZERO,	170
-L2,L2,L1,ZERO,ZERO,ZERO,	754621
-L2,L2,L2,MEMORY,MEMORY,L2,	2
-L2,L2,L2,MEMORY,L2,MEMORY,	2
-L2,L2,L2,MEMORY,L2,L1,	1
-L2,L2,L2,MEMORY,L2,L2,	53
-L2,L2,L2,MEMORY,L2,LLC,	3
-L2,L2,L2,MEMORY,LLC,MEMORY,	1
-L2,L2,L2,MEMORY,LLC,L2,	3
-L2,L2,L2,MEMORY,LLC,LLC,	2
-L2,L2,L2,MEMORY,ZERO,ZERO,	35
-L2,L2,L2,L1,L1,L1,	13622
-L2,L2,L2,L1,L1,L2,	439
-L2,L2,L2,L1,L2,L1,	321
-L2,L2,L2,L1,L2,L2,	96
-L2,L2,L2,L1,L2,LLC,	1
-L2,L2,L2,L1,ZERO,ZERO,	404
-L2,L2,L2,L2,MEMORY,L2,	44
-L2,L2,L2,L2,MEMORY,LLC,	1
-L2,L2,L2,L2,L1,L1,	357
-L2,L2,L2,L2,L1,L2,	165
-L2,L2,L2,L2,L2,MEMORY,	49
-L2,L2,L2,L2,L2,L1,	1460
-L2,L2,L2,L2,L2,L2,	42507
-L2,L2,L2,L2,L2,LLC,	1643
-L2,L2,L2,L2,LLC,MEMORY,	3
-L2,L2,L2,L2,LLC,L2,	505
-L2,L2,L2,L2,LLC,LLC,	980
-L2,L2,L2,L2,ZERO,ZERO,	38864
-L2,L2,L2,LLC,MEMORY,L2,	3
-L2,L2,L2,LLC,MEMORY,LLC,	1
-L2,L2,L2,LLC,L2,MEMORY,	3
-L2,L2,L2,LLC,L2,L1,	3
-L2,L2,L2,LLC,L2,L2,	468
-L2,L2,L2,LLC,L2,LLC,	545
-L2,L2,L2,LLC,LLC,L2,	134
-L2,L2,L2,LLC,LLC,LLC,	500
-L2,L2,L2,LLC,ZERO,ZERO,	831
-L2,L2,L2,ZERO,ZERO,ZERO,	12108661
-L2,L2,LLC,MEMORY,MEMORY,L2,	1
-L2,L2,LLC,MEMORY,L2,MEMORY,	1
-L2,L2,LLC,MEMORY,L2,L2,	11
-L2,L2,LLC,MEMORY,L2,LLC,	2
-L2,L2,LLC,MEMORY,LLC,L2,	2
-L2,L2,LLC,MEMORY,LLC,LLC,	4
-L2,L2,LLC,MEMORY,ZERO,ZERO,	11
-L2,L2,LLC,L1,L1,L1,	6517
-L2,L2,LLC,L1,L1,L2,	89
-L2,L2,LLC,L1,L2,L1,	37
-L2,L2,LLC,L1,L2,L2,	8
-L2,L2,LLC,L1,ZERO,ZERO,	57
-L2,L2,LLC,L2,MEMORY,L2,	5
-L2,L2,LLC,L2,L1,L1,	31
-L2,L2,LLC,L2,L1,L2,	19
-L2,L2,LLC,L2,L2,MEMORY,	4
-L2,L2,LLC,L2,L2,L1,	40
-L2,L2,LLC,L2,L2,L2,	710
-L2,L2,LLC,L2,L2,LLC,	517
-L2,L2,LLC,L2,LLC,L2,	146
-L2,L2,LLC,L2,LLC,LLC,	480
-L2,L2,LLC,L2,ZERO,ZERO,	737
-L2,L2,LLC,LLC,MEMORY,MEMORY,	1
-L2,L2,LLC,LLC,MEMORY,L2,	1
-L2,L2,LLC,LLC,L2,L2,	107
-L2,L2,LLC,LLC,L2,LLC,	273
-L2,L2,LLC,LLC,LLC,MEMORY,	1
-L2,L2,LLC,LLC,LLC,L2,	101
-L2,L2,LLC,LLC,LLC,LLC,	353
-L2,L2,LLC,LLC,ZERO,ZERO,	208
-L2,L2,LLC,ZERO,ZERO,ZERO,	504956
-L2,LLC,MEMORY,MEMORY,L2,LLC,	1
-L2,LLC,MEMORY,L1,L1,L1,	9
-L2,LLC,MEMORY,L1,L1,L2,	1
-L2,LLC,MEMORY,L1,L2,L1,	1
-L2,LLC,MEMORY,L2,L2,L1,	1
-L2,LLC,MEMORY,L2,L2,L2,	4
-L2,LLC,MEMORY,L2,ZERO,ZERO,	6
-L2,LLC,MEMORY,LLC,L2,L2,	1
-L2,LLC,MEMORY,LLC,LLC,LLC,	1
-L2,LLC,MEMORY,LLC,ZERO,ZERO,	3
-L2,LLC,MEMORY,ZERO,ZERO,ZERO,	15084
-L2,LLC,L1,L2,L2,L2,	1
-L2,LLC,L1,L2,ZERO,ZERO,	2
-L2,LLC,L1,ZERO,ZERO,ZERO,	1119
-L2,LLC,L2,MEMORY,L2,MEMORY,	1
-L2,LLC,L2,MEMORY,L2,LLC,	2
-L2,LLC,L2,MEMORY,LLC,LLC,	2
-L2,LLC,L2,MEMORY,ZERO,ZERO,	8
-L2,LLC,L2,L1,L1,L1,	4048
-L2,LLC,L2,L1,L1,L2,	225
-L2,LLC,L2,L1,L2,L1,	45
-L2,LLC,L2,L1,L2,L2,	6
-L2,LLC,L2,L1,ZERO,ZERO,	65
-L2,LLC,L2,L2,MEMORY,L2,	3
-L2,LLC,L2,L2,L1,L1,	32
-L2,LLC,L2,L2,L1,L2,	15
-L2,LLC,L2,L2,L2,MEMORY,	2
-L2,LLC,L2,L2,L2,L1,	64
-L2,LLC,L2,L2,L2,L2,	659
-L2,LLC,L2,L2,L2,LLC,	318
-L2,LLC,L2,L2,LLC,L2,	79
-L2,LLC,L2,L2,LLC,LLC,	271
-L2,LLC,L2,L2,ZERO,ZERO,	572
-L2,LLC,L2,LLC,MEMORY,L2,	3
-L2,LLC,L2,LLC,L2,L2,	52
-L2,LLC,L2,LLC,L2,LLC,	182
-L2,LLC,L2,LLC,LLC,L2,	39
-L2,LLC,L2,LLC,LLC,LLC,	217
-L2,LLC,L2,LLC,ZERO,ZERO,	127
-L2,LLC,L2,ZERO,ZERO,ZERO,	515393
-L2,LLC,LLC,MEMORY,L2,L2,	1
-L2,LLC,LLC,MEMORY,LLC,L2,	1
-L2,LLC,LLC,MEMORY,ZERO,ZERO,	5
-L2,LLC,LLC,L1,L1,L1,	4333
-L2,LLC,LLC,L1,L1,L2,	84
-L2,LLC,LLC,L1,L2,L1,	39
-L2,LLC,LLC,L1,L2,L2,	3
-L2,LLC,LLC,L1,ZERO,ZERO,	62
-L2,LLC,LLC,L2,MEMORY,L2,	1
-L2,LLC,LLC,L2,MEMORY,LLC,	1
-L2,LLC,LLC,L2,L1,L1,	12
-L2,LLC,LLC,L2,L1,L2,	11
-L2,LLC,LLC,L2,L2,MEMORY,	2
-L2,LLC,LLC,L2,L2,L1,	34
-L2,LLC,LLC,L2,L2,L2,	233
-L2,LLC,LLC,L2,L2,LLC,	175
-L2,LLC,LLC,L2,LLC,L2,	44
-L2,LLC,LLC,L2,LLC,LLC,	189
-L2,LLC,LLC,L2,ZERO,ZERO,	167
-L2,LLC,LLC,LLC,L2,L2,	32
-L2,LLC,LLC,LLC,L2,LLC,	111
-L2,LLC,LLC,LLC,LLC,L2,	45
-L2,LLC,LLC,LLC,LLC,LLC,	220
-L2,LLC,LLC,LLC,ZERO,ZERO,	163
-L2,LLC,LLC,ZERO,ZERO,ZERO,	521636
-LLC,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,	4
-LLC,MEMORY,MEMORY,MEMORY,MEMORY,LLC,	2
+L2,L1,L1,L1,ZERO,ZERO,	236
+L2,L1,L1,ZERO,ZERO,ZERO,	482158
+L2,L1,L2,L1,L1,L1,	10
+L2,L1,L2,L1,ZERO,ZERO,	154
+L2,L1,L2,ZERO,ZERO,ZERO,	793650
+L2,L1,LLC,ZERO,ZERO,ZERO,	4202
+L2,L2,MEMORY,ZERO,ZERO,ZERO,	3651
+L2,L2,L1,L1,L1,L1,	12
+L2,L2,L1,L1,ZERO,ZERO,	131
+L2,L2,L1,L2,L2,L1,	3
+L2,L2,L1,L2,L2,L2,	1
+L2,L2,L1,ZERO,ZERO,ZERO,	789509
+L2,L2,L2,L1,L1,L1,	10
+L2,L2,L2,L1,L1,L2,	5
+L2,L2,L2,L1,ZERO,ZERO,	84
+L2,L2,L2,L2,L2,L2,	4
+L2,L2,L2,L2,ZERO,ZERO,	4
+L2,L2,L2,LLC,L2,LLC,	1
+L2,L2,L2,LLC,ZERO,ZERO,	1
+L2,L2,L2,ZERO,ZERO,ZERO,	10836780
+L2,L2,LLC,L1,L1,L1,	4
+L2,L2,LLC,L1,L1,L2,	3
+L2,L2,LLC,L1,ZERO,ZERO,	1
+L2,L2,LLC,L2,L2,L2,	1
+L2,L2,LLC,L2,L2,LLC,	2
+L2,L2,LLC,L2,LLC,LLC,	2
+L2,L2,LLC,LLC,L2,LLC,	4
+L2,L2,LLC,LLC,LLC,LLC,	9
+L2,L2,LLC,LLC,ZERO,ZERO,	3
+L2,L2,LLC,ZERO,ZERO,ZERO,	583986
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,	15081
+L2,LLC,L1,ZERO,ZERO,ZERO,	4340
+L2,LLC,L2,L1,L1,L1,	2
+L2,LLC,L2,L1,L1,L2,	3
+L2,LLC,L2,L1,L2,L1,	1
+L2,LLC,L2,L1,ZERO,ZERO,	5
+L2,LLC,L2,L2,L2,L2,	1
+L2,LLC,L2,L2,L2,LLC,	3
+L2,LLC,L2,L2,LLC,LLC,	1
+L2,LLC,L2,L2,ZERO,ZERO,	4
+L2,LLC,L2,LLC,L2,LLC,	3
+L2,LLC,L2,LLC,LLC,LLC,	7
+L2,LLC,L2,LLC,ZERO,ZERO,	7
+L2,LLC,L2,ZERO,ZERO,ZERO,	584744
+L2,LLC,LLC,L1,L1,L1,	15
+L2,LLC,LLC,L1,L1,L2,	16
+L2,LLC,LLC,L1,L2,L2,	1
+L2,LLC,LLC,L1,ZERO,ZERO,	9
+L2,LLC,LLC,L2,L2,LLC,	2
+L2,LLC,LLC,L2,LLC,L2,	1
+L2,LLC,LLC,L2,LLC,LLC,	9
+L2,LLC,LLC,L2,ZERO,ZERO,	3
+L2,LLC,LLC,LLC,L2,L2,	3
+L2,LLC,LLC,LLC,L2,LLC,	3
+L2,LLC,LLC,LLC,LLC,L2,	2
+L2,LLC,LLC,LLC,LLC,LLC,	23
+L2,LLC,LLC,LLC,ZERO,ZERO,	6
+L2,LLC,LLC,ZERO,ZERO,ZERO,	544855
+LLC,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,	1
 LLC,MEMORY,MEMORY,MEMORY,LLC,MEMORY,	2
-LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,	5
-LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,	9
-LLC,MEMORY,MEMORY,L1,L1,L1,	127
-LLC,MEMORY,MEMORY,L1,L2,L1,	4
-LLC,MEMORY,MEMORY,L1,ZERO,ZERO,	73
-LLC,MEMORY,MEMORY,L2,MEMORY,L2,	1
-LLC,MEMORY,MEMORY,L2,L1,L1,	8
-LLC,MEMORY,MEMORY,L2,L2,L1,	3
-LLC,MEMORY,MEMORY,L2,L2,L2,	33
-LLC,MEMORY,MEMORY,L2,L2,LLC,	1
-LLC,MEMORY,MEMORY,L2,LLC,L2,	1
-LLC,MEMORY,MEMORY,L2,ZERO,ZERO,	77
-LLC,MEMORY,MEMORY,LLC,MEMORY,MEMORY,	2
-LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,	2
-LLC,MEMORY,MEMORY,LLC,L2,MEMORY,	1
-LLC,MEMORY,MEMORY,LLC,L2,L2,	2
-LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,	2
-LLC,MEMORY,MEMORY,LLC,LLC,LLC,	13
-LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,	64
-LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,	613439
-LLC,MEMORY,L1,ZERO,ZERO,ZERO,	553
-LLC,MEMORY,L2,MEMORY,L2,L2,	5
-LLC,MEMORY,L2,MEMORY,LLC,L2,	1
-LLC,MEMORY,L2,MEMORY,ZERO,ZERO,	1
-LLC,MEMORY,L2,L1,L1,L1,	20
-LLC,MEMORY,L2,L1,ZERO,ZERO,	1
-LLC,MEMORY,L2,L2,MEMORY,L1,	1
-LLC,MEMORY,L2,L2,MEMORY,L2,	2
-LLC,MEMORY,L2,L2,L2,MEMORY,	1
-LLC,MEMORY,L2,L2,L2,L2,	26
-LLC,MEMORY,L2,L2,L2,LLC,	4
-LLC,MEMORY,L2,L2,LLC,L2,	1
-LLC,MEMORY,L2,L2,LLC,LLC,	4
-LLC,MEMORY,L2,L2,ZERO,ZERO,	12
-LLC,MEMORY,L2,LLC,L2,L2,	7
-LLC,MEMORY,L2,LLC,L2,LLC,	3
-LLC,MEMORY,L2,LLC,LLC,MEMORY,	1
-LLC,MEMORY,L2,LLC,LLC,L2,	3
-LLC,MEMORY,L2,LLC,LLC,LLC,	4
-LLC,MEMORY,L2,LLC,ZERO,ZERO,	11
-LLC,MEMORY,L2,ZERO,ZERO,ZERO,	14424
-LLC,MEMORY,LLC,MEMORY,MEMORY,MEMORY,	1
-LLC,MEMORY,LLC,MEMORY,MEMORY,L2,	1
-LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,	3
-LLC,MEMORY,LLC,MEMORY,L2,L2,	1
-LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,	5
-LLC,MEMORY,LLC,MEMORY,LLC,LLC,	22
-LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,	34
-LLC,MEMORY,LLC,L1,MEMORY,MEMORY,	1
-LLC,MEMORY,LLC,L1,L1,L1,	159
-LLC,MEMORY,LLC,L1,L2,L1,	6
-LLC,MEMORY,LLC,L1,L2,L2,	1
-LLC,MEMORY,LLC,L1,LLC,MEMORY,	1
-LLC,MEMORY,LLC,L1,ZERO,ZERO,	68
-LLC,MEMORY,LLC,L2,MEMORY,L2,	1
-LLC,MEMORY,LLC,L2,L1,L1,	9
-LLC,MEMORY,LLC,L2,L1,L2,	2
-LLC,MEMORY,LLC,L2,L2,MEMORY,	2
+LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,	7
+LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,	19
+LLC,MEMORY,MEMORY,L1,L1,L1,	454
+LLC,MEMORY,MEMORY,L1,L1,L2,	13
+LLC,MEMORY,MEMORY,L1,ZERO,ZERO,	51
+LLC,MEMORY,MEMORY,L2,L1,L1,	9
+LLC,MEMORY,MEMORY,L2,L2,L2,	1
+LLC,MEMORY,MEMORY,LLC,MEMORY,MEMORY,	1
+LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,	7
+LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,	7
+LLC,MEMORY,MEMORY,LLC,LLC,LLC,	43
+LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,	58
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,	590701
+LLC,MEMORY,L1,ZERO,ZERO,ZERO,	599
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,	15226
+LLC,MEMORY,LLC,MEMORY,MEMORY,MEMORY,	3
+LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,	12
+LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,	13
+LLC,MEMORY,LLC,MEMORY,LLC,LLC,	58
+LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,	49
+LLC,MEMORY,LLC,L1,L1,L1,	1722
+LLC,MEMORY,LLC,L1,L1,L2,	38
+LLC,MEMORY,LLC,L1,ZERO,ZERO,	419
+LLC,MEMORY,LLC,L2,L1,L1,	121
 LLC,MEMORY,LLC,L2,L2,L1,	2
-LLC,MEMORY,LLC,L2,L2,L2,	51
-LLC,MEMORY,LLC,L2,L2,LLC,	3
-LLC,MEMORY,LLC,L2,LLC,L2,	2
+LLC,MEMORY,LLC,L2,L2,L2,	3
 LLC,MEMORY,LLC,L2,LLC,LLC,	1
-LLC,MEMORY,LLC,L2,ZERO,ZERO,	86
-LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,	2
-LLC,MEMORY,LLC,LLC,MEMORY,L2,	1
-LLC,MEMORY,LLC,LLC,MEMORY,LLC,	6
-LLC,MEMORY,LLC,LLC,L2,MEMORY,	1
-LLC,MEMORY,LLC,LLC,L2,L2,	4
-LLC,MEMORY,LLC,LLC,LLC,MEMORY,	11
-LLC,MEMORY,LLC,LLC,LLC,L2,	4
-LLC,MEMORY,LLC,LLC,LLC,LLC,	89
-LLC,MEMORY,LLC,LLC,ZERO,ZERO,	123
-LLC,MEMORY,LLC,ZERO,ZERO,ZERO,	750186
-LLC,L1,MEMORY,MEMORY,MEMORY,LLC,	1
-LLC,L1,MEMORY,ZERO,ZERO,ZERO,	583
-LLC,L1,L1,ZERO,ZERO,ZERO,	88
-LLC,L1,L2,L2,ZERO,ZERO,	1
-LLC,L1,L2,LLC,ZERO,ZERO,	2
-LLC,L1,L2,ZERO,ZERO,ZERO,	1264
-LLC,L1,LLC,ZERO,ZERO,ZERO,	4719
-LLC,L2,MEMORY,MEMORY,MEMORY,L2,	3
-LLC,L2,MEMORY,MEMORY,L2,L2,	7
-LLC,L2,MEMORY,MEMORY,LLC,L2,	3
-LLC,L2,MEMORY,MEMORY,ZERO,ZERO,	1
-LLC,L2,MEMORY,L1,L1,L1,	19
-LLC,L2,MEMORY,L1,L1,L2,	1
-LLC,L2,MEMORY,L2,MEMORY,L2,	3
-LLC,L2,MEMORY,L2,L2,MEMORY,	1
-LLC,L2,MEMORY,L2,L2,L2,	31
-LLC,L2,MEMORY,L2,L2,LLC,	2
-LLC,L2,MEMORY,L2,LLC,MEMORY,	1
-LLC,L2,MEMORY,L2,LLC,L2,	3
-LLC,L2,MEMORY,L2,LLC,LLC,	2
-LLC,L2,MEMORY,L2,ZERO,ZERO,	8
-LLC,L2,MEMORY,LLC,MEMORY,L2,	1
-LLC,L2,MEMORY,LLC,L2,L2,	13
-LLC,L2,MEMORY,LLC,LLC,L2,	2
-LLC,L2,MEMORY,LLC,ZERO,ZERO,	9
-LLC,L2,MEMORY,ZERO,ZERO,ZERO,	14006
-LLC,L2,L1,L2,L2,L2,	1
-LLC,L2,L1,ZERO,ZERO,ZERO,	1154
-LLC,L2,L2,MEMORY,MEMORY,L2,	3
-LLC,L2,L2,MEMORY,MEMORY,LLC,	1
-LLC,L2,L2,MEMORY,L2,MEMORY,	1
-LLC,L2,L2,MEMORY,L2,L2,	38
-LLC,L2,L2,MEMORY,L2,LLC,	7
-LLC,L2,L2,MEMORY,LLC,L2,	5
-LLC,L2,L2,MEMORY,LLC,LLC,	2
-LLC,L2,L2,MEMORY,ZERO,ZERO,	12
-LLC,L2,L2,L1,L1,L1,	5934
-LLC,L2,L2,L1,L1,L2,	248
-LLC,L2,L2,L1,L2,L1,	32
-LLC,L2,L2,L1,L2,L2,	7
-LLC,L2,L2,L1,ZERO,ZERO,	81
-LLC,L2,L2,L2,MEMORY,L2,	14
-LLC,L2,L2,L2,MEMORY,LLC,	1
-LLC,L2,L2,L2,L1,L1,	24
-LLC,L2,L2,L2,L1,L2,	20
-LLC,L2,L2,L2,L2,MEMORY,	10
-LLC,L2,L2,L2,L2,L1,	52
-LLC,L2,L2,L2,L2,L2,	1410
-LLC,L2,L2,L2,L2,LLC,	752
-LLC,L2,L2,L2,LLC,MEMORY,	3
-LLC,L2,L2,L2,LLC,L2,	211
-LLC,L2,L2,L2,LLC,LLC,	729
-LLC,L2,L2,L2,ZERO,ZERO,	978
-LLC,L2,L2,LLC,MEMORY,L2,	5
-LLC,L2,L2,LLC,MEMORY,LLC,	1
-LLC,L2,L2,LLC,L2,MEMORY,	5
-LLC,L2,L2,LLC,L2,L2,	199
-LLC,L2,L2,LLC,L2,LLC,	376
-LLC,L2,L2,LLC,LLC,MEMORY,	2
-LLC,L2,L2,LLC,LLC,L2,	132
-LLC,L2,L2,LLC,LLC,LLC,	634
-LLC,L2,L2,LLC,ZERO,ZERO,	318
-LLC,L2,L2,ZERO,ZERO,ZERO,	508083
-LLC,L2,LLC,MEMORY,MEMORY,L2,	1
-LLC,L2,LLC,MEMORY,L2,MEMORY,	2
-LLC,L2,LLC,MEMORY,L2,L2,	8
-LLC,L2,LLC,MEMORY,L2,LLC,	3
-LLC,L2,LLC,MEMORY,LLC,L2,	3
-LLC,L2,LLC,MEMORY,ZERO,ZERO,	3
-LLC,L2,LLC,L1,L1,L1,	5667
-LLC,L2,LLC,L1,L1,L2,	86
-LLC,L2,LLC,L1,L2,L1,	42
-LLC,L2,LLC,L1,L2,L2,	9
-LLC,L2,LLC,L1,ZERO,ZERO,	112
-LLC,L2,LLC,L2,MEMORY,L2,	8
-LLC,L2,LLC,L2,MEMORY,LLC,	1
-LLC,L2,LLC,L2,L1,L1,	35
-LLC,L2,LLC,L2,L1,L2,	26
-LLC,L2,LLC,L2,L2,MEMORY,	7
-LLC,L2,LLC,L2,L2,L1,	40
-LLC,L2,LLC,L2,L2,L2,	376
-LLC,L2,LLC,L2,L2,LLC,	381
-LLC,L2,LLC,L2,LLC,MEMORY,	2
-LLC,L2,LLC,L2,LLC,L2,	108
-LLC,L2,LLC,L2,LLC,LLC,	539
-LLC,L2,LLC,L2,ZERO,ZERO,	748
-LLC,L2,LLC,LLC,MEMORY,MEMORY,	1
-LLC,L2,LLC,LLC,MEMORY,L2,	4
-LLC,L2,LLC,LLC,MEMORY,LLC,	2
-LLC,L2,LLC,LLC,L2,MEMORY,	1
-LLC,L2,LLC,LLC,L2,L2,	87
-LLC,L2,LLC,LLC,L2,LLC,	294
-LLC,L2,LLC,LLC,LLC,MEMORY,	1
-LLC,L2,LLC,LLC,LLC,L2,	70
-LLC,L2,LLC,LLC,LLC,LLC,	563
-LLC,L2,LLC,LLC,ZERO,ZERO,	804
-LLC,L2,LLC,ZERO,ZERO,ZERO,	509810
-LLC,LLC,MEMORY,MEMORY,MEMORY,MEMORY,	2
-LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,	1
-LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,	3
-LLC,LLC,MEMORY,MEMORY,LLC,LLC,	13
-LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,	55
-LLC,LLC,MEMORY,L1,L1,L1,	78
-LLC,LLC,MEMORY,L1,L1,L2,	1
-LLC,LLC,MEMORY,L1,L2,L1,	7
-LLC,LLC,MEMORY,L1,ZERO,ZERO,	47
-LLC,LLC,MEMORY,L2,MEMORY,MEMORY,	1
-LLC,LLC,MEMORY,L2,L1,L1,	8
-LLC,LLC,MEMORY,L2,L2,L1,	2
-LLC,LLC,MEMORY,L2,L2,L2,	15
+LLC,MEMORY,LLC,L2,ZERO,ZERO,	1
+LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,	12
+LLC,MEMORY,LLC,LLC,MEMORY,LLC,	37
+LLC,MEMORY,LLC,LLC,L2,LLC,	2
+LLC,MEMORY,LLC,LLC,LLC,MEMORY,	72
+LLC,MEMORY,LLC,LLC,LLC,L2,	1
+LLC,MEMORY,LLC,LLC,LLC,LLC,	308
+LLC,MEMORY,LLC,LLC,ZERO,ZERO,	219
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,	716713
+LLC,L1,MEMORY,ZERO,ZERO,ZERO,	557
+LLC,L1,L1,ZERO,ZERO,ZERO,	327
+LLC,L1,L2,ZERO,ZERO,ZERO,	4235
+LLC,L1,LLC,ZERO,ZERO,ZERO,	4921
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,	15040
+LLC,L2,L1,ZERO,ZERO,ZERO,	4292
+LLC,L2,L2,L1,L1,L1,	4
+LLC,L2,L2,L1,L1,L2,	4
+LLC,L2,L2,L1,ZERO,ZERO,	7
+LLC,L2,L2,L2,L2,LLC,	1
+LLC,L2,L2,L2,ZERO,ZERO,	1
+LLC,L2,L2,LLC,L2,L2,	2
+LLC,L2,L2,LLC,L2,LLC,	2
+LLC,L2,L2,LLC,LLC,L2,	2
+LLC,L2,L2,LLC,LLC,LLC,	9
+LLC,L2,L2,LLC,ZERO,ZERO,	5
+LLC,L2,L2,ZERO,ZERO,ZERO,	590388
+LLC,L2,LLC,L1,L1,L1,	6
+LLC,L2,LLC,L1,L1,L2,	4
+LLC,L2,LLC,L1,ZERO,ZERO,	15
+LLC,L2,LLC,L2,L2,L2,	1
+LLC,L2,LLC,L2,L2,LLC,	1
+LLC,L2,LLC,L2,LLC,L2,	1
+LLC,L2,LLC,L2,LLC,LLC,	1
+LLC,L2,LLC,L2,ZERO,ZERO,	1
+LLC,L2,LLC,LLC,L2,LLC,	2
+LLC,L2,LLC,LLC,LLC,L2,	1
+LLC,L2,LLC,LLC,LLC,LLC,	15
+LLC,L2,LLC,LLC,ZERO,ZERO,	3
+LLC,L2,LLC,ZERO,ZERO,ZERO,	539707
+LLC,LLC,MEMORY,MEMORY,MEMORY,MEMORY,	1
+LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,	4
+LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,	4
+LLC,LLC,MEMORY,MEMORY,LLC,LLC,	22
+LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,	74
+LLC,LLC,MEMORY,L1,L1,L1,	1617
+LLC,LLC,MEMORY,L1,L1,L2,	93
+LLC,LLC,MEMORY,L1,L2,L1,	1
+LLC,LLC,MEMORY,L1,L2,L2,	1
+LLC,LLC,MEMORY,L1,ZERO,ZERO,	164
+LLC,LLC,MEMORY,L2,L1,L1,	20
+LLC,LLC,MEMORY,L2,L2,L2,	1
 LLC,LLC,MEMORY,L2,LLC,LLC,	1
-LLC,LLC,MEMORY,L2,ZERO,ZERO,	94
-LLC,LLC,MEMORY,LLC,MEMORY,LLC,	5
-LLC,LLC,MEMORY,LLC,L2,LLC,	2
-LLC,LLC,MEMORY,LLC,LLC,MEMORY,	7
-LLC,LLC,MEMORY,LLC,LLC,LLC,	42
+LLC,LLC,MEMORY,LLC,MEMORY,MEMORY,	6
+LLC,LLC,MEMORY,LLC,MEMORY,LLC,	28
+LLC,LLC,MEMORY,LLC,LLC,MEMORY,	33
+LLC,LLC,MEMORY,LLC,LLC,L2,	1
+LLC,LLC,MEMORY,LLC,LLC,LLC,	159
 LLC,LLC,MEMORY,LLC,ZERO,ZERO,	203
-LLC,LLC,MEMORY,ZERO,ZERO,ZERO,	743741
-LLC,LLC,L1,ZERO,ZERO,ZERO,	4461
-LLC,LLC,L2,MEMORY,MEMORY,L2,	1
-LLC,LLC,L2,MEMORY,L2,MEMORY,	1
-LLC,LLC,L2,MEMORY,L2,L2,	3
-LLC,LLC,L2,MEMORY,L2,LLC,	1
-LLC,LLC,L2,MEMORY,LLC,L2,	4
-LLC,LLC,L2,MEMORY,ZERO,ZERO,	3
-LLC,LLC,L2,L1,L1,L1,	4303
-LLC,LLC,L2,L1,L1,L2,	222
-LLC,LLC,L2,L1,L2,L1,	21
-LLC,LLC,L2,L1,L2,L2,	1
-LLC,LLC,L2,L1,ZERO,ZERO,	81
-LLC,LLC,L2,L2,MEMORY,L2,	2
-LLC,LLC,L2,L2,L1,L1,	21
-LLC,LLC,L2,L2,L1,L2,	9
-LLC,LLC,L2,L2,L2,MEMORY,	2
-LLC,LLC,L2,L2,L2,L1,	37
-LLC,LLC,L2,L2,L2,L2,	400
-LLC,LLC,L2,L2,L2,LLC,	213
-LLC,LLC,L2,L2,LLC,L2,	33
-LLC,LLC,L2,L2,LLC,LLC,	288
-LLC,LLC,L2,L2,ZERO,ZERO,	477
-LLC,LLC,L2,LLC,L2,MEMORY,	2
-LLC,LLC,L2,LLC,L2,L2,	26
-LLC,LLC,L2,LLC,L2,LLC,	147
-LLC,LLC,L2,LLC,LLC,MEMORY,	1
-LLC,LLC,L2,LLC,LLC,L2,	51
-LLC,LLC,L2,LLC,LLC,LLC,	313
-LLC,LLC,L2,LLC,ZERO,ZERO,	507
-LLC,LLC,L2,ZERO,ZERO,ZERO,	516644
-LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,	4
-LLC,LLC,LLC,MEMORY,MEMORY,L2,	1
-LLC,LLC,LLC,MEMORY,MEMORY,LLC,	6
-LLC,LLC,LLC,MEMORY,L2,L2,	4
-LLC,LLC,LLC,MEMORY,L2,LLC,	2
-LLC,LLC,LLC,MEMORY,LLC,MEMORY,	10
-LLC,LLC,LLC,MEMORY,LLC,L2,	2
-LLC,LLC,LLC,MEMORY,LLC,LLC,	138
-LLC,LLC,LLC,MEMORY,ZERO,ZERO,	87
-LLC,LLC,LLC,L1,L1,L1,	7210
-LLC,LLC,LLC,L1,L1,L2,	104
-LLC,LLC,LLC,L1,L2,L1,	225
-LLC,LLC,LLC,L1,L2,L2,	12
-LLC,LLC,LLC,L1,LLC,LLC,	1
-LLC,LLC,LLC,L1,ZERO,ZERO,	1021
-LLC,LLC,LLC,L2,MEMORY,L2,	5
-LLC,LLC,LLC,L2,MEMORY,LLC,	1
-LLC,LLC,LLC,L2,L1,L1,	135
-LLC,LLC,LLC,L2,L1,L2,	45
-LLC,LLC,LLC,L2,L2,MEMORY,	4
-LLC,LLC,LLC,L2,L2,L1,	176
-LLC,LLC,LLC,L2,L2,L2,	636
-LLC,LLC,LLC,L2,L2,LLC,	165
-LLC,LLC,LLC,L2,LLC,MEMORY,	1
-LLC,LLC,LLC,L2,LLC,L2,	54
-LLC,LLC,LLC,L2,LLC,LLC,	269
-LLC,LLC,LLC,L2,ZERO,ZERO,	4195
-LLC,LLC,LLC,LLC,MEMORY,MEMORY,	1
-LLC,LLC,LLC,LLC,MEMORY,L2,	4
-LLC,LLC,LLC,LLC,MEMORY,LLC,	22
-LLC,LLC,LLC,LLC,L2,MEMORY,	1
-LLC,LLC,LLC,LLC,L2,L2,	26
-LLC,LLC,LLC,LLC,L2,LLC,	160
-LLC,LLC,LLC,LLC,LLC,MEMORY,	66
-LLC,LLC,LLC,LLC,LLC,L2,	112
-LLC,LLC,LLC,LLC,LLC,LLC,	2771
-LLC,LLC,LLC,LLC,ZERO,ZERO,	5454
-LLC,LLC,LLC,ZERO,ZERO,ZERO,	10260799
-ZERO,ZERO,ZERO,MEMORY,ZERO,ZERO,	4
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,	723910
+LLC,LLC,L1,ZERO,ZERO,ZERO,	5214
+LLC,LLC,L2,MEMORY,LLC,LLC,	1
+LLC,LLC,L2,L1,L1,L1,	11
+LLC,LLC,L2,L1,L1,L2,	6
+LLC,LLC,L2,L1,ZERO,ZERO,	11
+LLC,LLC,L2,L2,L2,L2,	3
+LLC,LLC,L2,L2,L2,LLC,	1
+LLC,LLC,L2,L2,LLC,L2,	1
+LLC,LLC,L2,L2,LLC,LLC,	3
+LLC,LLC,L2,L2,ZERO,ZERO,	11
+LLC,LLC,L2,LLC,L2,MEMORY,	1
+LLC,LLC,L2,LLC,L2,L2,	2
+LLC,LLC,L2,LLC,L2,LLC,	8
+LLC,LLC,L2,LLC,LLC,L2,	1
+LLC,LLC,L2,LLC,LLC,LLC,	23
+LLC,LLC,L2,LLC,ZERO,ZERO,	33
+LLC,LLC,L2,ZERO,ZERO,ZERO,	545271
+LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,	19
+LLC,LLC,LLC,MEMORY,MEMORY,LLC,	37
+LLC,LLC,LLC,MEMORY,LLC,MEMORY,	96
+LLC,LLC,LLC,MEMORY,LLC,LLC,	324
+LLC,LLC,LLC,MEMORY,ZERO,ZERO,	220
+LLC,LLC,LLC,L1,L1,L1,	6467
+LLC,LLC,LLC,L1,L1,L2,	309
+LLC,LLC,LLC,L1,L2,L1,	2
+LLC,LLC,LLC,L1,L2,L2,	2
+LLC,LLC,LLC,L1,ZERO,ZERO,	1540
+LLC,LLC,LLC,L2,L1,L1,	454
+LLC,LLC,LLC,L2,L1,L2,	3
+LLC,LLC,LLC,L2,L2,L1,	5
+LLC,LLC,LLC,L2,L2,L2,	11
+LLC,LLC,LLC,L2,L2,LLC,	10
+LLC,LLC,LLC,L2,LLC,L2,	2
+LLC,LLC,LLC,L2,LLC,LLC,	27
+LLC,LLC,LLC,L2,ZERO,ZERO,	20
+LLC,LLC,LLC,LLC,MEMORY,MEMORY,	47
+LLC,LLC,LLC,LLC,MEMORY,LLC,	228
+LLC,LLC,LLC,LLC,L2,L2,	5
+LLC,LLC,LLC,LLC,L2,LLC,	15
+LLC,LLC,LLC,LLC,LLC,MEMORY,	369
+LLC,LLC,LLC,LLC,LLC,L2,	9
+LLC,LLC,LLC,LLC,LLC,LLC,	1745
+LLC,LLC,LLC,LLC,ZERO,ZERO,	1039
+LLC,LLC,LLC,ZERO,ZERO,ZERO,	9636529
+ZERO,ZERO,ZERO,MEMORY,ZERO,ZERO,	1
 ZERO,ZERO,ZERO,L1,ZERO,ZERO,	14
-ZERO,ZERO,ZERO,L2,ZERO,ZERO,	396
-ZERO,ZERO,ZERO,LLC,ZERO,ZERO,	304
+ZERO,ZERO,ZERO,L2,ZERO,ZERO,	31
+ZERO,ZERO,ZERO,LLC,ZERO,ZERO,	112
 ~~~~~~ full stats with way ~~~~~~
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,0	1
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,1	1
 MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,4	6
-MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,5	54
-MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,4	3
-MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,5	3
-MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,4	1
-MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,4	9
-MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,5	1
-MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,2	7
-MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,3	46
-MEMORY,MEMORY,MEMORY,L1,L1,L1,4	1767
-MEMORY,MEMORY,MEMORY,L1,L1,L1,5	197
-MEMORY,MEMORY,MEMORY,L1,L1,L2,4	35
-MEMORY,MEMORY,MEMORY,L1,L2,L1,4	48
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,5	9
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,5	2
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,4	2
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,5	1
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,4	5
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,5	2
+MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,0	2
+MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,3	7
+MEMORY,MEMORY,MEMORY,L1,L1,L1,4	188
+MEMORY,MEMORY,MEMORY,L1,L1,L1,5	38
+MEMORY,MEMORY,MEMORY,L1,L1,L2,4	6
+MEMORY,MEMORY,MEMORY,L1,L1,L2,5	8
+MEMORY,MEMORY,MEMORY,L1,L2,L1,4	1
+MEMORY,MEMORY,MEMORY,L1,L2,L1,5	2
 MEMORY,MEMORY,MEMORY,L1,L2,L2,4	1
-MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,2	9
-MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,3	818
-MEMORY,MEMORY,MEMORY,L2,L1,L1,4	60
-MEMORY,MEMORY,MEMORY,L2,L1,L1,5	4
-MEMORY,MEMORY,MEMORY,L2,L1,L2,4	8
-MEMORY,MEMORY,MEMORY,L2,L2,MEMORY,4	1
-MEMORY,MEMORY,MEMORY,L2,L2,L1,4	33
+MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,0	8
+MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,1	6
+MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,2	18
+MEMORY,MEMORY,MEMORY,L1,ZERO,ZERO,3	75
+MEMORY,MEMORY,MEMORY,L2,L1,L1,4	2
+MEMORY,MEMORY,MEMORY,L2,L1,L1,5	2
+MEMORY,MEMORY,MEMORY,L2,L2,L1,4	8
 MEMORY,MEMORY,MEMORY,L2,L2,L1,5	1
-MEMORY,MEMORY,MEMORY,L2,L2,L2,4	134
-MEMORY,MEMORY,MEMORY,L2,L2,L2,5	3
-MEMORY,MEMORY,MEMORY,L2,L2,LLC,4	1
-MEMORY,MEMORY,MEMORY,L2,LLC,L2,4	5
-MEMORY,MEMORY,MEMORY,L2,LLC,LLC,4	2
-MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,2	4
-MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,3	253
+MEMORY,MEMORY,MEMORY,L2,L2,L2,4	2
+MEMORY,MEMORY,MEMORY,L2,L2,L2,5	2
+MEMORY,MEMORY,MEMORY,L2,LLC,L2,4	2
+MEMORY,MEMORY,MEMORY,L2,LLC,L2,5	1
+MEMORY,MEMORY,MEMORY,L2,LLC,LLC,4	1
+MEMORY,MEMORY,MEMORY,L2,LLC,LLC,5	6
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,2	5
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,3	5
 MEMORY,MEMORY,MEMORY,LLC,MEMORY,MEMORY,4	1
-MEMORY,MEMORY,MEMORY,LLC,MEMORY,L2,4	1
-MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,4	2
-MEMORY,MEMORY,MEMORY,LLC,L2,L2,4	9
-MEMORY,MEMORY,MEMORY,LLC,L2,LLC,4	4
-MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,4	1
-MEMORY,MEMORY,MEMORY,LLC,LLC,L2,4	1
-MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,4	62
-MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,5	4
-MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,2	54
-MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,3	439
-MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	653323
-MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	600657
-MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	620588
-MEMORY,MEMORY,L1,L1,ZERO,ZERO,3	1
-MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,0	375
-MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,1	385
-MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,2	349
-MEMORY,MEMORY,L2,MEMORY,MEMORY,L2,4	1
-MEMORY,MEMORY,L2,MEMORY,L2,LLC,4	1
-MEMORY,MEMORY,L2,L1,ZERO,ZERO,3	3
-MEMORY,MEMORY,L2,L2,L2,L2,4	2
-MEMORY,MEMORY,L2,L2,ZERO,ZERO,3	6
-MEMORY,MEMORY,L2,LLC,L2,MEMORY,4	1
-MEMORY,MEMORY,L2,LLC,LLC,L2,4	1
-MEMORY,MEMORY,L2,LLC,ZERO,ZERO,3	1
-MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,0	8903
-MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,1	8189
-MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,2	6683
-MEMORY,MEMORY,LLC,MEMORY,MEMORY,MEMORY,5	1
-MEMORY,MEMORY,LLC,MEMORY,MEMORY,LLC,4	6
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,MEMORY,5	1
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,4	3
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,5	2
+MEMORY,MEMORY,MEMORY,LLC,L2,LLC,4	2
+MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,4	3
+MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,5	1
+MEMORY,MEMORY,MEMORY,LLC,LLC,L2,5	1
+MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,4	33
+MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,5	33
+MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,0	9
+MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,2	2
+MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,3	11
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	641917
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	594567
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	617955
+MEMORY,MEMORY,L1,L1,L1,L1,4	2
+MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,0	365
+MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,1	376
+MEMORY,MEMORY,L1,ZERO,ZERO,ZERO,2	293
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,0	8998
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,1	8409
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,2	6886
 MEMORY,MEMORY,LLC,MEMORY,MEMORY,LLC,5	1
-MEMORY,MEMORY,LLC,MEMORY,L2,L2,4	1
-MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,4	1
-MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,4	17
-MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,3	23
-MEMORY,MEMORY,LLC,L1,L1,L1,4	152
-MEMORY,MEMORY,LLC,L1,L1,L1,5	3
-MEMORY,MEMORY,LLC,L1,L2,L1,4	8
-MEMORY,MEMORY,LLC,L1,L2,L2,4	1
-MEMORY,MEMORY,LLC,L1,ZERO,ZERO,2	1
-MEMORY,MEMORY,LLC,L1,ZERO,ZERO,3	36
-MEMORY,MEMORY,LLC,L2,L1,L1,4	13
-MEMORY,MEMORY,LLC,L2,L1,L2,4	1
-MEMORY,MEMORY,LLC,L2,L2,L1,4	7
-MEMORY,MEMORY,LLC,L2,L2,L2,4	38
-MEMORY,MEMORY,LLC,L2,L2,L2,5	1
-MEMORY,MEMORY,LLC,L2,L2,LLC,4	1
+MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,4	6
+MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,5	4
+MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,4	15
+MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,5	7
+MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,0	8
+MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,2	6
+MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,3	2
+MEMORY,MEMORY,LLC,L1,L1,L1,4	305
+MEMORY,MEMORY,LLC,L1,L1,L1,5	13
+MEMORY,MEMORY,LLC,L1,L1,L2,5	6
+MEMORY,MEMORY,LLC,L1,ZERO,ZERO,2	79
+MEMORY,MEMORY,LLC,L1,ZERO,ZERO,3	97
+MEMORY,MEMORY,LLC,L2,L1,L1,4	17
+MEMORY,MEMORY,LLC,L2,L2,L2,4	1
 MEMORY,MEMORY,LLC,L2,LLC,L2,4	1
-MEMORY,MEMORY,LLC,L2,ZERO,ZERO,3	25
-MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,4	8
-MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,4	8
-MEMORY,MEMORY,LLC,LLC,LLC,LLC,4	36
-MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,3	88
-MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,0	217121
-MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,1	193734
-MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,2	187905
+MEMORY,MEMORY,LLC,LLC,MEMORY,MEMORY,4	3
+MEMORY,MEMORY,LLC,LLC,MEMORY,MEMORY,5	1
+MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,4	9
+MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,5	1
+MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,4	18
+MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,5	11
+MEMORY,MEMORY,LLC,LLC,LLC,LLC,4	87
+MEMORY,MEMORY,LLC,LLC,LLC,LLC,5	33
+MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,0	15
+MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,2	10
+MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,3	15
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,0	207262
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,1	188413
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,2	184487
 MEMORY,L1,MEMORY,L1,L1,L1,4	1
-MEMORY,L1,MEMORY,L1,L1,L1,5	2
-MEMORY,L1,MEMORY,L1,ZERO,ZERO,3	1
-MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,0	385
-MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,1	314
-MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,2	312
-MEMORY,L1,L2,ZERO,ZERO,ZERO,0	2
-MEMORY,L1,L2,ZERO,ZERO,ZERO,1	3
-MEMORY,L1,L2,ZERO,ZERO,ZERO,2	5
-MEMORY,L1,LLC,ZERO,ZERO,ZERO,0	209
-MEMORY,L1,LLC,ZERO,ZERO,ZERO,1	144
-MEMORY,L1,LLC,ZERO,ZERO,ZERO,2	184
-MEMORY,L2,MEMORY,L1,L1,L1,4	3
-MEMORY,L2,MEMORY,L1,L1,L1,5	4
-MEMORY,L2,MEMORY,L1,L1,L2,4	1
-MEMORY,L2,MEMORY,L1,ZERO,ZERO,3	1
-MEMORY,L2,MEMORY,L2,L2,L2,4	4
-MEMORY,L2,MEMORY,L2,L2,L2,5	1
-MEMORY,L2,MEMORY,LLC,L2,MEMORY,4	2
-MEMORY,L2,MEMORY,LLC,L2,L2,4	1
-MEMORY,L2,MEMORY,LLC,LLC,LLC,4	1
-MEMORY,L2,MEMORY,LLC,ZERO,ZERO,3	1
-MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,0	8644
-MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,1	6796
-MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,2	8001
-MEMORY,L2,L1,L2,ZERO,ZERO,3	1
-MEMORY,L2,L1,ZERO,ZERO,ZERO,0	6
+MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,0	349
+MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,1	303
+MEMORY,L1,MEMORY,ZERO,ZERO,ZERO,2	370
+MEMORY,L1,L1,ZERO,ZERO,ZERO,1	2
+MEMORY,L1,L2,ZERO,ZERO,ZERO,0	9
+MEMORY,L1,L2,ZERO,ZERO,ZERO,1	7
+MEMORY,L1,L2,ZERO,ZERO,ZERO,2	6
+MEMORY,L1,LLC,ZERO,ZERO,ZERO,0	184
+MEMORY,L1,LLC,ZERO,ZERO,ZERO,1	132
+MEMORY,L1,LLC,ZERO,ZERO,ZERO,2	243
+MEMORY,L2,MEMORY,L1,L1,L1,4	1
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,0	8686
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,1	7051
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,2	8867
+MEMORY,L2,L1,ZERO,ZERO,ZERO,0	7
 MEMORY,L2,L1,ZERO,ZERO,ZERO,1	7
-MEMORY,L2,L1,ZERO,ZERO,ZERO,2	2
-MEMORY,L2,L2,MEMORY,L2,MEMORY,4	1
-MEMORY,L2,L2,MEMORY,L2,L2,4	3
-MEMORY,L2,L2,MEMORY,ZERO,ZERO,3	3
-MEMORY,L2,L2,L1,L1,L1,4	15
-MEMORY,L2,L2,L1,L1,L2,4	2
-MEMORY,L2,L2,L1,L2,L1,4	2
-MEMORY,L2,L2,L2,MEMORY,L2,4	3
-MEMORY,L2,L2,L2,L1,L1,4	1
-MEMORY,L2,L2,L2,L1,L2,4	1
-MEMORY,L2,L2,L2,L2,MEMORY,4	2
-MEMORY,L2,L2,L2,L2,L1,4	2
-MEMORY,L2,L2,L2,L2,L2,4	60
-MEMORY,L2,L2,L2,L2,L2,5	1
-MEMORY,L2,L2,L2,L2,LLC,4	3
-MEMORY,L2,L2,L2,LLC,L2,4	2
-MEMORY,L2,L2,L2,LLC,L2,5	1
-MEMORY,L2,L2,L2,LLC,LLC,4	2
-MEMORY,L2,L2,L2,ZERO,ZERO,3	37
-MEMORY,L2,L2,LLC,L2,L2,4	7
-MEMORY,L2,L2,LLC,L2,LLC,4	2
-MEMORY,L2,L2,LLC,LLC,L2,4	2
-MEMORY,L2,L2,LLC,ZERO,ZERO,3	17
-MEMORY,L2,L2,ZERO,ZERO,ZERO,0	834
-MEMORY,L2,L2,ZERO,ZERO,ZERO,1	1077
-MEMORY,L2,L2,ZERO,ZERO,ZERO,2	979
-MEMORY,L2,LLC,MEMORY,MEMORY,LLC,4	1
-MEMORY,L2,LLC,MEMORY,L2,L2,4	2
-MEMORY,L2,LLC,MEMORY,ZERO,ZERO,3	1
-MEMORY,L2,LLC,L1,L1,L1,4	5
-MEMORY,L2,LLC,L2,L2,MEMORY,4	1
-MEMORY,L2,LLC,L2,L2,L2,4	5
-MEMORY,L2,LLC,L2,L2,LLC,4	1
-MEMORY,L2,LLC,L2,LLC,L2,4	2
-MEMORY,L2,LLC,L2,ZERO,ZERO,3	4
-MEMORY,L2,LLC,LLC,MEMORY,MEMORY,4	1
-MEMORY,L2,LLC,LLC,L2,L2,4	3
-MEMORY,L2,LLC,LLC,LLC,L2,4	1
-MEMORY,L2,LLC,LLC,LLC,LLC,4	2
-MEMORY,L2,LLC,LLC,ZERO,ZERO,3	10
-MEMORY,L2,LLC,ZERO,ZERO,ZERO,0	5050
-MEMORY,L2,LLC,ZERO,ZERO,ZERO,1	4060
-MEMORY,L2,LLC,ZERO,ZERO,ZERO,2	4712
-MEMORY,LLC,MEMORY,MEMORY,MEMORY,MEMORY,4	1
-MEMORY,LLC,MEMORY,MEMORY,MEMORY,MEMORY,5	1
-MEMORY,LLC,MEMORY,MEMORY,L2,L2,4	2
+MEMORY,L2,L1,ZERO,ZERO,ZERO,2	13
+MEMORY,L2,L2,ZERO,ZERO,ZERO,0	1264
+MEMORY,L2,L2,ZERO,ZERO,ZERO,1	1166
+MEMORY,L2,L2,ZERO,ZERO,ZERO,2	1148
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,0	5068
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,1	4235
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,2	5235
+MEMORY,LLC,MEMORY,MEMORY,LLC,MEMORY,4	2
 MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,4	5
-MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,5	1
-MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,3	72
-MEMORY,LLC,MEMORY,L1,L1,L1,4	85
-MEMORY,LLC,MEMORY,L1,L1,L1,5	7
-MEMORY,LLC,MEMORY,L1,L2,L1,4	1
-MEMORY,LLC,MEMORY,L1,ZERO,ZERO,2	3
-MEMORY,LLC,MEMORY,L1,ZERO,ZERO,3	26
-MEMORY,LLC,MEMORY,L2,L1,L1,4	4
-MEMORY,LLC,MEMORY,L2,L2,L2,4	16
-MEMORY,LLC,MEMORY,L2,ZERO,ZERO,3	24
+MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,5	3
+MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,0	6
+MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,2	1
+MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,3	14
+MEMORY,LLC,MEMORY,L1,L1,L1,4	245
+MEMORY,LLC,MEMORY,L1,L1,L1,5	9
+MEMORY,LLC,MEMORY,L1,L1,L2,5	16
+MEMORY,LLC,MEMORY,L1,L2,L2,5	1
+MEMORY,LLC,MEMORY,L1,ZERO,ZERO,2	7
+MEMORY,LLC,MEMORY,L1,ZERO,ZERO,3	76
+MEMORY,LLC,MEMORY,L2,L1,L1,4	2
+MEMORY,LLC,MEMORY,LLC,MEMORY,MEMORY,4	1
+MEMORY,LLC,MEMORY,LLC,MEMORY,LLC,4	3
+MEMORY,LLC,MEMORY,LLC,MEMORY,LLC,5	1
 MEMORY,LLC,MEMORY,LLC,LLC,MEMORY,4	4
-MEMORY,LLC,MEMORY,LLC,LLC,LLC,4	11
-MEMORY,LLC,MEMORY,LLC,LLC,LLC,5	1
-MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,3	152
-MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,0	213943
-MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,1	184007
-MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,2	201785
-MEMORY,LLC,L1,ZERO,ZERO,ZERO,0	172
-MEMORY,LLC,L1,ZERO,ZERO,ZERO,1	181
-MEMORY,LLC,L1,ZERO,ZERO,ZERO,2	181
-MEMORY,LLC,L2,MEMORY,LLC,L2,4	1
-MEMORY,LLC,L2,MEMORY,ZERO,ZERO,3	1
-MEMORY,LLC,L2,L1,L1,L1,4	6
-MEMORY,LLC,L2,L2,L2,L2,4	5
-MEMORY,LLC,L2,L2,LLC,LLC,4	1
-MEMORY,LLC,L2,L2,ZERO,ZERO,3	10
-MEMORY,LLC,L2,LLC,ZERO,ZERO,3	4
-MEMORY,LLC,L2,ZERO,ZERO,ZERO,0	5036
-MEMORY,LLC,L2,ZERO,ZERO,ZERO,1	5015
-MEMORY,LLC,L2,ZERO,ZERO,ZERO,2	4206
-MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,4	1
-MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,5	1
-MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,4	5
-MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,5	1
-MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,4	3
-MEMORY,LLC,LLC,MEMORY,LLC,LLC,4	25
-MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,3	79
-MEMORY,LLC,LLC,L1,L1,L1,4	78
-MEMORY,LLC,LLC,L1,L1,L1,5	13
-MEMORY,LLC,LLC,L1,L1,L2,4	1
-MEMORY,LLC,LLC,L1,L2,L1,4	4
-MEMORY,LLC,LLC,L1,L2,L2,4	1
-MEMORY,LLC,LLC,L1,LLC,LLC,4	1
-MEMORY,LLC,LLC,L1,ZERO,ZERO,2	1
-MEMORY,LLC,LLC,L1,ZERO,ZERO,3	33
-MEMORY,LLC,LLC,L2,L1,L1,4	3
-MEMORY,LLC,LLC,L2,L1,L2,4	3
-MEMORY,LLC,LLC,L2,L2,L1,4	5
-MEMORY,LLC,LLC,L2,L2,L2,4	19
-MEMORY,LLC,LLC,L2,ZERO,ZERO,3	42
-MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,4	4
-MEMORY,LLC,LLC,LLC,MEMORY,LLC,4	7
-MEMORY,LLC,LLC,LLC,LLC,MEMORY,4	8
-MEMORY,LLC,LLC,LLC,LLC,L2,5	1
-MEMORY,LLC,LLC,LLC,LLC,LLC,4	77
-MEMORY,LLC,LLC,LLC,LLC,LLC,5	5
-MEMORY,LLC,LLC,LLC,ZERO,ZERO,3	224
-MEMORY,LLC,LLC,ZERO,ZERO,ZERO,0	263343
-MEMORY,LLC,LLC,ZERO,ZERO,ZERO,1	230095
-MEMORY,LLC,LLC,ZERO,ZERO,ZERO,2	238637
-L1,MEMORY,MEMORY,L1,ZERO,ZERO,3	3
-L1,MEMORY,MEMORY,L2,ZERO,ZERO,3	1
-L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	293
-L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	361
-L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	403
+MEMORY,LLC,MEMORY,LLC,LLC,MEMORY,5	4
+MEMORY,LLC,MEMORY,LLC,LLC,LLC,4	17
+MEMORY,LLC,MEMORY,LLC,LLC,LLC,5	18
+MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,0	17
+MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,2	1
+MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,3	17
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,0	210234
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,1	179514
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,2	202848
+MEMORY,LLC,L1,ZERO,ZERO,ZERO,0	184
+MEMORY,LLC,L1,ZERO,ZERO,ZERO,1	187
+MEMORY,LLC,L1,ZERO,ZERO,ZERO,2	136
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,0	5472
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,1	4662
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,2	4192
+MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,4	5
+MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,4	15
+MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,5	2
+MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,4	21
+MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,5	11
+MEMORY,LLC,LLC,MEMORY,LLC,LLC,4	68
+MEMORY,LLC,LLC,MEMORY,LLC,LLC,5	21
+MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,0	26
+MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,2	7
+MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,3	25
+MEMORY,LLC,LLC,L1,L1,L1,4	992
+MEMORY,LLC,LLC,L1,L1,L1,5	18
+MEMORY,LLC,LLC,L1,L1,L2,5	22
+MEMORY,LLC,LLC,L1,L2,L1,5	1
+MEMORY,LLC,LLC,L1,ZERO,ZERO,2	70
+MEMORY,LLC,LLC,L1,ZERO,ZERO,3	484
+MEMORY,LLC,LLC,L2,L1,L1,4	46
+MEMORY,LLC,LLC,L2,L1,L1,5	1
+MEMORY,LLC,LLC,L2,ZERO,ZERO,2	1
+MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,4	16
+MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,5	2
+MEMORY,LLC,LLC,LLC,MEMORY,LLC,4	54
+MEMORY,LLC,LLC,LLC,MEMORY,LLC,5	6
+MEMORY,LLC,LLC,LLC,L2,L2,4	1
+MEMORY,LLC,LLC,LLC,LLC,MEMORY,4	74
+MEMORY,LLC,LLC,LLC,LLC,MEMORY,5	22
+MEMORY,LLC,LLC,LLC,LLC,LLC,4	330
+MEMORY,LLC,LLC,LLC,LLC,LLC,5	93
+MEMORY,LLC,LLC,LLC,ZERO,ZERO,0	86
+MEMORY,LLC,LLC,LLC,ZERO,ZERO,2	36
+MEMORY,LLC,LLC,LLC,ZERO,ZERO,3	48
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,0	256344
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,1	224473
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,2	236441
+L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	338
+L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	372
+L1,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	337
+L1,MEMORY,L1,ZERO,ZERO,ZERO,1	1
 L1,MEMORY,L1,ZERO,ZERO,ZERO,2	1
-L1,MEMORY,L2,L2,ZERO,ZERO,3	1
-L1,MEMORY,L2,ZERO,ZERO,ZERO,0	8
-L1,MEMORY,L2,ZERO,ZERO,ZERO,1	2
-L1,MEMORY,L2,ZERO,ZERO,ZERO,2	5
-L1,MEMORY,LLC,LLC,ZERO,ZERO,3	1
-L1,MEMORY,LLC,ZERO,ZERO,ZERO,0	175
-L1,MEMORY,LLC,ZERO,ZERO,ZERO,1	194
-L1,MEMORY,LLC,ZERO,ZERO,ZERO,2	209
-L1,L1,MEMORY,ZERO,ZERO,ZERO,0	1
+L1,MEMORY,L2,ZERO,ZERO,ZERO,0	17
+L1,MEMORY,L2,ZERO,ZERO,ZERO,1	9
+L1,MEMORY,L2,ZERO,ZERO,ZERO,2	14
+L1,MEMORY,LLC,ZERO,ZERO,ZERO,0	187
+L1,MEMORY,LLC,ZERO,ZERO,ZERO,1	237
+L1,MEMORY,LLC,ZERO,ZERO,ZERO,2	198
 L1,L1,MEMORY,ZERO,ZERO,ZERO,1	1
-L1,L1,MEMORY,ZERO,ZERO,ZERO,2	1
-L1,L1,L1,L1,L1,L1,4	80121
-L1,L1,L1,L1,L1,L1,5	38
-L1,L1,L1,L1,L1,L2,5	3
-L1,L1,L1,L1,L2,L1,4	106
-L1,L1,L1,L1,L2,L2,4	1
-L1,L1,L1,L1,ZERO,ZERO,3	1536
-L1,L1,L1,L2,L1,L1,4	132
-L1,L1,L1,L2,L1,L2,4	1
-L1,L1,L1,L2,L2,L1,4	31
-L1,L1,L1,L2,ZERO,ZERO,3	62
-L1,L1,L1,ZERO,ZERO,ZERO,0	2475959
-L1,L1,L1,ZERO,ZERO,ZERO,1	2277316
-L1,L1,L1,ZERO,ZERO,ZERO,2	2366994
-L1,L1,L2,L1,L1,L1,4	746
+L1,L1,MEMORY,ZERO,ZERO,ZERO,2	2
+L1,L1,L1,L1,L1,L1,4	4881
+L1,L1,L1,L1,L1,L1,5	725
+L1,L1,L1,L1,L1,L2,4	76
+L1,L1,L1,L1,L1,L2,5	1
+L1,L1,L1,L1,L2,L1,4	4
+L1,L1,L1,L1,ZERO,ZERO,3	1634
+L1,L1,L1,L2,L1,L1,4	211
+L1,L1,L1,L2,L1,L2,4	227
+L1,L1,L1,L2,L2,L1,4	2
+L1,L1,L1,ZERO,ZERO,ZERO,0	2404069
+L1,L1,L1,ZERO,ZERO,ZERO,1	2161037
+L1,L1,L1,ZERO,ZERO,ZERO,2	2264036
+L1,L1,L2,L1,L1,L1,4	730
 L1,L1,L2,L1,L1,L1,5	1
-L1,L1,L2,L1,L2,L1,4	57
-L1,L1,L2,L1,L2,L2,4	1
-L1,L1,L2,L1,L2,L2,5	1
-L1,L1,L2,L1,ZERO,ZERO,3	9
-L1,L1,L2,L2,L1,L1,4	37
-L1,L1,L2,L2,L2,L1,4	29
-L1,L1,L2,L2,ZERO,ZERO,3	16
-L1,L1,L2,ZERO,ZERO,ZERO,0	162290
-L1,L1,L2,ZERO,ZERO,ZERO,1	162382
-L1,L1,L2,ZERO,ZERO,ZERO,2	162703
-L1,L1,LLC,ZERO,ZERO,ZERO,0	32
-L1,L1,LLC,ZERO,ZERO,ZERO,1	46
-L1,L1,LLC,ZERO,ZERO,ZERO,2	38
-L1,L2,MEMORY,LLC,ZERO,ZERO,3	3
-L1,L2,MEMORY,ZERO,ZERO,ZERO,0	1
-L1,L2,MEMORY,ZERO,ZERO,ZERO,1	6
-L1,L2,MEMORY,ZERO,ZERO,ZERO,2	9
-L1,L2,L1,L1,L1,L1,4	492
-L1,L2,L1,L1,L1,L1,5	2
-L1,L2,L1,L1,L2,L1,4	37
-L1,L2,L1,L1,L2,L1,5	1
-L1,L2,L1,L1,ZERO,ZERO,3	9
-L1,L2,L1,L2,L1,L1,4	21
-L1,L2,L1,L2,L2,L1,4	10
-L1,L2,L1,L2,ZERO,ZERO,3	7
-L1,L2,L1,ZERO,ZERO,ZERO,0	166140
-L1,L2,L1,ZERO,ZERO,ZERO,1	169173
-L1,L2,L1,ZERO,ZERO,ZERO,2	171102
-L1,L2,L2,MEMORY,ZERO,ZERO,3	2
-L1,L2,L2,L1,L1,L1,4	542
-L1,L2,L2,L1,L1,L1,5	1
-L1,L2,L2,L1,L1,L2,5	1
-L1,L2,L2,L1,L2,L1,4	31
-L1,L2,L2,L1,L2,L2,4	1
-L1,L2,L2,L1,ZERO,ZERO,3	9
-L1,L2,L2,L2,MEMORY,L2,4	1
-L1,L2,L2,L2,L1,L1,4	15
-L1,L2,L2,L2,L1,L2,4	1
-L1,L2,L2,L2,L2,L1,4	27
-L1,L2,L2,L2,L2,L1,5	1
-L1,L2,L2,L2,L2,L2,4	158
-L1,L2,L2,L2,ZERO,ZERO,3	719
-L1,L2,L2,LLC,ZERO,ZERO,3	25
-L1,L2,L2,ZERO,ZERO,ZERO,0	246273
-L1,L2,L2,ZERO,ZERO,ZERO,1	256369
-L1,L2,L2,ZERO,ZERO,ZERO,2	261523
-L1,L2,LLC,MEMORY,ZERO,ZERO,3	1
-L1,L2,LLC,L2,ZERO,ZERO,3	6
-L1,L2,LLC,LLC,ZERO,ZERO,3	3
-L1,L2,LLC,ZERO,ZERO,ZERO,0	399
-L1,L2,LLC,ZERO,ZERO,ZERO,1	361
-L1,L2,LLC,ZERO,ZERO,ZERO,2	467
-L1,LLC,MEMORY,ZERO,ZERO,ZERO,0	166
-L1,LLC,MEMORY,ZERO,ZERO,ZERO,1	168
-L1,LLC,MEMORY,ZERO,ZERO,ZERO,2	244
-L1,LLC,L1,ZERO,ZERO,ZERO,0	33
-L1,LLC,L1,ZERO,ZERO,ZERO,1	36
-L1,LLC,L1,ZERO,ZERO,ZERO,2	43
-L1,LLC,L2,L2,L2,L2,4	1
-L1,LLC,L2,L2,ZERO,ZERO,3	6
-L1,LLC,L2,LLC,ZERO,ZERO,3	3
-L1,LLC,L2,ZERO,ZERO,ZERO,0	394
-L1,LLC,L2,ZERO,ZERO,ZERO,1	422
-L1,LLC,L2,ZERO,ZERO,ZERO,2	459
-L1,LLC,LLC,L2,ZERO,ZERO,3	1
-L1,LLC,LLC,ZERO,ZERO,ZERO,0	1603
-L1,LLC,LLC,ZERO,ZERO,ZERO,1	1699
-L1,LLC,LLC,ZERO,ZERO,ZERO,2	1866
-L2,MEMORY,MEMORY,L1,ZERO,ZERO,3	3
-L2,MEMORY,MEMORY,L2,L2,L2,4	3
-L2,MEMORY,MEMORY,L2,ZERO,ZERO,3	1
-L2,MEMORY,MEMORY,LLC,MEMORY,MEMORY,4	1
-L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	7615
-L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	8640
-L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	9080
-L2,MEMORY,L1,ZERO,ZERO,ZERO,0	6
-L2,MEMORY,L1,ZERO,ZERO,ZERO,1	8
-L2,MEMORY,L1,ZERO,ZERO,ZERO,2	9
-L2,MEMORY,L2,MEMORY,L2,L2,4	1
-L2,MEMORY,L2,MEMORY,LLC,L2,4	1
-L2,MEMORY,L2,MEMORY,ZERO,ZERO,3	1
-L2,MEMORY,L2,L1,L1,L1,4	27
-L2,MEMORY,L2,L2,L1,L2,4	1
-L2,MEMORY,L2,L2,L2,MEMORY,4	1
-L2,MEMORY,L2,L2,L2,L1,4	2
-L2,MEMORY,L2,L2,L2,L2,4	52
-L2,MEMORY,L2,L2,L2,LLC,4	3
-L2,MEMORY,L2,L2,LLC,L2,4	4
-L2,MEMORY,L2,L2,LLC,LLC,4	1
-L2,MEMORY,L2,L2,ZERO,ZERO,3	46
-L2,MEMORY,L2,LLC,MEMORY,MEMORY,4	1
-L2,MEMORY,L2,LLC,L2,L2,4	4
-L2,MEMORY,L2,LLC,LLC,MEMORY,4	1
-L2,MEMORY,L2,LLC,LLC,L2,4	2
-L2,MEMORY,L2,LLC,LLC,LLC,4	2
-L2,MEMORY,L2,LLC,ZERO,ZERO,3	13
-L2,MEMORY,L2,ZERO,ZERO,ZERO,0	892
-L2,MEMORY,L2,ZERO,ZERO,ZERO,1	1085
-L2,MEMORY,L2,ZERO,ZERO,ZERO,2	1111
-L2,MEMORY,LLC,MEMORY,MEMORY,MEMORY,4	1
-L2,MEMORY,LLC,MEMORY,LLC,L2,4	1
-L2,MEMORY,LLC,L1,L1,L1,4	20
-L2,MEMORY,LLC,L1,L1,L2,4	1
-L2,MEMORY,LLC,L2,MEMORY,L2,4	2
-L2,MEMORY,LLC,L2,L2,L2,4	10
-L2,MEMORY,LLC,L2,L2,L2,5	1
-L2,MEMORY,LLC,L2,L2,LLC,4	3
-L2,MEMORY,LLC,L2,LLC,LLC,4	2
-L2,MEMORY,LLC,L2,ZERO,ZERO,3	13
-L2,MEMORY,LLC,LLC,L2,L2,4	1
-L2,MEMORY,LLC,LLC,L2,LLC,4	2
-L2,MEMORY,LLC,LLC,LLC,LLC,4	1
-L2,MEMORY,LLC,LLC,ZERO,ZERO,3	10
-L2,MEMORY,LLC,ZERO,ZERO,ZERO,0	4833
-L2,MEMORY,LLC,ZERO,ZERO,ZERO,1	5193
-L2,MEMORY,LLC,ZERO,ZERO,ZERO,2	5505
-L2,L1,MEMORY,ZERO,ZERO,ZERO,0	3
-L2,L1,MEMORY,ZERO,ZERO,ZERO,1	5
-L2,L1,MEMORY,ZERO,ZERO,ZERO,2	8
-L2,L1,L1,L1,L1,L1,4	61
-L2,L1,L1,L1,L1,L1,5	1
-L2,L1,L1,L1,L1,L2,5	1
+L1,L1,L2,L1,L1,L2,5	1
+L1,L1,L2,L1,ZERO,ZERO,0	2
+L1,L1,L2,L1,ZERO,ZERO,3	124
+L1,L1,L2,ZERO,ZERO,ZERO,0	164194
+L1,L1,L2,ZERO,ZERO,ZERO,1	145022
+L1,L1,L2,ZERO,ZERO,ZERO,2	156899
+L1,L1,LLC,ZERO,ZERO,ZERO,0	127
+L1,L1,LLC,ZERO,ZERO,ZERO,1	108
+L1,L1,LLC,ZERO,ZERO,ZERO,2	121
+L1,L2,MEMORY,ZERO,ZERO,ZERO,0	12
+L1,L2,MEMORY,ZERO,ZERO,ZERO,1	8
+L1,L2,MEMORY,ZERO,ZERO,ZERO,2	7
+L1,L2,L1,L1,L1,L1,4	133
+L1,L2,L1,L1,L1,L2,4	15
+L1,L2,L1,L1,L1,L2,5	2
+L1,L2,L1,L1,ZERO,ZERO,3	395
+L1,L2,L1,L2,L1,L1,4	44
+L1,L2,L1,L2,L1,L2,4	54
+L1,L2,L1,L2,ZERO,ZERO,3	3
+L1,L2,L1,ZERO,ZERO,ZERO,0	164597
+L1,L2,L1,ZERO,ZERO,ZERO,1	148054
+L1,L2,L1,ZERO,ZERO,ZERO,2	162182
+L1,L2,L2,L1,L1,L1,4	946
+L1,L2,L2,L1,L1,L1,5	2
+L1,L2,L2,L1,ZERO,ZERO,3	178
+L1,L2,L2,L2,L1,L2,5	1
+L1,L2,L2,L2,ZERO,ZERO,3	1
+L1,L2,L2,ZERO,ZERO,ZERO,0	290212
+L1,L2,L2,ZERO,ZERO,ZERO,1	250085
+L1,L2,L2,ZERO,ZERO,ZERO,2	265057
+L1,L2,LLC,ZERO,ZERO,ZERO,0	1518
+L1,L2,LLC,ZERO,ZERO,ZERO,1	1376
+L1,L2,LLC,ZERO,ZERO,ZERO,2	1387
+L1,LLC,MEMORY,ZERO,ZERO,ZERO,0	202
+L1,LLC,MEMORY,ZERO,ZERO,ZERO,1	184
+L1,LLC,MEMORY,ZERO,ZERO,ZERO,2	188
+L1,LLC,L1,ZERO,ZERO,ZERO,0	113
+L1,LLC,L1,ZERO,ZERO,ZERO,1	100
+L1,LLC,L1,ZERO,ZERO,ZERO,2	128
+L1,LLC,L2,ZERO,ZERO,ZERO,0	1500
+L1,LLC,L2,ZERO,ZERO,ZERO,1	1443
+L1,LLC,L2,ZERO,ZERO,ZERO,2	1450
+L1,LLC,LLC,ZERO,ZERO,ZERO,0	1866
+L1,LLC,LLC,ZERO,ZERO,ZERO,1	1918
+L1,LLC,LLC,ZERO,ZERO,ZERO,2	1698
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	7827
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	8939
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	8235
+L2,MEMORY,L1,ZERO,ZERO,ZERO,0	13
+L2,MEMORY,L1,ZERO,ZERO,ZERO,1	7
+L2,MEMORY,L1,ZERO,ZERO,ZERO,2	4
+L2,MEMORY,L2,ZERO,ZERO,ZERO,0	1228
+L2,MEMORY,L2,ZERO,ZERO,ZERO,1	1074
+L2,MEMORY,L2,ZERO,ZERO,ZERO,2	1145
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,0	5024
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,1	5603
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,2	4698
+L2,L1,MEMORY,ZERO,ZERO,ZERO,0	8
+L2,L1,MEMORY,ZERO,ZERO,ZERO,1	15
+L2,L1,MEMORY,ZERO,ZERO,ZERO,2	3
+L2,L1,L1,L1,L1,L1,4	7
 L2,L1,L1,L1,L2,L1,4	3
-L2,L1,L1,L1,ZERO,ZERO,3	12
-L2,L1,L1,L2,L1,L1,4	2
-L2,L1,L1,L2,L1,L2,4	1
-L2,L1,L1,L2,L2,L1,4	1
-L2,L1,L1,L2,ZERO,ZERO,3	14
-L2,L1,L1,ZERO,ZERO,ZERO,0	163449
-L2,L1,L1,ZERO,ZERO,ZERO,1	168499
-L2,L1,L1,ZERO,ZERO,ZERO,2	168656
-L2,L1,L2,L1,L1,L1,4	177
-L2,L1,L2,L1,L2,L1,4	4
-L2,L1,L2,L1,ZERO,ZERO,3	14
-L2,L1,L2,L2,L1,L1,4	2
-L2,L1,L2,L2,L1,L2,5	1
-L2,L1,L2,L2,L2,L1,4	4
-L2,L1,L2,L2,L2,L2,4	6
-L2,L1,L2,L2,L2,L2,5	3
-L2,L1,L2,L2,L2,LLC,5	1
-L2,L1,L2,L2,ZERO,ZERO,3	175
-L2,L1,L2,LLC,ZERO,ZERO,3	1
-L2,L1,L2,ZERO,ZERO,ZERO,0	249983
-L2,L1,L2,ZERO,ZERO,ZERO,1	259435
-L2,L1,L2,ZERO,ZERO,ZERO,2	262362
-L2,L1,LLC,L1,L1,L1,5	1
-L2,L1,LLC,ZERO,ZERO,ZERO,0	401
-L2,L1,LLC,ZERO,ZERO,ZERO,1	345
-L2,L1,LLC,ZERO,ZERO,ZERO,2	397
-L2,L2,MEMORY,MEMORY,MEMORY,L2,4	1
-L2,L2,MEMORY,MEMORY,L2,L2,4	6
-L2,L2,MEMORY,MEMORY,L2,LLC,4	1
-L2,L2,MEMORY,MEMORY,ZERO,ZERO,3	1
-L2,L2,MEMORY,L1,L1,L1,4	16
-L2,L2,MEMORY,L1,L1,L2,4	2
-L2,L2,MEMORY,L2,MEMORY,L2,4	2
-L2,L2,MEMORY,L2,L1,L1,4	2
-L2,L2,MEMORY,L2,L2,MEMORY,4	1
-L2,L2,MEMORY,L2,L2,L2,4	56
-L2,L2,MEMORY,L2,L2,L2,5	1
-L2,L2,MEMORY,L2,L2,LLC,4	2
-L2,L2,MEMORY,L2,LLC,L2,4	3
-L2,L2,MEMORY,L2,LLC,LLC,4	2
-L2,L2,MEMORY,L2,ZERO,ZERO,3	45
-L2,L2,MEMORY,LLC,MEMORY,L2,4	1
-L2,L2,MEMORY,LLC,L2,L2,4	8
-L2,L2,MEMORY,LLC,LLC,LLC,4	2
-L2,L2,MEMORY,LLC,ZERO,ZERO,3	15
-L2,L2,MEMORY,ZERO,ZERO,ZERO,0	930
-L2,L2,MEMORY,ZERO,ZERO,ZERO,1	1107
-L2,L2,MEMORY,ZERO,ZERO,ZERO,2	1072
-L2,L2,L1,L1,L1,L1,4	25
-L2,L2,L1,L1,L1,L1,5	1
-L2,L2,L1,L1,L2,L1,4	2
-L2,L2,L1,L1,ZERO,ZERO,3	7
-L2,L2,L1,L2,L1,L1,4	3
-L2,L2,L1,L2,L2,L2,4	8
+L2,L1,L1,L1,ZERO,ZERO,3	236
+L2,L1,L1,ZERO,ZERO,ZERO,0	171087
+L2,L1,L1,ZERO,ZERO,ZERO,1	154984
+L2,L1,L1,ZERO,ZERO,ZERO,2	156087
+L2,L1,L2,L1,L1,L1,4	9
+L2,L1,L2,L1,L1,L1,5	1
+L2,L1,L2,L1,ZERO,ZERO,3	154
+L2,L1,L2,ZERO,ZERO,ZERO,0	278247
+L2,L1,L2,ZERO,ZERO,ZERO,1	246075
+L2,L1,L2,ZERO,ZERO,ZERO,2	269328
+L2,L1,LLC,ZERO,ZERO,ZERO,0	1400
+L2,L1,LLC,ZERO,ZERO,ZERO,1	1344
+L2,L1,LLC,ZERO,ZERO,ZERO,2	1458
+L2,L2,MEMORY,ZERO,ZERO,ZERO,0	1293
+L2,L2,MEMORY,ZERO,ZERO,ZERO,1	1143
+L2,L2,MEMORY,ZERO,ZERO,ZERO,2	1215
+L2,L2,L1,L1,L1,L1,4	12
+L2,L2,L1,L1,ZERO,ZERO,3	131
+L2,L2,L1,L2,L2,L1,4	3
 L2,L2,L1,L2,L2,L2,5	1
-L2,L2,L1,L2,ZERO,ZERO,3	170
-L2,L2,L1,ZERO,ZERO,ZERO,0	248591
-L2,L2,L1,ZERO,ZERO,ZERO,1	254050
-L2,L2,L1,ZERO,ZERO,ZERO,2	251980
-L2,L2,L2,MEMORY,MEMORY,L2,4	2
-L2,L2,L2,MEMORY,L2,MEMORY,4	2
-L2,L2,L2,MEMORY,L2,L1,4	1
-L2,L2,L2,MEMORY,L2,L2,4	52
-L2,L2,L2,MEMORY,L2,L2,5	1
-L2,L2,L2,MEMORY,L2,LLC,4	3
-L2,L2,L2,MEMORY,LLC,MEMORY,4	1
-L2,L2,L2,MEMORY,LLC,L2,4	1
-L2,L2,L2,MEMORY,LLC,L2,5	2
-L2,L2,L2,MEMORY,LLC,LLC,4	2
-L2,L2,L2,MEMORY,ZERO,ZERO,3	35
-L2,L2,L2,L1,L1,L1,4	13526
-L2,L2,L2,L1,L1,L1,5	96
-L2,L2,L2,L1,L1,L2,4	439
-L2,L2,L2,L1,L2,L1,4	321
-L2,L2,L2,L1,L2,L2,4	96
-L2,L2,L2,L1,L2,LLC,4	1
-L2,L2,L2,L1,ZERO,ZERO,3	404
-L2,L2,L2,L2,MEMORY,L2,4	43
-L2,L2,L2,L2,MEMORY,L2,5	1
-L2,L2,L2,L2,MEMORY,LLC,4	1
-L2,L2,L2,L2,L1,L1,4	354
-L2,L2,L2,L2,L1,L1,5	3
-L2,L2,L2,L2,L1,L2,4	163
-L2,L2,L2,L2,L1,L2,5	2
-L2,L2,L2,L2,L2,MEMORY,4	47
-L2,L2,L2,L2,L2,MEMORY,5	2
-L2,L2,L2,L2,L2,L1,4	1460
-L2,L2,L2,L2,L2,L2,4	42293
-L2,L2,L2,L2,L2,L2,5	214
-L2,L2,L2,L2,L2,LLC,4	1630
-L2,L2,L2,L2,L2,LLC,5	13
-L2,L2,L2,L2,LLC,MEMORY,4	3
-L2,L2,L2,L2,LLC,L2,4	468
-L2,L2,L2,L2,LLC,L2,5	37
-L2,L2,L2,L2,LLC,LLC,4	975
-L2,L2,L2,L2,LLC,LLC,5	5
-L2,L2,L2,L2,ZERO,ZERO,3	38864
-L2,L2,L2,LLC,MEMORY,L2,4	3
-L2,L2,L2,LLC,MEMORY,LLC,4	1
-L2,L2,L2,LLC,L2,MEMORY,4	3
-L2,L2,L2,LLC,L2,L1,4	3
-L2,L2,L2,LLC,L2,L2,4	466
-L2,L2,L2,LLC,L2,L2,5	2
-L2,L2,L2,LLC,L2,LLC,4	544
+L2,L2,L1,ZERO,ZERO,ZERO,0	284157
+L2,L2,L1,ZERO,ZERO,ZERO,1	239472
+L2,L2,L1,ZERO,ZERO,ZERO,2	265880
+L2,L2,L2,L1,L1,L1,4	8
+L2,L2,L2,L1,L1,L1,5	2
+L2,L2,L2,L1,L1,L2,5	5
+L2,L2,L2,L1,ZERO,ZERO,3	84
+L2,L2,L2,L2,L2,L2,4	1
+L2,L2,L2,L2,L2,L2,5	3
+L2,L2,L2,L2,ZERO,ZERO,2	1
+L2,L2,L2,L2,ZERO,ZERO,3	3
 L2,L2,L2,LLC,L2,LLC,5	1
-L2,L2,L2,LLC,LLC,L2,4	128
-L2,L2,L2,LLC,LLC,L2,5	6
-L2,L2,L2,LLC,LLC,LLC,4	498
-L2,L2,L2,LLC,LLC,LLC,5	2
-L2,L2,L2,LLC,ZERO,ZERO,3	831
-L2,L2,L2,ZERO,ZERO,ZERO,0	3822579
-L2,L2,L2,ZERO,ZERO,ZERO,1	4168942
-L2,L2,L2,ZERO,ZERO,ZERO,2	4117140
-L2,L2,LLC,MEMORY,MEMORY,L2,4	1
-L2,L2,LLC,MEMORY,L2,MEMORY,4	1
-L2,L2,LLC,MEMORY,L2,L2,4	10
-L2,L2,LLC,MEMORY,L2,L2,5	1
-L2,L2,LLC,MEMORY,L2,LLC,4	2
-L2,L2,LLC,MEMORY,LLC,L2,4	2
-L2,L2,LLC,MEMORY,LLC,LLC,4	4
-L2,L2,LLC,MEMORY,ZERO,ZERO,3	11
-L2,L2,LLC,L1,L1,L1,4	6505
-L2,L2,LLC,L1,L1,L1,5	12
-L2,L2,LLC,L1,L1,L2,4	89
-L2,L2,LLC,L1,L2,L1,4	37
-L2,L2,LLC,L1,L2,L2,4	8
-L2,L2,LLC,L1,ZERO,ZERO,3	57
-L2,L2,LLC,L2,MEMORY,L2,4	5
-L2,L2,LLC,L2,L1,L1,4	31
-L2,L2,LLC,L2,L1,L2,4	19
-L2,L2,LLC,L2,L2,MEMORY,4	3
-L2,L2,LLC,L2,L2,MEMORY,5	1
-L2,L2,LLC,L2,L2,L1,4	40
-L2,L2,LLC,L2,L2,L2,4	635
-L2,L2,LLC,L2,L2,L2,5	75
-L2,L2,LLC,L2,L2,LLC,4	504
-L2,L2,LLC,L2,L2,LLC,5	13
-L2,L2,LLC,L2,LLC,L2,4	121
-L2,L2,LLC,L2,LLC,L2,5	25
-L2,L2,LLC,L2,LLC,LLC,4	478
+L2,L2,L2,LLC,ZERO,ZERO,3	1
+L2,L2,L2,ZERO,ZERO,ZERO,0	3876628
+L2,L2,L2,ZERO,ZERO,ZERO,1	3286125
+L2,L2,L2,ZERO,ZERO,ZERO,2	3674027
+L2,L2,LLC,L1,L1,L1,4	1
+L2,L2,LLC,L1,L1,L1,5	3
+L2,L2,LLC,L1,L1,L2,5	3
+L2,L2,LLC,L1,ZERO,ZERO,3	1
+L2,L2,LLC,L2,L2,L2,4	1
+L2,L2,LLC,L2,L2,LLC,4	1
+L2,L2,LLC,L2,L2,LLC,5	1
 L2,L2,LLC,L2,LLC,LLC,5	2
-L2,L2,LLC,L2,ZERO,ZERO,3	737
-L2,L2,LLC,LLC,MEMORY,MEMORY,4	1
-L2,L2,LLC,LLC,MEMORY,L2,4	1
-L2,L2,LLC,LLC,L2,L2,4	98
-L2,L2,LLC,LLC,L2,L2,5	9
-L2,L2,LLC,LLC,L2,LLC,4	269
-L2,L2,LLC,LLC,L2,LLC,5	4
-L2,L2,LLC,LLC,LLC,MEMORY,4	1
-L2,L2,LLC,LLC,LLC,L2,4	87
-L2,L2,LLC,LLC,LLC,L2,5	14
-L2,L2,LLC,LLC,LLC,LLC,4	345
-L2,L2,LLC,LLC,LLC,LLC,5	8
-L2,L2,LLC,LLC,ZERO,ZERO,3	208
-L2,L2,LLC,ZERO,ZERO,ZERO,0	161743
-L2,L2,LLC,ZERO,ZERO,ZERO,1	167499
-L2,L2,LLC,ZERO,ZERO,ZERO,2	175714
-L2,LLC,MEMORY,MEMORY,L2,LLC,4	1
-L2,LLC,MEMORY,L1,L1,L1,4	9
-L2,LLC,MEMORY,L1,L1,L2,4	1
-L2,LLC,MEMORY,L1,L2,L1,4	1
-L2,LLC,MEMORY,L2,L2,L1,4	1
-L2,LLC,MEMORY,L2,L2,L2,4	4
-L2,LLC,MEMORY,L2,ZERO,ZERO,3	6
-L2,LLC,MEMORY,LLC,L2,L2,4	1
-L2,LLC,MEMORY,LLC,LLC,LLC,4	1
-L2,LLC,MEMORY,LLC,ZERO,ZERO,3	3
-L2,LLC,MEMORY,ZERO,ZERO,ZERO,0	4565
-L2,LLC,MEMORY,ZERO,ZERO,ZERO,1	4936
-L2,LLC,MEMORY,ZERO,ZERO,ZERO,2	5583
-L2,LLC,L1,L2,L2,L2,4	1
-L2,LLC,L1,L2,ZERO,ZERO,3	2
-L2,LLC,L1,ZERO,ZERO,ZERO,0	369
-L2,LLC,L1,ZERO,ZERO,ZERO,1	394
-L2,LLC,L1,ZERO,ZERO,ZERO,2	356
-L2,LLC,L2,MEMORY,L2,MEMORY,4	1
-L2,LLC,L2,MEMORY,L2,LLC,4	2
-L2,LLC,L2,MEMORY,LLC,LLC,4	2
-L2,LLC,L2,MEMORY,ZERO,ZERO,3	8
-L2,LLC,L2,L1,L1,L1,4	4016
-L2,LLC,L2,L1,L1,L1,5	32
-L2,LLC,L2,L1,L1,L2,4	225
-L2,LLC,L2,L1,L2,L1,4	45
-L2,LLC,L2,L1,L2,L2,4	6
-L2,LLC,L2,L1,ZERO,ZERO,3	65
-L2,LLC,L2,L2,MEMORY,L2,4	3
-L2,LLC,L2,L2,L1,L1,4	32
-L2,LLC,L2,L2,L1,L2,4	15
-L2,LLC,L2,L2,L2,MEMORY,4	2
-L2,LLC,L2,L2,L2,L1,4	64
-L2,LLC,L2,L2,L2,L2,4	650
-L2,LLC,L2,L2,L2,L2,5	9
-L2,LLC,L2,L2,L2,LLC,4	316
-L2,LLC,L2,L2,L2,LLC,5	2
-L2,LLC,L2,L2,LLC,L2,4	75
-L2,LLC,L2,L2,LLC,L2,5	4
-L2,LLC,L2,L2,LLC,LLC,4	271
-L2,LLC,L2,L2,ZERO,ZERO,3	572
-L2,LLC,L2,LLC,MEMORY,L2,4	3
-L2,LLC,L2,LLC,L2,L2,4	52
-L2,LLC,L2,LLC,L2,LLC,4	182
-L2,LLC,L2,LLC,LLC,L2,4	36
-L2,LLC,L2,LLC,LLC,L2,5	3
-L2,LLC,L2,LLC,LLC,LLC,4	214
-L2,LLC,L2,LLC,LLC,LLC,5	3
-L2,LLC,L2,LLC,ZERO,ZERO,3	127
-L2,LLC,L2,ZERO,ZERO,ZERO,0	164640
-L2,LLC,L2,ZERO,ZERO,ZERO,1	176470
-L2,LLC,L2,ZERO,ZERO,ZERO,2	174283
-L2,LLC,LLC,MEMORY,L2,L2,4	1
-L2,LLC,LLC,MEMORY,LLC,L2,4	1
-L2,LLC,LLC,MEMORY,ZERO,ZERO,3	5
-L2,LLC,LLC,L1,L1,L1,4	4314
-L2,LLC,LLC,L1,L1,L1,5	19
-L2,LLC,LLC,L1,L1,L2,4	84
-L2,LLC,LLC,L1,L2,L1,4	39
-L2,LLC,LLC,L1,L2,L2,4	3
-L2,LLC,LLC,L1,ZERO,ZERO,3	62
-L2,LLC,LLC,L2,MEMORY,L2,4	1
-L2,LLC,LLC,L2,MEMORY,LLC,4	1
-L2,LLC,LLC,L2,L1,L1,4	12
-L2,LLC,LLC,L2,L1,L2,4	11
-L2,LLC,LLC,L2,L2,MEMORY,4	2
-L2,LLC,LLC,L2,L2,L1,4	34
-L2,LLC,LLC,L2,L2,L2,4	220
-L2,LLC,LLC,L2,L2,L2,5	13
-L2,LLC,LLC,L2,L2,LLC,4	174
-L2,LLC,LLC,L2,L2,LLC,5	1
-L2,LLC,LLC,L2,LLC,L2,4	33
-L2,LLC,LLC,L2,LLC,L2,5	11
-L2,LLC,LLC,L2,LLC,LLC,4	186
-L2,LLC,LLC,L2,LLC,LLC,5	3
-L2,LLC,LLC,L2,ZERO,ZERO,3	167
-L2,LLC,LLC,LLC,L2,L2,4	26
-L2,LLC,LLC,LLC,L2,L2,5	6
-L2,LLC,LLC,LLC,L2,LLC,4	109
-L2,LLC,LLC,LLC,L2,LLC,5	2
-L2,LLC,LLC,LLC,LLC,L2,4	28
-L2,LLC,LLC,LLC,LLC,L2,5	17
-L2,LLC,LLC,LLC,LLC,LLC,4	191
-L2,LLC,LLC,LLC,LLC,LLC,5	29
-L2,LLC,LLC,LLC,ZERO,ZERO,3	163
-L2,LLC,LLC,ZERO,ZERO,ZERO,0	167950
-L2,LLC,LLC,ZERO,ZERO,ZERO,1	173728
-L2,LLC,LLC,ZERO,ZERO,ZERO,2	179958
-LLC,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,4	3
+L2,L2,LLC,LLC,L2,LLC,4	2
+L2,L2,LLC,LLC,L2,LLC,5	2
+L2,L2,LLC,LLC,LLC,LLC,4	4
+L2,L2,LLC,LLC,LLC,LLC,5	5
+L2,L2,LLC,LLC,ZERO,ZERO,3	3
+L2,L2,LLC,ZERO,ZERO,ZERO,0	208420
+L2,L2,LLC,ZERO,ZERO,ZERO,1	179412
+L2,L2,LLC,ZERO,ZERO,ZERO,2	196154
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,0	5198
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,1	4900
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,2	4983
+L2,LLC,L1,ZERO,ZERO,ZERO,0	1545
+L2,LLC,L1,ZERO,ZERO,ZERO,1	1320
+L2,LLC,L1,ZERO,ZERO,ZERO,2	1475
+L2,LLC,L2,L1,L1,L1,5	2
+L2,LLC,L2,L1,L1,L2,5	3
+L2,LLC,L2,L1,L2,L1,5	1
+L2,LLC,L2,L1,ZERO,ZERO,3	5
+L2,LLC,L2,L2,L2,L2,5	1
+L2,LLC,L2,L2,L2,LLC,5	3
+L2,LLC,L2,L2,LLC,LLC,5	1
+L2,LLC,L2,L2,ZERO,ZERO,3	4
+L2,LLC,L2,LLC,L2,LLC,4	2
+L2,LLC,L2,LLC,L2,LLC,5	1
+L2,LLC,L2,LLC,LLC,LLC,4	1
+L2,LLC,L2,LLC,LLC,LLC,5	6
+L2,LLC,L2,LLC,ZERO,ZERO,3	7
+L2,LLC,L2,ZERO,ZERO,ZERO,0	207013
+L2,LLC,L2,ZERO,ZERO,ZERO,1	180850
+L2,LLC,L2,ZERO,ZERO,ZERO,2	196881
+L2,LLC,LLC,L1,L1,L1,4	1
+L2,LLC,LLC,L1,L1,L1,5	14
+L2,LLC,LLC,L1,L1,L2,5	16
+L2,LLC,LLC,L1,L2,L2,5	1
+L2,LLC,LLC,L1,ZERO,ZERO,3	9
+L2,LLC,LLC,L2,L2,LLC,5	2
+L2,LLC,LLC,L2,LLC,L2,5	1
+L2,LLC,LLC,L2,LLC,LLC,4	2
+L2,LLC,LLC,L2,LLC,LLC,5	7
+L2,LLC,LLC,L2,ZERO,ZERO,3	3
+L2,LLC,LLC,LLC,L2,L2,5	3
+L2,LLC,LLC,LLC,L2,LLC,5	3
+L2,LLC,LLC,LLC,LLC,L2,5	2
+L2,LLC,LLC,LLC,LLC,LLC,4	4
+L2,LLC,LLC,LLC,LLC,LLC,5	19
+L2,LLC,LLC,LLC,ZERO,ZERO,3	6
+L2,LLC,LLC,ZERO,ZERO,ZERO,0	194196
+L2,LLC,LLC,ZERO,ZERO,ZERO,1	171216
+L2,LLC,LLC,ZERO,ZERO,ZERO,2	179443
 LLC,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,5	1
-LLC,MEMORY,MEMORY,MEMORY,MEMORY,LLC,4	2
-LLC,MEMORY,MEMORY,MEMORY,LLC,MEMORY,4	2
-LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,4	5
-LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,3	9
-LLC,MEMORY,MEMORY,L1,L1,L1,4	123
-LLC,MEMORY,MEMORY,L1,L1,L1,5	4
-LLC,MEMORY,MEMORY,L1,L2,L1,4	3
-LLC,MEMORY,MEMORY,L1,L2,L1,5	1
-LLC,MEMORY,MEMORY,L1,ZERO,ZERO,3	73
-LLC,MEMORY,MEMORY,L2,MEMORY,L2,4	1
-LLC,MEMORY,MEMORY,L2,L1,L1,4	8
-LLC,MEMORY,MEMORY,L2,L2,L1,4	3
-LLC,MEMORY,MEMORY,L2,L2,L2,4	32
-LLC,MEMORY,MEMORY,L2,L2,L2,5	1
-LLC,MEMORY,MEMORY,L2,L2,LLC,4	1
-LLC,MEMORY,MEMORY,L2,LLC,L2,4	1
-LLC,MEMORY,MEMORY,L2,ZERO,ZERO,3	77
-LLC,MEMORY,MEMORY,LLC,MEMORY,MEMORY,4	2
-LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,4	2
-LLC,MEMORY,MEMORY,LLC,L2,MEMORY,4	1
-LLC,MEMORY,MEMORY,LLC,L2,L2,4	2
+LLC,MEMORY,MEMORY,MEMORY,LLC,MEMORY,5	2
+LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,4	3
+LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,5	4
+LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,0	9
+LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,2	5
+LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,3	5
+LLC,MEMORY,MEMORY,L1,L1,L1,4	445
+LLC,MEMORY,MEMORY,L1,L1,L1,5	9
+LLC,MEMORY,MEMORY,L1,L1,L2,5	13
+LLC,MEMORY,MEMORY,L1,ZERO,ZERO,2	22
+LLC,MEMORY,MEMORY,L1,ZERO,ZERO,3	29
+LLC,MEMORY,MEMORY,L2,L1,L1,4	9
+LLC,MEMORY,MEMORY,L2,L2,L2,4	1
+LLC,MEMORY,MEMORY,LLC,MEMORY,MEMORY,5	1
+LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,4	1
+LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,5	6
 LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,4	1
-LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,5	1
-LLC,MEMORY,MEMORY,LLC,LLC,LLC,4	13
-LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,3	64
-LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	206084
-LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	197152
-LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	210203
-LLC,MEMORY,L1,ZERO,ZERO,ZERO,0	205
-LLC,MEMORY,L1,ZERO,ZERO,ZERO,1	182
-LLC,MEMORY,L1,ZERO,ZERO,ZERO,2	166
-LLC,MEMORY,L2,MEMORY,L2,L2,4	5
-LLC,MEMORY,L2,MEMORY,LLC,L2,4	1
-LLC,MEMORY,L2,MEMORY,ZERO,ZERO,3	1
-LLC,MEMORY,L2,L1,L1,L1,4	20
-LLC,MEMORY,L2,L1,ZERO,ZERO,3	1
-LLC,MEMORY,L2,L2,MEMORY,L1,4	1
-LLC,MEMORY,L2,L2,MEMORY,L2,4	2
-LLC,MEMORY,L2,L2,L2,MEMORY,4	1
-LLC,MEMORY,L2,L2,L2,L2,4	26
-LLC,MEMORY,L2,L2,L2,LLC,4	4
-LLC,MEMORY,L2,L2,LLC,L2,4	1
-LLC,MEMORY,L2,L2,LLC,LLC,4	4
-LLC,MEMORY,L2,L2,ZERO,ZERO,3	12
-LLC,MEMORY,L2,LLC,L2,L2,4	7
-LLC,MEMORY,L2,LLC,L2,LLC,4	3
-LLC,MEMORY,L2,LLC,LLC,MEMORY,4	1
-LLC,MEMORY,L2,LLC,LLC,L2,4	3
-LLC,MEMORY,L2,LLC,LLC,LLC,4	4
-LLC,MEMORY,L2,LLC,ZERO,ZERO,3	11
-LLC,MEMORY,L2,ZERO,ZERO,ZERO,0	5072
-LLC,MEMORY,L2,ZERO,ZERO,ZERO,1	4803
-LLC,MEMORY,L2,ZERO,ZERO,ZERO,2	4549
+LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,5	6
+LLC,MEMORY,MEMORY,LLC,LLC,LLC,4	7
+LLC,MEMORY,MEMORY,LLC,LLC,LLC,5	36
+LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,0	20
+LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,2	25
+LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,3	13
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	198888
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	192135
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	199678
+LLC,MEMORY,L1,ZERO,ZERO,ZERO,0	220
+LLC,MEMORY,L1,ZERO,ZERO,ZERO,1	216
+LLC,MEMORY,L1,ZERO,ZERO,ZERO,2	163
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,0	5620
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,1	5211
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,2	4395
 LLC,MEMORY,LLC,MEMORY,MEMORY,MEMORY,4	1
-LLC,MEMORY,LLC,MEMORY,MEMORY,L2,4	1
-LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,4	2
-LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,5	1
-LLC,MEMORY,LLC,MEMORY,L2,L2,4	1
-LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,4	5
-LLC,MEMORY,LLC,MEMORY,LLC,LLC,4	22
-LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,3	34
-LLC,MEMORY,LLC,L1,MEMORY,MEMORY,4	1
-LLC,MEMORY,LLC,L1,L1,L1,4	158
-LLC,MEMORY,LLC,L1,L1,L1,5	1
-LLC,MEMORY,LLC,L1,L2,L1,4	6
-LLC,MEMORY,LLC,L1,L2,L2,4	1
-LLC,MEMORY,LLC,L1,LLC,MEMORY,4	1
-LLC,MEMORY,LLC,L1,ZERO,ZERO,2	1
-LLC,MEMORY,LLC,L1,ZERO,ZERO,3	67
-LLC,MEMORY,LLC,L2,MEMORY,L2,4	1
-LLC,MEMORY,LLC,L2,L1,L1,4	9
-LLC,MEMORY,LLC,L2,L1,L2,4	2
-LLC,MEMORY,LLC,L2,L2,MEMORY,4	2
+LLC,MEMORY,LLC,MEMORY,MEMORY,MEMORY,5	2
+LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,4	10
+LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,5	2
+LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,4	7
+LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,5	6
+LLC,MEMORY,LLC,MEMORY,LLC,LLC,4	30
+LLC,MEMORY,LLC,MEMORY,LLC,LLC,5	28
+LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,0	20
+LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,2	20
+LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,3	9
+LLC,MEMORY,LLC,L1,L1,L1,4	1697
+LLC,MEMORY,LLC,L1,L1,L1,5	25
+LLC,MEMORY,LLC,L1,L1,L2,5	38
+LLC,MEMORY,LLC,L1,ZERO,ZERO,2	246
+LLC,MEMORY,LLC,L1,ZERO,ZERO,3	173
+LLC,MEMORY,LLC,L2,L1,L1,4	121
 LLC,MEMORY,LLC,L2,L2,L1,4	2
-LLC,MEMORY,LLC,L2,L2,L2,4	51
-LLC,MEMORY,LLC,L2,L2,LLC,4	3
-LLC,MEMORY,LLC,L2,LLC,L2,4	2
-LLC,MEMORY,LLC,L2,LLC,LLC,4	1
-LLC,MEMORY,LLC,L2,ZERO,ZERO,3	86
-LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,4	2
-LLC,MEMORY,LLC,LLC,MEMORY,L2,4	1
-LLC,MEMORY,LLC,LLC,MEMORY,LLC,4	6
-LLC,MEMORY,LLC,LLC,L2,MEMORY,4	1
-LLC,MEMORY,LLC,LLC,L2,L2,4	4
-LLC,MEMORY,LLC,LLC,LLC,MEMORY,4	10
-LLC,MEMORY,LLC,LLC,LLC,MEMORY,5	1
-LLC,MEMORY,LLC,LLC,LLC,L2,4	4
-LLC,MEMORY,LLC,LLC,LLC,LLC,4	84
-LLC,MEMORY,LLC,LLC,LLC,LLC,5	5
-LLC,MEMORY,LLC,LLC,ZERO,ZERO,3	123
-LLC,MEMORY,LLC,ZERO,ZERO,ZERO,0	263124
-LLC,MEMORY,LLC,ZERO,ZERO,ZERO,1	238987
-LLC,MEMORY,LLC,ZERO,ZERO,ZERO,2	248075
-LLC,L1,MEMORY,MEMORY,MEMORY,LLC,5	1
-LLC,L1,MEMORY,ZERO,ZERO,ZERO,0	225
-LLC,L1,MEMORY,ZERO,ZERO,ZERO,1	183
-LLC,L1,MEMORY,ZERO,ZERO,ZERO,2	175
-LLC,L1,L1,ZERO,ZERO,ZERO,0	38
-LLC,L1,L1,ZERO,ZERO,ZERO,1	22
-LLC,L1,L1,ZERO,ZERO,ZERO,2	28
-LLC,L1,L2,L2,ZERO,ZERO,3	1
-LLC,L1,L2,LLC,ZERO,ZERO,3	2
-LLC,L1,L2,ZERO,ZERO,ZERO,0	442
-LLC,L1,L2,ZERO,ZERO,ZERO,1	408
-LLC,L1,L2,ZERO,ZERO,ZERO,2	414
-LLC,L1,LLC,ZERO,ZERO,ZERO,0	1904
-LLC,L1,LLC,ZERO,ZERO,ZERO,1	1285
-LLC,L1,LLC,ZERO,ZERO,ZERO,2	1530
-LLC,L2,MEMORY,MEMORY,MEMORY,L2,4	3
-LLC,L2,MEMORY,MEMORY,L2,L2,4	7
-LLC,L2,MEMORY,MEMORY,LLC,L2,4	3
-LLC,L2,MEMORY,MEMORY,ZERO,ZERO,3	1
-LLC,L2,MEMORY,L1,L1,L1,4	19
-LLC,L2,MEMORY,L1,L1,L2,4	1
-LLC,L2,MEMORY,L2,MEMORY,L2,4	3
-LLC,L2,MEMORY,L2,L2,MEMORY,4	1
-LLC,L2,MEMORY,L2,L2,L2,4	31
-LLC,L2,MEMORY,L2,L2,LLC,4	2
-LLC,L2,MEMORY,L2,LLC,MEMORY,4	1
-LLC,L2,MEMORY,L2,LLC,L2,4	3
-LLC,L2,MEMORY,L2,LLC,LLC,4	2
-LLC,L2,MEMORY,L2,ZERO,ZERO,3	8
-LLC,L2,MEMORY,LLC,MEMORY,L2,4	1
-LLC,L2,MEMORY,LLC,L2,L2,4	13
-LLC,L2,MEMORY,LLC,LLC,L2,4	2
-LLC,L2,MEMORY,LLC,ZERO,ZERO,3	9
-LLC,L2,MEMORY,ZERO,ZERO,ZERO,0	5242
-LLC,L2,MEMORY,ZERO,ZERO,ZERO,1	4069
-LLC,L2,MEMORY,ZERO,ZERO,ZERO,2	4695
-LLC,L2,L1,L2,L2,L2,4	1
-LLC,L2,L1,ZERO,ZERO,ZERO,0	415
-LLC,L2,L1,ZERO,ZERO,ZERO,1	383
-LLC,L2,L1,ZERO,ZERO,ZERO,2	356
-LLC,L2,L2,MEMORY,MEMORY,L2,4	3
-LLC,L2,L2,MEMORY,MEMORY,LLC,4	1
-LLC,L2,L2,MEMORY,L2,MEMORY,4	1
-LLC,L2,L2,MEMORY,L2,L2,4	38
-LLC,L2,L2,MEMORY,L2,LLC,4	7
-LLC,L2,L2,MEMORY,LLC,L2,4	5
-LLC,L2,L2,MEMORY,LLC,LLC,4	2
-LLC,L2,L2,MEMORY,ZERO,ZERO,3	12
-LLC,L2,L2,L1,L1,L1,4	5904
-LLC,L2,L2,L1,L1,L1,5	30
-LLC,L2,L2,L1,L1,L2,4	248
-LLC,L2,L2,L1,L2,L1,4	32
-LLC,L2,L2,L1,L2,L2,4	7
-LLC,L2,L2,L1,ZERO,ZERO,3	81
-LLC,L2,L2,L2,MEMORY,L2,4	14
-LLC,L2,L2,L2,MEMORY,LLC,4	1
-LLC,L2,L2,L2,L1,L1,4	24
-LLC,L2,L2,L2,L1,L2,4	20
-LLC,L2,L2,L2,L2,MEMORY,4	10
-LLC,L2,L2,L2,L2,L1,4	52
-LLC,L2,L2,L2,L2,L2,4	1402
-LLC,L2,L2,L2,L2,L2,5	8
-LLC,L2,L2,L2,L2,LLC,4	752
-LLC,L2,L2,L2,LLC,MEMORY,4	3
-LLC,L2,L2,L2,LLC,L2,4	210
-LLC,L2,L2,L2,LLC,L2,5	1
-LLC,L2,L2,L2,LLC,LLC,4	728
-LLC,L2,L2,L2,LLC,LLC,5	1
-LLC,L2,L2,L2,ZERO,ZERO,3	978
-LLC,L2,L2,LLC,MEMORY,L2,4	5
-LLC,L2,L2,LLC,MEMORY,LLC,4	1
-LLC,L2,L2,LLC,L2,MEMORY,4	5
-LLC,L2,L2,LLC,L2,L2,4	199
-LLC,L2,L2,LLC,L2,LLC,4	376
-LLC,L2,L2,LLC,LLC,MEMORY,4	2
-LLC,L2,L2,LLC,LLC,L2,4	131
-LLC,L2,L2,LLC,LLC,L2,5	1
-LLC,L2,L2,LLC,LLC,LLC,4	634
-LLC,L2,L2,LLC,ZERO,ZERO,3	318
-LLC,L2,L2,ZERO,ZERO,ZERO,0	167543
-LLC,L2,L2,ZERO,ZERO,ZERO,1	171360
-LLC,L2,L2,ZERO,ZERO,ZERO,2	169180
-LLC,L2,LLC,MEMORY,MEMORY,L2,4	1
-LLC,L2,LLC,MEMORY,L2,MEMORY,4	2
-LLC,L2,LLC,MEMORY,L2,L2,4	7
-LLC,L2,LLC,MEMORY,L2,L2,5	1
-LLC,L2,LLC,MEMORY,L2,LLC,4	3
-LLC,L2,LLC,MEMORY,LLC,L2,4	3
-LLC,L2,LLC,MEMORY,ZERO,ZERO,3	3
-LLC,L2,LLC,L1,L1,L1,4	5654
-LLC,L2,LLC,L1,L1,L1,5	13
-LLC,L2,LLC,L1,L1,L2,4	86
-LLC,L2,LLC,L1,L2,L1,4	42
-LLC,L2,LLC,L1,L2,L2,4	9
-LLC,L2,LLC,L1,ZERO,ZERO,3	112
-LLC,L2,LLC,L2,MEMORY,L2,4	8
-LLC,L2,LLC,L2,MEMORY,LLC,4	1
-LLC,L2,LLC,L2,L1,L1,4	34
-LLC,L2,LLC,L2,L1,L1,5	1
-LLC,L2,LLC,L2,L1,L2,4	26
-LLC,L2,LLC,L2,L2,MEMORY,4	7
-LLC,L2,LLC,L2,L2,L1,4	40
-LLC,L2,LLC,L2,L2,L2,4	367
-LLC,L2,LLC,L2,L2,L2,5	9
-LLC,L2,LLC,L2,L2,LLC,4	379
-LLC,L2,LLC,L2,L2,LLC,5	2
-LLC,L2,LLC,L2,LLC,MEMORY,4	2
-LLC,L2,LLC,L2,LLC,L2,4	97
-LLC,L2,LLC,L2,LLC,L2,5	11
-LLC,L2,LLC,L2,LLC,LLC,4	533
-LLC,L2,LLC,L2,LLC,LLC,5	6
-LLC,L2,LLC,L2,ZERO,ZERO,3	748
-LLC,L2,LLC,LLC,MEMORY,MEMORY,4	1
-LLC,L2,LLC,LLC,MEMORY,L2,4	4
-LLC,L2,LLC,LLC,MEMORY,LLC,4	2
-LLC,L2,LLC,LLC,L2,MEMORY,4	1
-LLC,L2,LLC,LLC,L2,L2,4	85
-LLC,L2,LLC,LLC,L2,L2,5	2
-LLC,L2,LLC,LLC,L2,LLC,4	293
-LLC,L2,LLC,LLC,L2,LLC,5	1
-LLC,L2,LLC,LLC,LLC,MEMORY,4	1
-LLC,L2,LLC,LLC,LLC,L2,4	64
-LLC,L2,LLC,LLC,LLC,L2,5	6
-LLC,L2,LLC,LLC,LLC,LLC,4	555
-LLC,L2,LLC,LLC,LLC,LLC,5	8
-LLC,L2,LLC,LLC,ZERO,ZERO,3	804
-LLC,L2,LLC,ZERO,ZERO,ZERO,0	173308
-LLC,L2,LLC,ZERO,ZERO,ZERO,1	163182
-LLC,L2,LLC,ZERO,ZERO,ZERO,2	173320
+LLC,MEMORY,LLC,L2,L2,L2,4	1
+LLC,MEMORY,LLC,L2,L2,L2,5	2
+LLC,MEMORY,LLC,L2,LLC,LLC,5	1
+LLC,MEMORY,LLC,L2,ZERO,ZERO,2	1
+LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,4	4
+LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,5	8
+LLC,MEMORY,LLC,LLC,MEMORY,LLC,4	18
+LLC,MEMORY,LLC,LLC,MEMORY,LLC,5	19
+LLC,MEMORY,LLC,LLC,L2,LLC,5	2
+LLC,MEMORY,LLC,LLC,LLC,MEMORY,4	36
+LLC,MEMORY,LLC,LLC,LLC,MEMORY,5	36
+LLC,MEMORY,LLC,LLC,LLC,L2,4	1
+LLC,MEMORY,LLC,LLC,LLC,LLC,4	157
+LLC,MEMORY,LLC,LLC,LLC,LLC,5	151
+LLC,MEMORY,LLC,LLC,ZERO,ZERO,0	65
+LLC,MEMORY,LLC,LLC,ZERO,ZERO,2	136
+LLC,MEMORY,LLC,LLC,ZERO,ZERO,3	18
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,0	251452
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,1	230953
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,2	234308
+LLC,L1,MEMORY,ZERO,ZERO,ZERO,0	202
+LLC,L1,MEMORY,ZERO,ZERO,ZERO,1	173
+LLC,L1,MEMORY,ZERO,ZERO,ZERO,2	182
+LLC,L1,L1,ZERO,ZERO,ZERO,0	105
+LLC,L1,L1,ZERO,ZERO,ZERO,1	110
+LLC,L1,L1,ZERO,ZERO,ZERO,2	112
+LLC,L1,L2,ZERO,ZERO,ZERO,0	1442
+LLC,L1,L2,ZERO,ZERO,ZERO,1	1372
+LLC,L1,L2,ZERO,ZERO,ZERO,2	1421
+LLC,L1,LLC,ZERO,ZERO,ZERO,0	1584
+LLC,L1,LLC,ZERO,ZERO,ZERO,1	1495
+LLC,L1,LLC,ZERO,ZERO,ZERO,2	1842
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,0	5046
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,1	4476
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,2	5518
+LLC,L2,L1,ZERO,ZERO,ZERO,0	1558
+LLC,L2,L1,ZERO,ZERO,ZERO,1	1197
+LLC,L2,L1,ZERO,ZERO,ZERO,2	1537
+LLC,L2,L2,L1,L1,L1,5	4
+LLC,L2,L2,L1,L1,L2,5	4
+LLC,L2,L2,L1,ZERO,ZERO,3	7
+LLC,L2,L2,L2,L2,LLC,5	1
+LLC,L2,L2,L2,ZERO,ZERO,3	1
+LLC,L2,L2,LLC,L2,L2,5	2
+LLC,L2,L2,LLC,L2,LLC,5	2
+LLC,L2,L2,LLC,LLC,L2,5	2
+LLC,L2,L2,LLC,LLC,LLC,4	1
+LLC,L2,L2,LLC,LLC,LLC,5	8
+LLC,L2,L2,LLC,ZERO,ZERO,3	5
+LLC,L2,L2,ZERO,ZERO,ZERO,0	210354
+LLC,L2,L2,ZERO,ZERO,ZERO,1	182048
+LLC,L2,L2,ZERO,ZERO,ZERO,2	197986
+LLC,L2,LLC,L1,L1,L1,4	2
+LLC,L2,LLC,L1,L1,L1,5	4
+LLC,L2,LLC,L1,L1,L2,5	4
+LLC,L2,LLC,L1,ZERO,ZERO,3	15
+LLC,L2,LLC,L2,L2,L2,5	1
+LLC,L2,LLC,L2,L2,LLC,5	1
+LLC,L2,LLC,L2,LLC,L2,5	1
+LLC,L2,LLC,L2,LLC,LLC,5	1
+LLC,L2,LLC,L2,ZERO,ZERO,3	1
+LLC,L2,LLC,LLC,L2,LLC,5	2
+LLC,L2,LLC,LLC,LLC,L2,5	1
+LLC,L2,LLC,LLC,LLC,LLC,4	2
+LLC,L2,LLC,LLC,LLC,LLC,5	13
+LLC,L2,LLC,LLC,ZERO,ZERO,3	3
+LLC,L2,LLC,ZERO,ZERO,ZERO,0	188830
+LLC,L2,LLC,ZERO,ZERO,ZERO,1	164789
+LLC,L2,LLC,ZERO,ZERO,ZERO,2	186088
 LLC,LLC,MEMORY,MEMORY,MEMORY,MEMORY,4	1
-LLC,LLC,MEMORY,MEMORY,MEMORY,MEMORY,5	1
-LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,4	1
+LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,4	3
+LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,5	1
 LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,4	2
-LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,5	1
-LLC,LLC,MEMORY,MEMORY,LLC,LLC,4	9
-LLC,LLC,MEMORY,MEMORY,LLC,LLC,5	4
-LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,3	55
-LLC,LLC,MEMORY,L1,L1,L1,4	77
-LLC,LLC,MEMORY,L1,L1,L1,5	1
+LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,5	2
+LLC,LLC,MEMORY,MEMORY,LLC,LLC,4	12
+LLC,LLC,MEMORY,MEMORY,LLC,LLC,5	10
+LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,0	14
+LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,2	7
+LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,3	53
+LLC,LLC,MEMORY,L1,L1,L1,4	1560
+LLC,LLC,MEMORY,L1,L1,L1,5	57
 LLC,LLC,MEMORY,L1,L1,L2,4	1
-LLC,LLC,MEMORY,L1,L2,L1,4	7
-LLC,LLC,MEMORY,L1,ZERO,ZERO,2	1
-LLC,LLC,MEMORY,L1,ZERO,ZERO,3	46
-LLC,LLC,MEMORY,L2,MEMORY,MEMORY,4	1
-LLC,LLC,MEMORY,L2,L1,L1,4	8
-LLC,LLC,MEMORY,L2,L2,L1,4	2
-LLC,LLC,MEMORY,L2,L2,L2,4	15
-LLC,LLC,MEMORY,L2,LLC,LLC,4	1
-LLC,LLC,MEMORY,L2,ZERO,ZERO,3	94
-LLC,LLC,MEMORY,LLC,MEMORY,LLC,4	5
-LLC,LLC,MEMORY,LLC,L2,LLC,4	2
-LLC,LLC,MEMORY,LLC,LLC,MEMORY,4	5
-LLC,LLC,MEMORY,LLC,LLC,MEMORY,5	2
-LLC,LLC,MEMORY,LLC,LLC,LLC,4	39
-LLC,LLC,MEMORY,LLC,LLC,LLC,5	3
-LLC,LLC,MEMORY,LLC,ZERO,ZERO,3	203
-LLC,LLC,MEMORY,ZERO,ZERO,ZERO,0	258154
-LLC,LLC,MEMORY,ZERO,ZERO,ZERO,1	232591
-LLC,LLC,MEMORY,ZERO,ZERO,ZERO,2	252996
-LLC,LLC,L1,ZERO,ZERO,ZERO,0	1408
-LLC,LLC,L1,ZERO,ZERO,ZERO,1	1604
-LLC,LLC,L1,ZERO,ZERO,ZERO,2	1449
-LLC,LLC,L2,MEMORY,MEMORY,L2,4	1
-LLC,LLC,L2,MEMORY,L2,MEMORY,4	1
-LLC,LLC,L2,MEMORY,L2,L2,4	3
-LLC,LLC,L2,MEMORY,L2,LLC,4	1
-LLC,LLC,L2,MEMORY,LLC,L2,4	4
-LLC,LLC,L2,MEMORY,ZERO,ZERO,3	3
-LLC,LLC,L2,L1,L1,L1,4	4289
-LLC,LLC,L2,L1,L1,L1,5	14
-LLC,LLC,L2,L1,L1,L2,4	222
-LLC,LLC,L2,L1,L2,L1,4	21
-LLC,LLC,L2,L1,L2,L2,4	1
-LLC,LLC,L2,L1,ZERO,ZERO,3	81
-LLC,LLC,L2,L2,MEMORY,L2,4	2
-LLC,LLC,L2,L2,L1,L1,4	21
-LLC,LLC,L2,L2,L1,L2,4	9
-LLC,LLC,L2,L2,L2,MEMORY,4	2
-LLC,LLC,L2,L2,L2,L1,4	37
-LLC,LLC,L2,L2,L2,L2,4	399
-LLC,LLC,L2,L2,L2,L2,5	1
-LLC,LLC,L2,L2,L2,LLC,4	212
+LLC,LLC,MEMORY,L1,L1,L2,5	92
+LLC,LLC,MEMORY,L1,L2,L1,5	1
+LLC,LLC,MEMORY,L1,L2,L2,5	1
+LLC,LLC,MEMORY,L1,ZERO,ZERO,2	18
+LLC,LLC,MEMORY,L1,ZERO,ZERO,3	146
+LLC,LLC,MEMORY,L2,L1,L1,4	20
+LLC,LLC,MEMORY,L2,L2,L2,4	1
+LLC,LLC,MEMORY,L2,LLC,LLC,5	1
+LLC,LLC,MEMORY,LLC,MEMORY,MEMORY,4	3
+LLC,LLC,MEMORY,LLC,MEMORY,MEMORY,5	3
+LLC,LLC,MEMORY,LLC,MEMORY,LLC,4	21
+LLC,LLC,MEMORY,LLC,MEMORY,LLC,5	7
+LLC,LLC,MEMORY,LLC,LLC,MEMORY,4	10
+LLC,LLC,MEMORY,LLC,LLC,MEMORY,5	23
+LLC,LLC,MEMORY,LLC,LLC,L2,5	1
+LLC,LLC,MEMORY,LLC,LLC,LLC,4	76
+LLC,LLC,MEMORY,LLC,LLC,LLC,5	83
+LLC,LLC,MEMORY,LLC,ZERO,ZERO,0	59
+LLC,LLC,MEMORY,LLC,ZERO,ZERO,2	46
+LLC,LLC,MEMORY,LLC,ZERO,ZERO,3	98
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,0	254820
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,1	225339
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,2	243751
+LLC,LLC,L1,ZERO,ZERO,ZERO,0	2058
+LLC,LLC,L1,ZERO,ZERO,ZERO,1	1679
+LLC,LLC,L1,ZERO,ZERO,ZERO,2	1477
+LLC,LLC,L2,MEMORY,LLC,LLC,5	1
+LLC,LLC,L2,L1,L1,L1,5	11
+LLC,LLC,L2,L1,L1,L2,5	6
+LLC,LLC,L2,L1,ZERO,ZERO,3	11
+LLC,LLC,L2,L2,L2,L2,5	3
 LLC,LLC,L2,L2,L2,LLC,5	1
-LLC,LLC,L2,L2,LLC,L2,4	33
-LLC,LLC,L2,L2,LLC,LLC,4	287
-LLC,LLC,L2,L2,LLC,LLC,5	1
-LLC,LLC,L2,L2,ZERO,ZERO,3	477
-LLC,LLC,L2,LLC,L2,MEMORY,4	2
-LLC,LLC,L2,LLC,L2,L2,4	26
-LLC,LLC,L2,LLC,L2,LLC,4	147
-LLC,LLC,L2,LLC,LLC,MEMORY,5	1
-LLC,LLC,L2,LLC,LLC,L2,4	49
-LLC,LLC,L2,LLC,LLC,L2,5	2
-LLC,LLC,L2,LLC,LLC,LLC,4	307
-LLC,LLC,L2,LLC,LLC,LLC,5	6
-LLC,LLC,L2,LLC,ZERO,ZERO,3	507
-LLC,LLC,L2,ZERO,ZERO,ZERO,0	174887
-LLC,LLC,L2,ZERO,ZERO,ZERO,1	173604
-LLC,LLC,L2,ZERO,ZERO,ZERO,2	168153
-LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,4	4
-LLC,LLC,LLC,MEMORY,MEMORY,L2,4	1
-LLC,LLC,LLC,MEMORY,MEMORY,LLC,4	4
-LLC,LLC,LLC,MEMORY,MEMORY,LLC,5	2
-LLC,LLC,LLC,MEMORY,L2,L2,4	4
-LLC,LLC,LLC,MEMORY,L2,LLC,4	2
-LLC,LLC,LLC,MEMORY,LLC,MEMORY,4	8
-LLC,LLC,LLC,MEMORY,LLC,MEMORY,5	2
-LLC,LLC,LLC,MEMORY,LLC,L2,4	2
-LLC,LLC,LLC,MEMORY,LLC,LLC,4	133
-LLC,LLC,LLC,MEMORY,LLC,LLC,5	5
-LLC,LLC,LLC,MEMORY,ZERO,ZERO,3	87
-LLC,LLC,LLC,L1,L1,L1,4	6910
-LLC,LLC,LLC,L1,L1,L1,5	300
-LLC,LLC,LLC,L1,L1,L2,4	102
-LLC,LLC,LLC,L1,L1,L2,5	2
-LLC,LLC,LLC,L1,L2,L1,4	224
+LLC,LLC,L2,L2,LLC,L2,5	1
+LLC,LLC,L2,L2,LLC,LLC,5	3
+LLC,LLC,L2,L2,ZERO,ZERO,3	11
+LLC,LLC,L2,LLC,L2,MEMORY,5	1
+LLC,LLC,L2,LLC,L2,L2,5	2
+LLC,LLC,L2,LLC,L2,LLC,5	8
+LLC,LLC,L2,LLC,LLC,L2,5	1
+LLC,LLC,L2,LLC,LLC,LLC,4	6
+LLC,LLC,L2,LLC,LLC,LLC,5	17
+LLC,LLC,L2,LLC,ZERO,ZERO,3	33
+LLC,LLC,L2,ZERO,ZERO,ZERO,0	196643
+LLC,LLC,L2,ZERO,ZERO,ZERO,1	172673
+LLC,LLC,L2,ZERO,ZERO,ZERO,2	175955
+LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,0	1
+LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,4	16
+LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,5	2
+LLC,LLC,LLC,MEMORY,MEMORY,LLC,4	31
+LLC,LLC,LLC,MEMORY,MEMORY,LLC,5	6
+LLC,LLC,LLC,MEMORY,LLC,MEMORY,4	74
+LLC,LLC,LLC,MEMORY,LLC,MEMORY,5	22
+LLC,LLC,LLC,MEMORY,LLC,LLC,4	227
+LLC,LLC,LLC,MEMORY,LLC,LLC,5	97
+LLC,LLC,LLC,MEMORY,ZERO,ZERO,0	70
+LLC,LLC,LLC,MEMORY,ZERO,ZERO,2	51
+LLC,LLC,LLC,MEMORY,ZERO,ZERO,3	99
+LLC,LLC,LLC,L1,L1,L1,4	6217
+LLC,LLC,LLC,L1,L1,L1,5	250
+LLC,LLC,LLC,L1,L1,L2,4	2
+LLC,LLC,LLC,L1,L1,L2,5	307
+LLC,LLC,LLC,L1,L2,L1,4	1
 LLC,LLC,LLC,L1,L2,L1,5	1
-LLC,LLC,LLC,L1,L2,L2,4	11
-LLC,LLC,LLC,L1,L2,L2,5	1
-LLC,LLC,LLC,L1,LLC,LLC,4	1
-LLC,LLC,LLC,L1,ZERO,ZERO,2	5
-LLC,LLC,LLC,L1,ZERO,ZERO,3	1016
-LLC,LLC,LLC,L2,MEMORY,L2,4	5
-LLC,LLC,LLC,L2,MEMORY,LLC,4	1
-LLC,LLC,LLC,L2,L1,L1,4	131
-LLC,LLC,LLC,L2,L1,L1,5	4
-LLC,LLC,LLC,L2,L1,L2,4	35
-LLC,LLC,LLC,L2,L1,L2,5	10
-LLC,LLC,LLC,L2,L2,MEMORY,4	4
-LLC,LLC,LLC,L2,L2,L1,4	175
-LLC,LLC,LLC,L2,L2,L1,5	1
-LLC,LLC,LLC,L2,L2,L2,4	621
-LLC,LLC,LLC,L2,L2,L2,5	15
-LLC,LLC,LLC,L2,L2,LLC,4	165
-LLC,LLC,LLC,L2,LLC,MEMORY,4	1
-LLC,LLC,LLC,L2,LLC,L2,4	43
-LLC,LLC,LLC,L2,LLC,L2,5	11
-LLC,LLC,LLC,L2,LLC,LLC,4	261
-LLC,LLC,LLC,L2,LLC,LLC,5	8
-LLC,LLC,LLC,L2,ZERO,ZERO,3	4195
-LLC,LLC,LLC,LLC,MEMORY,MEMORY,4	1
-LLC,LLC,LLC,LLC,MEMORY,L2,4	4
-LLC,LLC,LLC,LLC,MEMORY,LLC,4	21
-LLC,LLC,LLC,LLC,MEMORY,LLC,5	1
-LLC,LLC,LLC,LLC,L2,MEMORY,4	1
-LLC,LLC,LLC,LLC,L2,L2,4	25
-LLC,LLC,LLC,LLC,L2,L2,5	1
-LLC,LLC,LLC,LLC,L2,LLC,4	160
-LLC,LLC,LLC,LLC,LLC,MEMORY,4	61
-LLC,LLC,LLC,LLC,LLC,MEMORY,5	5
-LLC,LLC,LLC,LLC,LLC,L2,4	91
-LLC,LLC,LLC,LLC,LLC,L2,5	21
-LLC,LLC,LLC,LLC,LLC,LLC,4	2505
-LLC,LLC,LLC,LLC,LLC,LLC,5	266
-LLC,LLC,LLC,LLC,ZERO,ZERO,3	5454
-LLC,LLC,LLC,ZERO,ZERO,ZERO,0	3590268
-LLC,LLC,LLC,ZERO,ZERO,ZERO,1	3256831
-LLC,LLC,LLC,ZERO,ZERO,ZERO,2	3413700
-ZERO,ZERO,ZERO,MEMORY,ZERO,ZERO,3	4
+LLC,LLC,LLC,L1,L2,L2,5	2
+LLC,LLC,LLC,L1,ZERO,ZERO,2	261
+LLC,LLC,LLC,L1,ZERO,ZERO,3	1279
+LLC,LLC,LLC,L2,L1,L1,4	454
+LLC,LLC,LLC,L2,L1,L2,4	3
+LLC,LLC,LLC,L2,L2,L1,4	5
+LLC,LLC,LLC,L2,L2,L2,4	3
+LLC,LLC,LLC,L2,L2,L2,5	8
+LLC,LLC,LLC,L2,L2,LLC,4	2
+LLC,LLC,LLC,L2,L2,LLC,5	8
+LLC,LLC,LLC,L2,LLC,L2,4	2
+LLC,LLC,LLC,L2,LLC,LLC,4	2
+LLC,LLC,LLC,L2,LLC,LLC,5	25
+LLC,LLC,LLC,L2,ZERO,ZERO,3	20
+LLC,LLC,LLC,LLC,MEMORY,MEMORY,4	36
+LLC,LLC,LLC,LLC,MEMORY,MEMORY,5	11
+LLC,LLC,LLC,LLC,MEMORY,LLC,4	169
+LLC,LLC,LLC,LLC,MEMORY,LLC,5	59
+LLC,LLC,LLC,LLC,L2,L2,5	5
+LLC,LLC,LLC,LLC,L2,LLC,4	2
+LLC,LLC,LLC,LLC,L2,LLC,5	13
+LLC,LLC,LLC,LLC,LLC,MEMORY,4	264
+LLC,LLC,LLC,LLC,LLC,MEMORY,5	105
+LLC,LLC,LLC,LLC,LLC,L2,4	4
+LLC,LLC,LLC,LLC,LLC,L2,5	5
+LLC,LLC,LLC,LLC,LLC,LLC,4	1057
+LLC,LLC,LLC,LLC,LLC,LLC,5	688
+LLC,LLC,LLC,LLC,ZERO,ZERO,0	250
+LLC,LLC,LLC,LLC,ZERO,ZERO,2	365
+LLC,LLC,LLC,LLC,ZERO,ZERO,3	424
+LLC,LLC,LLC,ZERO,ZERO,ZERO,0	3419646
+LLC,LLC,LLC,ZERO,ZERO,ZERO,1	3025801
+LLC,LLC,LLC,ZERO,ZERO,ZERO,2	3191082
+ZERO,ZERO,ZERO,MEMORY,ZERO,ZERO,3	1
 ZERO,ZERO,ZERO,L1,ZERO,ZERO,3	14
-ZERO,ZERO,ZERO,L2,ZERO,ZERO,3	396
-ZERO,ZERO,ZERO,LLC,ZERO,ZERO,3	304
+ZERO,ZERO,ZERO,L2,ZERO,ZERO,3	31
+ZERO,ZERO,ZERO,LLC,ZERO,ZERO,3	112
