@@ -35,7 +35,7 @@ memory_latency_list/size KB:16384       35.0 ns         35.0 ns     18000000 Nod
 
 FREQ = 3 # GHz
 
-access_to_latency = {
+default_access_to_latency = {
     "MEMORY": 200,
     "L1": 4,
     "L2": 14,
@@ -44,6 +44,16 @@ access_to_latency = {
     "ZERO": 0
 }
 
+asplos_access_to_latency = {
+    "MEMORY": 200,
+    "L1": 2,
+    "L2": 16,
+    "LLC": 56,
+    "PWC": 4,
+    "ZERO": 0
+}
+
+access_to_latency = {}
 HASH_LATENCY = 2
 PUD_CWC_LATENCY = 4
 PMD_CWC_LATENCY = 4
@@ -255,10 +265,10 @@ def parse_page_walk_latency(file_name):
     
     return avg_latency_max, avg_latency_correct, avg_latency_parallel
 
-TRAILING_KEY = '_dyna.log'
-def get_dyna_results(folder):
+def get_dyna_results(folder, trailing_key):
     print('folder: {}'.format(folder))
-    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(TRAILING_KEY) + ' | grep -v png' ]
+    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(trailing_key) + ' | grep -v png' ]
+    print('command: {}'.format(' '.join(command)))
     try:
         # Run the grep command and capture the stdout and stderr
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -279,29 +289,36 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='An example script with arguments.')
     parser.add_argument('--file', type=str, help='An integer argument')
-    parser.add_argument('--folder', type=str, help='arch folder to parse')
+    parser.add_argument('--folder', type=str, help='folder of dynamorio logs. selected with ls | grep _dyna.log | grep -v png')
+    parser.add_argument('--config', type=str, default='default', help='Option: default, asplos.')    
     
     args = parser.parse_args()
+
+    trailing_key = '_dyna.log'
+
+    if (args.config == 'default'):
+        access_to_latency = default_access_to_latency
+    elif (args.config == 'asplos'):
+        access_to_latency = asplos_access_to_latency
+        trailing_key = '_dyna_asplos_config.log'
+    else:
+        print("Invalid config: {}".format(args.config))
+        exit(1)
+
     if args.file:
         parse_page_walk_latency(args.file)
         exit(0)
    
     folder = args.folder
-    # arch = "radix"
-    # if args.arch:   
-    #    arch = args.arch
-    
-    # this assume you run in container
-    # parent_folder="/data1/collect_trace_fast"
-    # folder = os.path.join(parent_folder, arch)
-    bench_logs = get_dyna_results(folder)
+
+    bench_logs = get_dyna_results(folder, trailing_key)
     
     print("bench_logs: {}".format(bench_logs))
 
     benches = []
     latencies = []
     for log_name in bench_logs:
-        bench = log_name[:log_name.find(TRAILING_KEY)]
+        bench = log_name[:log_name.find(trailing_key)]
         print("bench: {}".format(bench))
         latency = parse_page_walk_latency(os.path.join(folder, "{}".format(log_name)))
 
@@ -310,5 +327,5 @@ if __name__ == "__main__":
 
     df = pd.DataFrame(latencies, columns=['avg_latency', "avg_latency early return", "avg latency parallel CWC"], index=benches)
     print(df)
-    print('save to file: {}'.format(os.path.join(folder, "page_walk_latency.csv")))
-    df.to_csv(os.path.join(folder, "page_walk_latency.csv"))
+    print('save to file: {}'.format(os.path.join(folder, args.config + "_ecpt_page_walk_latency.csv")))
+    df.to_csv(os.path.join(folder, args.config + "_ecpt_page_walk_latency.csv"))
