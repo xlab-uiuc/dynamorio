@@ -31,6 +31,7 @@
  */
 
 #include <assert.h>
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -48,12 +49,13 @@ qemu_file_reader_t::qemu_file_reader_t()
 }
 
 qemu_file_reader_t::qemu_file_reader_t(const char *file_name, int verbosity,
-                                       trans_arch a)
-    : fstream(file_name, std::ifstream::binary), verbose(verbosity), arch(a) 
+                                       trans_arch a, int max_ref)
+    : fstream(file_name, std::ifstream::binary), verbose(verbosity), arch(a), max_ref(max_ref)
 {
     std::cout << "creating qemu_file_reader_t for " << file_name 
         << " with verbosity " << verbosity
-        << " and arch " << a << std::endl;
+        << " and arch " << a
+        << " and max_ref " << max_ref << std::endl;
 }
 
 bool
@@ -237,11 +239,16 @@ int qemu_file_reader_t::parse_qemu_line_ecpt(ecpt_trans_info & info)
     return 0;
 }
 
+static int64_t n_inst = 0;
 trace_entry_t *
 qemu_file_reader_t::read_next_entry()
 {
     radix_trans_info radix_info;
     ecpt_trans_info ecpt_info;
+
+    if (max_ref != -1 && n_inst++ >= max_ref) {
+        return NULL;
+    }
 
     if (fstream) {
         
