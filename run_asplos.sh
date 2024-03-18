@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
+if [ $# -lt 2 ]; then
     echo "Usage: $0 --arch <arch> [--dry]"
     exit 1
 fi
@@ -110,6 +110,7 @@ for bench in "${BENCHS[@]}"; do
             parent_path=${BIN_DIR}
             prefix="${ARCH}_${thp}_${bench}"
             run_sim ${parent_path}/${prefix}_walk_log.bin ${parent_path}/${prefix}_dyna_asplos_config.log &
+            sleep 0.1
         done
     done
 done
