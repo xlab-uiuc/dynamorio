@@ -67,6 +67,7 @@ extern droption_t<std::string> op_qemu_mem_trace;
 extern droption_t<std::string> op_trans_arch;
 extern droption_t<bool> op_ecpt_early_return;
 extern droption_t<bool> op_mmu_to_l2;
+extern droption_t<bool> op_pwc_asplos_config;
 extern droption_t<int> op_max_ref;
 extern droption_t<std::string> op_module_file;
 extern droption_t<unsigned int> op_num_cores;

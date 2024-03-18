@@ -40,8 +40,11 @@
 #define NUM_PWC 3
 #define PWC_ENTRY_SIZE 1
 
-const unsigned int PWC_ASSOC[] = { 1, 4, 4};
-const unsigned int PWC_SIZE[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 32};
+const unsigned int PWC_ASSOC_ARM[] = { 1, 4, 4};
+const unsigned int PWC_SIZE_ARM[] = { PWC_ENTRY_SIZE * 2, PWC_ENTRY_SIZE * 4, PWC_ENTRY_SIZE * 32};
+
+const unsigned int PWC_ASSOC_ASPLOS_CONFIG[] = { 4, 4, 4};
+const unsigned int PWC_SIZE_ASPLOS_CONFIG[] = { PWC_ENTRY_SIZE * 32, PWC_ENTRY_SIZE * 32, PWC_ENTRY_SIZE * 32};
 
 #define CWC_ENTRY_SIZE 1
 const unsigned int CWC_ASSOC[] = { 2, 16};
@@ -257,6 +260,17 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
 
     if (knobs.arch == RADIX) {
         pw_caches =  new cache_t *[NUM_PWC];
+        const unsigned int *PWC_ASSOC;
+        const unsigned int *PWC_SIZE;
+        if (knobs.pwc_asplos_config) {
+            PWC_ASSOC = &PWC_ASSOC_ASPLOS_CONFIG[0];
+            PWC_SIZE = &PWC_SIZE_ASPLOS_CONFIG[0];
+        } else {
+            PWC_ASSOC = &PWC_ASSOC_ARM[0];
+            PWC_SIZE = &PWC_SIZE_ARM[0];
+        }
+
+
         for (unsigned int i = 0; i < NUM_PWC; i++) {
             pw_caches[i] = create_cache(knobs.replace_policy);
             if (pw_caches[i] == NULL) {

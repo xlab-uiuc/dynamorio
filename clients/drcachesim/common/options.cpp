@@ -84,6 +84,9 @@ droption_t<bool> op_mmu_to_l2(
     DROPTION_SCOPE_ALL, "mmu_to_l2", false, "MMU connects to L2 cache instead of L1 cache",
     "MMU cache connectivity");
 
+droption_t<bool> op_pwc_asplos_config(
+    DROPTION_SCOPE_ALL, "pwc_asplos_config", false, "MMU connects to L2 cache instead of L1 cache",
+    "MMU cache connectivity");
 
 droption_t<int> op_max_ref(
     DROPTION_SCOPE_ALL, "max_ref", -1, "max number of insts to simulate",

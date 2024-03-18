@@ -106,6 +106,7 @@ struct cache_simulator_knobs_t {
     trans_arch arch;
     bool ecpt_early_return;
     bool mmu_to_l2;
+    bool pwc_asplos_config;
 };
 
 /** Creates an instance of a cache simulator with a 3-level hierarchy and TLBs. */

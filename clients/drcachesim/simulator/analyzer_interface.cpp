@@ -127,6 +127,7 @@ get_cache_simulator_knobs()
     }
     knobs->ecpt_early_return = op_ecpt_early_return.get_value();
     knobs->mmu_to_l2 = op_mmu_to_l2.get_value();
+    knobs->pwc_asplos_config = op_pwc_asplos_config.get_value();
 
     return knobs;
 }
