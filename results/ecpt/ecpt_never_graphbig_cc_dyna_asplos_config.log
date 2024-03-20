@@ -1,0 +1,1047 @@
+Initialising a TLB with size: 128
+Initialising a TLB with size: 64
+Initialising a TLB with size: 2048
+Initialising PT from file: 
+Initialising memory references from file: /start_point/data2/collect_trace_fast/ecpt/ecpt_never_graphbig_cc_walk_log.bin
+Initialising a cache with size: 16777216 with assoc: 16 with line size: 64
+Initialising for core 0
+Initialising L2 cache with size: 524288 with assoc: 8 with line size: 64
+Initialising L1 I cache with size: 32768 with assoc: 8 with line size: 64
+Initialising L1 D cache with size: 32768 with assoc: 8 with line size: 64
+Initialising a cache with size: 524288 with assoc: 8 with line size: 64
+Initialising a cache with size: 32768 with assoc: 8 with line size: 64
+Initialising a cache with size: 32768 with assoc: 8 with line size: 64
+Initialising CWC cache with size: 2 with assoc: 2
+Initialising a cache with size: 2 with assoc: 2 with line size: 1
+Initialising CWC cache with size: 16 with assoc: 16
+Initialising a cache with size: 16 with assoc: 16 with line size: 1
+op_qemu_mem_trace=/start_point/data2/collect_trace_fast/ecpt/ecpt_never_graphbig_cc_walk_log.bin
+creating qemu_file_reader_t for /start_point/data2/collect_trace_fast/ecpt/ecpt_never_graphbig_cc_walk_log.bin with verbosity 0 and arch 1 and max_ref -1
+Done with qemu tracer
+Heartbeat. 4194304 references processed.
+Heartbeat. 8388608 references processed.
+Heartbeat. 12582912 references processed.
+Heartbeat. 16777216 references processed.
+Heartbeat. 20971520 references processed.
+Heartbeat. 25165824 references processed.
+Heartbeat. 29360128 references processed.
+Heartbeat. 33554432 references processed.
+Heartbeat. 37748736 references processed.
+Heartbeat. 41943040 references processed.
+Heartbeat. 46137344 references processed.
+Cache simulation warmed up
+Heartbeat. 50331648 references processed.
+Heartbeat. 54525952 references processed.
+Heartbeat. 58720256 references processed.
+Heartbeat. 62914560 references processed.
+Heartbeat. 67108864 references processed.
+Heartbeat. 71303168 references processed.
+Heartbeat. 75497472 references processed.
+Heartbeat. 79691776 references processed.
+Heartbeat. 83886080 references processed.
+Heartbeat. 88080384 references processed.
+Heartbeat. 92274688 references processed.
+Heartbeat. 96468992 references processed.
+Finished warmup of TLB
+Heartbeat. 100663296 references processed.
+Heartbeat. 104857600 references processed.
+Heartbeat. 109051904 references processed.
+Heartbeat. 113246208 references processed.
+Heartbeat. 117440512 references processed.
+Heartbeat. 121634816 references processed.
+Heartbeat. 125829120 references processed.
+Heartbeat. 130023424 references processed.
+Heartbeat. 134217728 references processed.
+Heartbeat. 138412032 references processed.
+Heartbeat. 142606336 references processed.
+Heartbeat. 146800640 references processed.
+Heartbeat. 150994944 references processed.
+Heartbeat. 155189248 references processed.
+Heartbeat. 159383552 references processed.
+Heartbeat. 163577856 references processed.
+Heartbeat. 167772160 references processed.
+Heartbeat. 171966464 references processed.
+Heartbeat. 176160768 references processed.
+Heartbeat. 180355072 references processed.
+Heartbeat. 184549376 references processed.
+Heartbeat. 188743680 references processed.
+Heartbeat. 192937984 references processed.
+Heartbeat. 197132288 references processed.
+Heartbeat. 201326592 references processed.
+Heartbeat. 205520896 references processed.
+Heartbeat. 209715200 references processed.
+Heartbeat. 213909504 references processed.
+Heartbeat. 218103808 references processed.
+Heartbeat. 222298112 references processed.
+Heartbeat. 226492416 references processed.
+Heartbeat. 230686720 references processed.
+Heartbeat. 234881024 references processed.
+Heartbeat. 239075328 references processed.
+Heartbeat. 243269632 references processed.
+Heartbeat. 247463936 references processed.
+Heartbeat. 251658240 references processed.
+Heartbeat. 255852544 references processed.
+Heartbeat. 260046848 references processed.
+Heartbeat. 264241152 references processed.
+Heartbeat. 268435456 references processed.
+Heartbeat. 272629760 references processed.
+Heartbeat. 276824064 references processed.
+Heartbeat. 281018368 references processed.
+Heartbeat. 285212672 references processed.
+Heartbeat. 289406976 references processed.
+Heartbeat. 293601280 references processed.
+Heartbeat. 297795584 references processed.
+Heartbeat. 301989888 references processed.
+Heartbeat. 306184192 references processed.
+Heartbeat. 310378496 references processed.
+Heartbeat. 314572800 references processed.
+Heartbeat. 318767104 references processed.
+Heartbeat. 322961408 references processed.
+Heartbeat. 327155712 references processed.
+Heartbeat. 331350016 references processed.
+Heartbeat. 335544320 references processed.
+Heartbeat. 339738624 references processed.
+Heartbeat. 343932928 references processed.
+Heartbeat. 348127232 references processed.
+Heartbeat. 352321536 references processed.
+Heartbeat. 356515840 references processed.
+Heartbeat. 360710144 references processed.
+Heartbeat. 364904448 references processed.
+Heartbeat. 369098752 references processed.
+Heartbeat. 373293056 references processed.
+Heartbeat. 377487360 references processed.
+Heartbeat. 381681664 references processed.
+Heartbeat. 385875968 references processed.
+Heartbeat. 390070272 references processed.
+Heartbeat. 394264576 references processed.
+Heartbeat. 398458880 references processed.
+Heartbeat. 402653184 references processed.
+Heartbeat. 406847488 references processed.
+Heartbeat. 411041792 references processed.
+Heartbeat. 415236096 references processed.
+Heartbeat. 419430400 references processed.
+Heartbeat. 423624704 references processed.
+Heartbeat. 427819008 references processed.
+Heartbeat. 432013312 references processed.
+Heartbeat. 436207616 references processed.
+Heartbeat. 440401920 references processed.
+Heartbeat. 444596224 references processed.
+Heartbeat. 448790528 references processed.
+Heartbeat. 452984832 references processed.
+Heartbeat. 457179136 references processed.
+Heartbeat. 461373440 references processed.
+Heartbeat. 465567744 references processed.
+Heartbeat. 469762048 references processed.
+Heartbeat. 473956352 references processed.
+Heartbeat. 478150656 references processed.
+Heartbeat. 482344960 references processed.
+Heartbeat. 486539264 references processed.
+Heartbeat. 490733568 references processed.
+Heartbeat. 494927872 references processed.
+Heartbeat. 499122176 references processed.
+Heartbeat. 503316480 references processed.
+Heartbeat. 507510784 references processed.
+Heartbeat. 511705088 references processed.
+Heartbeat. 515899392 references processed.
+Heartbeat. 520093696 references processed.
+Heartbeat. 524288000 references processed.
+Heartbeat. 528482304 references processed.
+Heartbeat. 532676608 references processed.
+Heartbeat. 536870912 references processed.
+Heartbeat. 541065216 references processed.
+Heartbeat. 545259520 references processed.
+Heartbeat. 549453824 references processed.
+Heartbeat. 553648128 references processed.
+Heartbeat. 557842432 references processed.
+Heartbeat. 562036736 references processed.
+Heartbeat. 566231040 references processed.
+Heartbeat. 570425344 references processed.
+Heartbeat. 574619648 references processed.
+Heartbeat. 578813952 references processed.
+Heartbeat. 583008256 references processed.
+Heartbeat. 587202560 references processed.
+Heartbeat. 591396864 references processed.
+Heartbeat. 595591168 references processed.
+Heartbeat. 599785472 references processed.
+Heartbeat. 603979776 references processed.
+Heartbeat. 608174080 references processed.
+Heartbeat. 612368384 references processed.
+Heartbeat. 616562688 references processed.
+Heartbeat. 620756992 references processed.
+Heartbeat. 624951296 references processed.
+Heartbeat. 629145600 references processed.
+Heartbeat. 633339904 references processed.
+Heartbeat. 637534208 references processed.
+Heartbeat. 641728512 references processed.
+Heartbeat. 645922816 references processed.
+Heartbeat. 650117120 references processed.
+Heartbeat. 654311424 references processed.
+Heartbeat. 658505728 references processed.
+Heartbeat. 662700032 references processed.
+Heartbeat. 666894336 references processed.
+Heartbeat. 671088640 references processed.
+Heartbeat. 675282944 references processed.
+Heartbeat. 679477248 references processed.
+Heartbeat. 683671552 references processed.
+Heartbeat. 687865856 references processed.
+Heartbeat. 692060160 references processed.
+Heartbeat. 696254464 references processed.
+Heartbeat. 700448768 references processed.
+Heartbeat. 704643072 references processed.
+Heartbeat. 708837376 references processed.
+Heartbeat. 713031680 references processed.
+Heartbeat. 717225984 references processed.
+Heartbeat. 721420288 references processed.
+Heartbeat. 725614592 references processed.
+Heartbeat. 729808896 references processed.
+Heartbeat. 734003200 references processed.
+Heartbeat. 738197504 references processed.
+Heartbeat. 742391808 references processed.
+Heartbeat. 746586112 references processed.
+Heartbeat. 750780416 references processed.
+Heartbeat. 754974720 references processed.
+Heartbeat. 759169024 references processed.
+Heartbeat. 763363328 references processed.
+Heartbeat. 767557632 references processed.
+Heartbeat. 771751936 references processed.
+Heartbeat. 775946240 references processed.
+Heartbeat. 780140544 references processed.
+Heartbeat. 784334848 references processed.
+Heartbeat. 788529152 references processed.
+Heartbeat. 792723456 references processed.
+Heartbeat. 796917760 references processed.
+Heartbeat. 801112064 references processed.
+Heartbeat. 805306368 references processed.
+Heartbeat. 809500672 references processed.
+Heartbeat. 813694976 references processed.
+Heartbeat. 817889280 references processed.
+Heartbeat. 822083584 references processed.
+Heartbeat. 826277888 references processed.
+Heartbeat. 830472192 references processed.
+Heartbeat. 834666496 references processed.
+Heartbeat. 838860800 references processed.
+Heartbeat. 843055104 references processed.
+Heartbeat. 847249408 references processed.
+Heartbeat. 851443712 references processed.
+Heartbeat. 855638016 references processed.
+Heartbeat. 859832320 references processed.
+Heartbeat. 864026624 references processed.
+Heartbeat. 868220928 references processed.
+Heartbeat. 872415232 references processed.
+Heartbeat. 876609536 references processed.
+Heartbeat. 880803840 references processed.
+Heartbeat. 884998144 references processed.
+Heartbeat. 889192448 references processed.
+Heartbeat. 893386752 references processed.
+Heartbeat. 897581056 references processed.
+Heartbeat. 901775360 references processed.
+Heartbeat. 905969664 references processed.
+Heartbeat. 910163968 references processed.
+Heartbeat. 914358272 references processed.
+Heartbeat. 918552576 references processed.
+Heartbeat. 922746880 references processed.
+Heartbeat. 926941184 references processed.
+Heartbeat. 931135488 references processed.
+Heartbeat. 935329792 references processed.
+Heartbeat. 939524096 references processed.
+Trace is truncated
+TLB simulation results:
+Core #0 (1 thread(s))
+  TLB-L1I stats:
+    Hits:                        563577629
+    Misses:                          17239
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.00%
+  TLB-L1D stats:
+    Hits:                        215251030
+    Misses:                       63970895
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                       22.91%
+  TLB-LL stats:
+    Hits:                         20598856
+    Misses:                       43389278
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Local miss rate:                 67.81%
+    Child hits:                  778828659
+    Total miss rate:                  5.15%
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Cache simulation results:
+Core #0 (1 thread(s))
+  L1I stats:
+    Warmup hits:                  45867201
+    Warmup misses:                   58342
+    Hits:                        853791894
+    Misses:                         123111
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.01%
+  L1D stats:
+    Warmup hits:                  11802230
+    Warmup misses:                 4491694
+    Hits:                        179532024
+    Misses:                      116179381
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Prefetch hits:                10801538
+    Prefetch misses:             105377843
+    Miss rate:                       39.29%
+  L2 stats:
+    Warmup hits:                    821059
+    Warmup misses:                 3728977
+    Hits:                         14800241
+    Misses:                      101502251
+    Invalidations:                       0
+    Hits PT level     1:            69722977
+    Misses PT level   1:            66710132
+    Hits PT level     2:            90702089
+    Misses PT level   2:              138607
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Prefetch hits:                12935801
+    Prefetch misses:              92442042
+    Local miss rate:                 87.27%
+    Child hits:                 1044125456
+    Total miss rate:                  8.75%
+LLC stats:
+    Warmup hits:                    739043
+    Warmup misses:                 2989934
+    Hits:                         15789836
+    Misses:                       85712415
+    Invalidations:                       0
+    Hits PT level     1:            50346952
+    Misses PT level   1:            16363180
+    Hits PT level     2:              132809
+    Misses PT level   2:                5798
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Prefetch hits:                15416348
+    Prefetch misses:              77025694
+    Local miss rate:                 84.44%
+    Child hits:                  188161108
+    Total miss rate:                 29.59%
+ CWC 0 stats:
+    Warmup hits:                         0
+    Warmup misses:                       0
+    Hits:                         46992193
+    Misses:                          10942
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.02%
+ CWC 1 stats:
+    Warmup hits:                         0
+    Warmup misses:                       0
+    Hits:                            48310
+    Misses:                             20
+    Invalidations:                       0
+    Hits PT level     1:                   0
+    Misses PT level   1:                   0
+    Hits PT level     2:                   0
+    Misses PT level   2:                   0
+    Hits PT level     3:                   0
+    Misses PT level   3:                   0
+    Hits PT level     4:                   0
+    Misses PT level   4:                   0
+    Hits PT level     5:                   0
+    Misses PT level   5:                   0
+    Hits PT level     6:                   0
+    Misses PT level   6:                   0
+    Miss rate:                        0.04%
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+num_requests : 942816793
+num_not_found : 0
+kernel memory references: 
+0,3874676
+1,3016838
+16,14659598
+user memory references: 
+0,270203326
+1,34910486
+16,616151869
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+num_range_found : 0
+num_range_not_found : 0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,	519
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,	181
+MEMORY,MEMORY,MEMORY,MEMORY,L2,MEMORY,	1
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,	123
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,	86
+MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,	349
+MEMORY,MEMORY,MEMORY,L2,L2,L2,	3454
+MEMORY,MEMORY,MEMORY,L2,L2,LLC,	5
+MEMORY,MEMORY,MEMORY,L2,LLC,LLC,	2
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,	990
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,MEMORY,	189
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,L2,	1
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,	96
+MEMORY,MEMORY,MEMORY,LLC,L2,L2,	1
+MEMORY,MEMORY,MEMORY,LLC,L2,LLC,	4
+MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,	73
+MEMORY,MEMORY,MEMORY,LLC,LLC,L2,	4
+MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,	186
+MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,	257
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,	3274898
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,	10892
+MEMORY,MEMORY,LLC,MEMORY,MEMORY,MEMORY,	150
+MEMORY,MEMORY,LLC,MEMORY,MEMORY,LLC,	54
+MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,	52
+MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,	17
+MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,	111
+MEMORY,MEMORY,LLC,L2,L2,L2,	1219
+MEMORY,MEMORY,LLC,L2,ZERO,ZERO,	270
+MEMORY,MEMORY,LLC,LLC,MEMORY,MEMORY,	60
+MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,	28
+MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,	23
+MEMORY,MEMORY,LLC,LLC,LLC,LLC,	35
+MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,	67
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,	679900
+MEMORY,L2,MEMORY,L2,L2,L2,	2
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,	10742
+MEMORY,L2,L2,ZERO,ZERO,ZERO,	1329
+MEMORY,L2,LLC,L2,L2,L2,	2
+MEMORY,L2,LLC,L2,ZERO,ZERO,	3
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,	6081
+MEMORY,LLC,MEMORY,MEMORY,MEMORY,MEMORY,	247
+MEMORY,LLC,MEMORY,MEMORY,MEMORY,LLC,	89
+MEMORY,LLC,MEMORY,MEMORY,LLC,MEMORY,	89
+MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,	37
+MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,	95
+MEMORY,LLC,MEMORY,L2,L2,L2,	1331
+MEMORY,LLC,MEMORY,L2,LLC,LLC,	1
+MEMORY,LLC,MEMORY,L2,ZERO,ZERO,	386
+MEMORY,LLC,MEMORY,LLC,MEMORY,MEMORY,	118
+MEMORY,LLC,MEMORY,LLC,MEMORY,LLC,	54
+MEMORY,LLC,MEMORY,LLC,LLC,MEMORY,	41
+MEMORY,LLC,MEMORY,LLC,LLC,LLC,	64
+MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,	77
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,	669064
+MEMORY,LLC,L2,L2,ZERO,ZERO,	1
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,	6427
+MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,	86
+MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,	35
+MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,	24
+MEMORY,LLC,LLC,MEMORY,LLC,LLC,	21
+MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,	60
+MEMORY,LLC,LLC,L2,L2,L2,	676
+MEMORY,LLC,LLC,L2,ZERO,ZERO,	179
+MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,	49
+MEMORY,LLC,LLC,LLC,MEMORY,LLC,	30
+MEMORY,LLC,LLC,LLC,LLC,MEMORY,	32
+MEMORY,LLC,LLC,LLC,LLC,LLC,	90
+MEMORY,LLC,LLC,LLC,ZERO,ZERO,	53
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,	764059
+L2,MEMORY,MEMORY,L2,L2,L2,	1
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,	12514
+L2,MEMORY,L2,ZERO,ZERO,ZERO,	1283
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,	7006
+L2,L2,MEMORY,ZERO,ZERO,ZERO,	1344
+L2,L2,L2,L2,L2,L2,	7609
+L2,L2,L2,L2,L2,LLC,	1
+L2,L2,L2,L2,LLC,L2,	1
+L2,L2,L2,L2,ZERO,ZERO,	2556
+L2,L2,L2,LLC,L2,L2,	1
+L2,L2,L2,LLC,LLC,L2,	1
+L2,L2,L2,LLC,LLC,LLC,	1
+L2,L2,L2,ZERO,ZERO,ZERO,	19644314
+L2,L2,LLC,L2,L2,L2,	10
+L2,L2,LLC,L2,LLC,L2,	1
+L2,L2,LLC,L2,ZERO,ZERO,	1
+L2,L2,LLC,LLC,L2,LLC,	1
+L2,L2,LLC,LLC,LLC,L2,	1
+L2,L2,LLC,LLC,LLC,LLC,	5
+L2,L2,LLC,LLC,ZERO,ZERO,	3
+L2,L2,LLC,ZERO,ZERO,ZERO,	1232523
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,	7308
+L2,LLC,L2,L2,L2,L2,	4
+L2,LLC,L2,L2,LLC,L2,	1
+L2,LLC,L2,L2,ZERO,ZERO,	2
+L2,LLC,L2,LLC,L2,LLC,	1
+L2,LLC,L2,LLC,LLC,L2,	1
+L2,LLC,L2,LLC,LLC,LLC,	5
+L2,LLC,L2,LLC,ZERO,ZERO,	1
+L2,LLC,L2,ZERO,ZERO,ZERO,	1231028
+L2,LLC,LLC,L2,L2,L2,	37
+L2,LLC,LLC,L2,L2,LLC,	1
+L2,LLC,LLC,L2,LLC,LLC,	11
+L2,LLC,LLC,L2,ZERO,ZERO,	9
+L2,LLC,LLC,LLC,L2,LLC,	6
+L2,LLC,LLC,LLC,LLC,L2,	4
+L2,LLC,LLC,LLC,LLC,LLC,	51
+L2,LLC,LLC,LLC,ZERO,ZERO,	21
+L2,LLC,LLC,ZERO,ZERO,ZERO,	1087172
+LLC,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,	118
+LLC,MEMORY,MEMORY,MEMORY,MEMORY,LLC,	47
+LLC,MEMORY,MEMORY,MEMORY,LLC,MEMORY,	38
+LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,	30
+LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,	57
+LLC,MEMORY,MEMORY,L2,L2,L2,	1253
+LLC,MEMORY,MEMORY,L2,ZERO,ZERO,	299
+LLC,MEMORY,MEMORY,LLC,MEMORY,MEMORY,	58
+LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,	23
+LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,	20
+LLC,MEMORY,MEMORY,LLC,LLC,LLC,	40
+LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,	50
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,	690508
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,	6376
+LLC,MEMORY,LLC,MEMORY,MEMORY,MEMORY,	37
+LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,	19
+LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,	18
+LLC,MEMORY,LLC,MEMORY,LLC,LLC,	12
+LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,	33
+LLC,MEMORY,LLC,L2,L2,L2,	684
+LLC,MEMORY,LLC,L2,LLC,LLC,	1
+LLC,MEMORY,LLC,L2,ZERO,ZERO,	142
+LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,	25
+LLC,MEMORY,LLC,LLC,MEMORY,LLC,	12
+LLC,MEMORY,LLC,LLC,L2,L2,	1
+LLC,MEMORY,LLC,LLC,LLC,MEMORY,	12
+LLC,MEMORY,LLC,LLC,LLC,LLC,	38
+LLC,MEMORY,LLC,LLC,ZERO,ZERO,	38
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,	771938
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,	6084
+LLC,L2,L2,L2,L2,L2,	6
+LLC,L2,L2,L2,L2,LLC,	1
+LLC,L2,L2,L2,LLC,L2,	1
+LLC,L2,L2,L2,LLC,LLC,	1
+LLC,L2,L2,LLC,L2,L2,	1
+LLC,L2,L2,LLC,L2,LLC,	1
+LLC,L2,L2,LLC,LLC,L2,	3
+LLC,L2,L2,LLC,LLC,LLC,	8
+LLC,L2,L2,LLC,ZERO,ZERO,	2
+LLC,L2,L2,ZERO,ZERO,ZERO,	1220470
+LLC,L2,LLC,L2,L2,L2,	34
+LLC,L2,LLC,L2,L2,LLC,	1
+LLC,L2,LLC,L2,LLC,L2,	2
+LLC,L2,LLC,L2,LLC,LLC,	7
+LLC,L2,LLC,L2,ZERO,ZERO,	6
+LLC,L2,LLC,LLC,L2,L2,	1
+LLC,L2,LLC,LLC,L2,LLC,	2
+LLC,L2,LLC,LLC,LLC,L2,	2
+LLC,L2,LLC,LLC,LLC,LLC,	52
+LLC,L2,LLC,LLC,ZERO,ZERO,	24
+LLC,L2,LLC,ZERO,ZERO,ZERO,	1078806
+LLC,LLC,MEMORY,MEMORY,MEMORY,MEMORY,	72
+LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,	40
+LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,	31
+LLC,LLC,MEMORY,MEMORY,LLC,LLC,	33
+LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,	32
+LLC,LLC,MEMORY,L2,L2,L2,	765
+LLC,LLC,MEMORY,L2,L2,LLC,	1
+LLC,LLC,MEMORY,L2,LLC,L2,	1
+LLC,LLC,MEMORY,L2,LLC,LLC,	1
+LLC,LLC,MEMORY,L2,ZERO,ZERO,	183
+LLC,LLC,MEMORY,LLC,MEMORY,MEMORY,	30
+LLC,LLC,MEMORY,LLC,MEMORY,LLC,	13
+LLC,LLC,MEMORY,LLC,LLC,MEMORY,	19
+LLC,LLC,MEMORY,LLC,LLC,LLC,	63
+LLC,LLC,MEMORY,LLC,ZERO,ZERO,	45
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,	767002
+LLC,LLC,L2,L2,L2,L2,	24
+LLC,LLC,L2,L2,L2,LLC,	1
+LLC,LLC,L2,L2,LLC,L2,	2
+LLC,LLC,L2,L2,LLC,LLC,	4
+LLC,LLC,L2,L2,ZERO,ZERO,	4
+LLC,LLC,L2,LLC,L2,L2,	3
+LLC,LLC,L2,LLC,L2,LLC,	8
+LLC,LLC,L2,LLC,LLC,L2,	12
+LLC,LLC,L2,LLC,LLC,LLC,	86
+LLC,LLC,L2,LLC,ZERO,ZERO,	14
+LLC,LLC,L2,ZERO,ZERO,ZERO,	1081988
+LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,	33
+LLC,LLC,LLC,MEMORY,MEMORY,LLC,	13
+LLC,LLC,LLC,MEMORY,LLC,MEMORY,	13
+LLC,LLC,LLC,MEMORY,LLC,LLC,	36
+LLC,LLC,LLC,MEMORY,ZERO,ZERO,	22
+LLC,LLC,LLC,L2,L2,L2,	1558
+LLC,LLC,LLC,L2,L2,LLC,	5
+LLC,LLC,LLC,L2,LLC,L2,	13
+LLC,LLC,LLC,L2,LLC,LLC,	65
+LLC,LLC,LLC,L2,ZERO,ZERO,	169
+LLC,LLC,LLC,LLC,MEMORY,MEMORY,	19
+LLC,LLC,LLC,LLC,MEMORY,LLC,	26
+LLC,LLC,LLC,LLC,L2,L2,	6
+LLC,LLC,LLC,LLC,L2,LLC,	65
+LLC,LLC,LLC,LLC,LLC,MEMORY,	51
+LLC,LLC,LLC,LLC,LLC,L2,	67
+LLC,LLC,LLC,LLC,LLC,LLC,	2146
+LLC,LLC,LLC,LLC,ZERO,ZERO,	577
+LLC,LLC,LLC,ZERO,ZERO,ZERO,	11146246
+ZERO,ZERO,ZERO,MEMORY,ZERO,ZERO,	1
+ZERO,ZERO,ZERO,L2,ZERO,ZERO,	26
+ZERO,ZERO,ZERO,LLC,ZERO,ZERO,	204
+~~~~~~ full stats with way ~~~~~~
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,1	1
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,4	369
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,5	149
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,4	151
+MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,LLC,5	30
+MEMORY,MEMORY,MEMORY,MEMORY,L2,MEMORY,5	1
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,4	64
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,MEMORY,5	59
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,4	50
+MEMORY,MEMORY,MEMORY,MEMORY,LLC,LLC,5	36
+MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,2	142
+MEMORY,MEMORY,MEMORY,MEMORY,ZERO,ZERO,3	207
+MEMORY,MEMORY,MEMORY,L2,L2,L2,4	2995
+MEMORY,MEMORY,MEMORY,L2,L2,L2,5	459
+MEMORY,MEMORY,MEMORY,L2,L2,LLC,4	4
+MEMORY,MEMORY,MEMORY,L2,L2,LLC,5	1
+MEMORY,MEMORY,MEMORY,L2,LLC,LLC,4	2
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,0	4
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,1	3
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,2	241
+MEMORY,MEMORY,MEMORY,L2,ZERO,ZERO,3	742
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,MEMORY,4	149
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,MEMORY,5	40
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,L2,4	1
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,4	81
+MEMORY,MEMORY,MEMORY,LLC,MEMORY,LLC,5	15
+MEMORY,MEMORY,MEMORY,LLC,L2,L2,5	1
+MEMORY,MEMORY,MEMORY,LLC,L2,LLC,4	4
+MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,4	37
+MEMORY,MEMORY,MEMORY,LLC,LLC,MEMORY,5	36
+MEMORY,MEMORY,MEMORY,LLC,LLC,L2,4	3
+MEMORY,MEMORY,MEMORY,LLC,LLC,L2,5	1
+MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,4	129
+MEMORY,MEMORY,MEMORY,LLC,LLC,LLC,5	57
+MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,2	51
+MEMORY,MEMORY,MEMORY,LLC,ZERO,ZERO,3	206
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	1060778
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	1098873
+MEMORY,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	1115247
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,0	3828
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,1	4021
+MEMORY,MEMORY,L2,ZERO,ZERO,ZERO,2	3043
+MEMORY,MEMORY,LLC,MEMORY,MEMORY,MEMORY,4	106
+MEMORY,MEMORY,LLC,MEMORY,MEMORY,MEMORY,5	44
+MEMORY,MEMORY,LLC,MEMORY,MEMORY,LLC,4	30
+MEMORY,MEMORY,LLC,MEMORY,MEMORY,LLC,5	24
+MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,4	29
+MEMORY,MEMORY,LLC,MEMORY,LLC,MEMORY,5	23
+MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,4	11
+MEMORY,MEMORY,LLC,MEMORY,LLC,LLC,5	6
+MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,2	88
+MEMORY,MEMORY,LLC,MEMORY,ZERO,ZERO,3	23
+MEMORY,MEMORY,LLC,L2,L2,L2,4	1049
+MEMORY,MEMORY,LLC,L2,L2,L2,5	170
+MEMORY,MEMORY,LLC,L2,ZERO,ZERO,2	48
+MEMORY,MEMORY,LLC,L2,ZERO,ZERO,3	222
+MEMORY,MEMORY,LLC,LLC,MEMORY,MEMORY,4	49
+MEMORY,MEMORY,LLC,LLC,MEMORY,MEMORY,5	11
+MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,4	20
+MEMORY,MEMORY,LLC,LLC,MEMORY,LLC,5	8
+MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,4	13
+MEMORY,MEMORY,LLC,LLC,LLC,MEMORY,5	10
+MEMORY,MEMORY,LLC,LLC,LLC,LLC,4	16
+MEMORY,MEMORY,LLC,LLC,LLC,LLC,5	19
+MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,2	33
+MEMORY,MEMORY,LLC,LLC,ZERO,ZERO,3	34
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,0	224629
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,1	232631
+MEMORY,MEMORY,LLC,ZERO,ZERO,ZERO,2	222640
+MEMORY,L2,MEMORY,L2,L2,L2,4	2
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,0	3416
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,1	2778
+MEMORY,L2,MEMORY,ZERO,ZERO,ZERO,2	4548
+MEMORY,L2,L2,ZERO,ZERO,ZERO,0	429
+MEMORY,L2,L2,ZERO,ZERO,ZERO,1	514
+MEMORY,L2,L2,ZERO,ZERO,ZERO,2	386
+MEMORY,L2,LLC,L2,L2,L2,4	1
+MEMORY,L2,LLC,L2,L2,L2,5	1
+MEMORY,L2,LLC,L2,ZERO,ZERO,3	3
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,0	1954
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,1	1807
+MEMORY,L2,LLC,ZERO,ZERO,ZERO,2	2320
+MEMORY,LLC,MEMORY,MEMORY,MEMORY,MEMORY,4	164
+MEMORY,LLC,MEMORY,MEMORY,MEMORY,MEMORY,5	83
+MEMORY,LLC,MEMORY,MEMORY,MEMORY,LLC,4	53
+MEMORY,LLC,MEMORY,MEMORY,MEMORY,LLC,5	36
+MEMORY,LLC,MEMORY,MEMORY,LLC,MEMORY,4	41
+MEMORY,LLC,MEMORY,MEMORY,LLC,MEMORY,5	48
+MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,4	13
+MEMORY,LLC,MEMORY,MEMORY,LLC,LLC,5	24
+MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,2	51
+MEMORY,LLC,MEMORY,MEMORY,ZERO,ZERO,3	44
+MEMORY,LLC,MEMORY,L2,L2,L2,4	1269
+MEMORY,LLC,MEMORY,L2,L2,L2,5	62
+MEMORY,LLC,MEMORY,L2,LLC,LLC,5	1
+MEMORY,LLC,MEMORY,L2,ZERO,ZERO,2	94
+MEMORY,LLC,MEMORY,L2,ZERO,ZERO,3	292
+MEMORY,LLC,MEMORY,LLC,MEMORY,MEMORY,4	89
+MEMORY,LLC,MEMORY,LLC,MEMORY,MEMORY,5	29
+MEMORY,LLC,MEMORY,LLC,MEMORY,LLC,4	35
+MEMORY,LLC,MEMORY,LLC,MEMORY,LLC,5	19
+MEMORY,LLC,MEMORY,LLC,LLC,MEMORY,4	21
+MEMORY,LLC,MEMORY,LLC,LLC,MEMORY,5	20
+MEMORY,LLC,MEMORY,LLC,LLC,LLC,4	31
+MEMORY,LLC,MEMORY,LLC,LLC,LLC,5	33
+MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,2	31
+MEMORY,LLC,MEMORY,LLC,ZERO,ZERO,3	46
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,0	219814
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,1	213680
+MEMORY,LLC,MEMORY,ZERO,ZERO,ZERO,2	235570
+MEMORY,LLC,L2,L2,ZERO,ZERO,3	1
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,0	2236
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,1	2193
+MEMORY,LLC,L2,ZERO,ZERO,ZERO,2	1998
+MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,4	58
+MEMORY,LLC,LLC,MEMORY,MEMORY,MEMORY,5	28
+MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,4	21
+MEMORY,LLC,LLC,MEMORY,MEMORY,LLC,5	14
+MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,4	6
+MEMORY,LLC,LLC,MEMORY,LLC,MEMORY,5	18
+MEMORY,LLC,LLC,MEMORY,LLC,LLC,4	13
+MEMORY,LLC,LLC,MEMORY,LLC,LLC,5	8
+MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,2	50
+MEMORY,LLC,LLC,MEMORY,ZERO,ZERO,3	10
+MEMORY,LLC,LLC,L2,L2,L2,4	595
+MEMORY,LLC,LLC,L2,L2,L2,5	81
+MEMORY,LLC,LLC,L2,ZERO,ZERO,2	28
+MEMORY,LLC,LLC,L2,ZERO,ZERO,3	151
+MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,4	36
+MEMORY,LLC,LLC,LLC,MEMORY,MEMORY,5	13
+MEMORY,LLC,LLC,LLC,MEMORY,LLC,4	23
+MEMORY,LLC,LLC,LLC,MEMORY,LLC,5	7
+MEMORY,LLC,LLC,LLC,LLC,MEMORY,4	18
+MEMORY,LLC,LLC,LLC,LLC,MEMORY,5	14
+MEMORY,LLC,LLC,LLC,LLC,LLC,4	44
+MEMORY,LLC,LLC,LLC,LLC,LLC,5	46
+MEMORY,LLC,LLC,LLC,ZERO,ZERO,2	23
+MEMORY,LLC,LLC,LLC,ZERO,ZERO,3	30
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,0	247912
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,1	254233
+MEMORY,LLC,LLC,ZERO,ZERO,ZERO,2	261914
+L2,MEMORY,MEMORY,L2,L2,L2,5	1
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	3260
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	4569
+L2,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	4685
+L2,MEMORY,L2,ZERO,ZERO,ZERO,0	409
+L2,MEMORY,L2,ZERO,ZERO,ZERO,1	491
+L2,MEMORY,L2,ZERO,ZERO,ZERO,2	383
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,0	1979
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,1	2483
+L2,MEMORY,LLC,ZERO,ZERO,ZERO,2	2544
+L2,L2,MEMORY,ZERO,ZERO,ZERO,0	417
+L2,L2,MEMORY,ZERO,ZERO,ZERO,1	469
+L2,L2,MEMORY,ZERO,ZERO,ZERO,2	458
+L2,L2,L2,L2,L2,L2,4	6861
+L2,L2,L2,L2,L2,L2,5	748
+L2,L2,L2,L2,L2,LLC,4	1
+L2,L2,L2,L2,LLC,L2,5	1
+L2,L2,L2,L2,ZERO,ZERO,0	2
+L2,L2,L2,L2,ZERO,ZERO,1	4
+L2,L2,L2,L2,ZERO,ZERO,3	2550
+L2,L2,L2,LLC,L2,L2,4	1
+L2,L2,L2,LLC,LLC,L2,4	1
+L2,L2,L2,LLC,LLC,LLC,5	1
+L2,L2,L2,ZERO,ZERO,ZERO,0	6182560
+L2,L2,L2,ZERO,ZERO,ZERO,1	6560983
+L2,L2,L2,ZERO,ZERO,ZERO,2	6900771
+L2,L2,LLC,L2,L2,L2,4	7
+L2,L2,LLC,L2,L2,L2,5	3
+L2,L2,LLC,L2,LLC,L2,4	1
+L2,L2,LLC,L2,ZERO,ZERO,3	1
+L2,L2,LLC,LLC,L2,LLC,4	1
+L2,L2,LLC,LLC,LLC,L2,4	1
+L2,L2,LLC,LLC,LLC,LLC,4	2
+L2,L2,LLC,LLC,LLC,LLC,5	3
+L2,L2,LLC,LLC,ZERO,ZERO,3	3
+L2,L2,LLC,ZERO,ZERO,ZERO,0	377184
+L2,L2,LLC,ZERO,ZERO,ZERO,1	402630
+L2,L2,LLC,ZERO,ZERO,ZERO,2	452709
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,0	2095
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,1	2576
+L2,LLC,MEMORY,ZERO,ZERO,ZERO,2	2637
+L2,LLC,L2,L2,L2,L2,4	3
+L2,LLC,L2,L2,L2,L2,5	1
+L2,LLC,L2,L2,LLC,L2,4	1
+L2,LLC,L2,L2,ZERO,ZERO,3	2
+L2,LLC,L2,LLC,L2,LLC,5	1
+L2,LLC,L2,LLC,LLC,L2,4	1
+L2,LLC,L2,LLC,LLC,LLC,4	3
+L2,LLC,L2,LLC,LLC,LLC,5	2
+L2,LLC,L2,LLC,ZERO,ZERO,3	1
+L2,LLC,L2,ZERO,ZERO,ZERO,0	376396
+L2,LLC,L2,ZERO,ZERO,ZERO,1	405265
+L2,LLC,L2,ZERO,ZERO,ZERO,2	449367
+L2,LLC,LLC,L2,L2,L2,4	23
+L2,LLC,LLC,L2,L2,L2,5	14
+L2,LLC,LLC,L2,L2,LLC,5	1
+L2,LLC,LLC,L2,LLC,LLC,4	5
+L2,LLC,LLC,L2,LLC,LLC,5	6
+L2,LLC,LLC,L2,ZERO,ZERO,3	9
+L2,LLC,LLC,LLC,L2,LLC,4	5
+L2,LLC,LLC,LLC,L2,LLC,5	1
+L2,LLC,LLC,LLC,LLC,L2,4	3
+L2,LLC,LLC,LLC,LLC,L2,5	1
+L2,LLC,LLC,LLC,LLC,LLC,4	24
+L2,LLC,LLC,LLC,LLC,LLC,5	27
+L2,LLC,LLC,LLC,ZERO,ZERO,3	21
+L2,LLC,LLC,ZERO,ZERO,ZERO,0	333085
+L2,LLC,LLC,ZERO,ZERO,ZERO,1	353769
+L2,LLC,LLC,ZERO,ZERO,ZERO,2	400318
+LLC,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,4	86
+LLC,MEMORY,MEMORY,MEMORY,MEMORY,MEMORY,5	32
+LLC,MEMORY,MEMORY,MEMORY,MEMORY,LLC,4	30
+LLC,MEMORY,MEMORY,MEMORY,MEMORY,LLC,5	17
+LLC,MEMORY,MEMORY,MEMORY,LLC,MEMORY,4	20
+LLC,MEMORY,MEMORY,MEMORY,LLC,MEMORY,5	18
+LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,4	11
+LLC,MEMORY,MEMORY,MEMORY,LLC,LLC,5	19
+LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,2	29
+LLC,MEMORY,MEMORY,MEMORY,ZERO,ZERO,3	28
+LLC,MEMORY,MEMORY,L2,L2,L2,4	1191
+LLC,MEMORY,MEMORY,L2,L2,L2,5	62
+LLC,MEMORY,MEMORY,L2,ZERO,ZERO,2	96
+LLC,MEMORY,MEMORY,L2,ZERO,ZERO,3	203
+LLC,MEMORY,MEMORY,LLC,MEMORY,MEMORY,4	47
+LLC,MEMORY,MEMORY,LLC,MEMORY,MEMORY,5	11
+LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,4	16
+LLC,MEMORY,MEMORY,LLC,MEMORY,LLC,5	7
+LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,4	12
+LLC,MEMORY,MEMORY,LLC,LLC,MEMORY,5	8
+LLC,MEMORY,MEMORY,LLC,LLC,LLC,4	14
+LLC,MEMORY,MEMORY,LLC,LLC,LLC,5	26
+LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,2	14
+LLC,MEMORY,MEMORY,LLC,ZERO,ZERO,3	36
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,0	208919
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,1	238750
+LLC,MEMORY,MEMORY,ZERO,ZERO,ZERO,2	242839
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,0	2030
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,1	2258
+LLC,MEMORY,L2,ZERO,ZERO,ZERO,2	2088
+LLC,MEMORY,LLC,MEMORY,MEMORY,MEMORY,4	26
+LLC,MEMORY,LLC,MEMORY,MEMORY,MEMORY,5	11
+LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,4	13
+LLC,MEMORY,LLC,MEMORY,MEMORY,LLC,5	6
+LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,4	9
+LLC,MEMORY,LLC,MEMORY,LLC,MEMORY,5	9
+LLC,MEMORY,LLC,MEMORY,LLC,LLC,4	2
+LLC,MEMORY,LLC,MEMORY,LLC,LLC,5	10
+LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,2	26
+LLC,MEMORY,LLC,MEMORY,ZERO,ZERO,3	7
+LLC,MEMORY,LLC,L2,L2,L2,4	591
+LLC,MEMORY,LLC,L2,L2,L2,5	93
+LLC,MEMORY,LLC,L2,LLC,LLC,5	1
+LLC,MEMORY,LLC,L2,ZERO,ZERO,2	26
+LLC,MEMORY,LLC,L2,ZERO,ZERO,3	116
+LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,4	20
+LLC,MEMORY,LLC,LLC,MEMORY,MEMORY,5	5
+LLC,MEMORY,LLC,LLC,MEMORY,LLC,4	10
+LLC,MEMORY,LLC,LLC,MEMORY,LLC,5	2
+LLC,MEMORY,LLC,LLC,L2,L2,5	1
+LLC,MEMORY,LLC,LLC,LLC,MEMORY,4	6
+LLC,MEMORY,LLC,LLC,LLC,MEMORY,5	6
+LLC,MEMORY,LLC,LLC,LLC,LLC,4	23
+LLC,MEMORY,LLC,LLC,LLC,LLC,5	15
+LLC,MEMORY,LLC,LLC,ZERO,ZERO,2	8
+LLC,MEMORY,LLC,LLC,ZERO,ZERO,3	30
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,0	245837
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,1	263090
+LLC,MEMORY,LLC,ZERO,ZERO,ZERO,2	263011
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,0	1827
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,1	1844
+LLC,L2,MEMORY,ZERO,ZERO,ZERO,2	2413
+LLC,L2,L2,L2,L2,L2,4	6
+LLC,L2,L2,L2,L2,LLC,4	1
+LLC,L2,L2,L2,LLC,L2,5	1
+LLC,L2,L2,L2,LLC,LLC,5	1
+LLC,L2,L2,LLC,L2,L2,4	1
+LLC,L2,L2,LLC,L2,LLC,4	1
+LLC,L2,L2,LLC,LLC,L2,4	1
+LLC,L2,L2,LLC,LLC,L2,5	2
+LLC,L2,L2,LLC,LLC,LLC,4	2
+LLC,L2,L2,LLC,LLC,LLC,5	6
+LLC,L2,L2,LLC,ZERO,ZERO,3	2
+LLC,L2,L2,ZERO,ZERO,ZERO,0	370400
+LLC,L2,L2,ZERO,ZERO,ZERO,1	399953
+LLC,L2,L2,ZERO,ZERO,ZERO,2	450117
+LLC,L2,LLC,L2,L2,L2,4	28
+LLC,L2,LLC,L2,L2,L2,5	6
+LLC,L2,LLC,L2,L2,LLC,5	1
+LLC,L2,LLC,L2,LLC,L2,4	1
+LLC,L2,LLC,L2,LLC,L2,5	1
+LLC,L2,LLC,L2,LLC,LLC,4	6
+LLC,L2,LLC,L2,LLC,LLC,5	1
+LLC,L2,LLC,L2,ZERO,ZERO,3	6
+LLC,L2,LLC,LLC,L2,L2,5	1
+LLC,L2,LLC,LLC,L2,LLC,4	2
+LLC,L2,LLC,LLC,LLC,L2,5	2
+LLC,L2,LLC,LLC,LLC,LLC,4	22
+LLC,L2,LLC,LLC,LLC,LLC,5	30
+LLC,L2,LLC,LLC,ZERO,ZERO,3	24
+LLC,L2,LLC,ZERO,ZERO,ZERO,0	334846
+LLC,L2,LLC,ZERO,ZERO,ZERO,1	346925
+LLC,L2,LLC,ZERO,ZERO,ZERO,2	397035
+LLC,LLC,MEMORY,MEMORY,MEMORY,MEMORY,4	48
+LLC,LLC,MEMORY,MEMORY,MEMORY,MEMORY,5	24
+LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,4	19
+LLC,LLC,MEMORY,MEMORY,MEMORY,LLC,5	21
+LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,4	11
+LLC,LLC,MEMORY,MEMORY,LLC,MEMORY,5	20
+LLC,LLC,MEMORY,MEMORY,LLC,LLC,4	14
+LLC,LLC,MEMORY,MEMORY,LLC,LLC,5	19
+LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,2	13
+LLC,LLC,MEMORY,MEMORY,ZERO,ZERO,3	19
+LLC,LLC,MEMORY,L2,L2,L2,4	709
+LLC,LLC,MEMORY,L2,L2,L2,5	56
+LLC,LLC,MEMORY,L2,L2,LLC,5	1
+LLC,LLC,MEMORY,L2,LLC,L2,5	1
+LLC,LLC,MEMORY,L2,LLC,LLC,4	1
+LLC,LLC,MEMORY,L2,ZERO,ZERO,2	58
+LLC,LLC,MEMORY,L2,ZERO,ZERO,3	125
+LLC,LLC,MEMORY,LLC,MEMORY,MEMORY,4	23
+LLC,LLC,MEMORY,LLC,MEMORY,MEMORY,5	7
+LLC,LLC,MEMORY,LLC,MEMORY,LLC,4	10
+LLC,LLC,MEMORY,LLC,MEMORY,LLC,5	3
+LLC,LLC,MEMORY,LLC,LLC,MEMORY,4	8
+LLC,LLC,MEMORY,LLC,LLC,MEMORY,5	11
+LLC,LLC,MEMORY,LLC,LLC,LLC,4	25
+LLC,LLC,MEMORY,LLC,LLC,LLC,5	38
+LLC,LLC,MEMORY,LLC,ZERO,ZERO,2	16
+LLC,LLC,MEMORY,LLC,ZERO,ZERO,3	29
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,0	243450
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,1	256902
+LLC,LLC,MEMORY,ZERO,ZERO,ZERO,2	266650
+LLC,LLC,L2,L2,L2,L2,4	7
+LLC,LLC,L2,L2,L2,L2,5	17
+LLC,LLC,L2,L2,L2,LLC,4	1
+LLC,LLC,L2,L2,LLC,L2,4	1
+LLC,LLC,L2,L2,LLC,L2,5	1
+LLC,LLC,L2,L2,LLC,LLC,4	3
+LLC,LLC,L2,L2,LLC,LLC,5	1
+LLC,LLC,L2,L2,ZERO,ZERO,3	4
+LLC,LLC,L2,LLC,L2,L2,4	2
+LLC,LLC,L2,LLC,L2,L2,5	1
+LLC,LLC,L2,LLC,L2,LLC,4	8
+LLC,LLC,L2,LLC,LLC,L2,4	5
+LLC,LLC,L2,LLC,LLC,L2,5	7
+LLC,LLC,L2,LLC,LLC,LLC,4	34
+LLC,LLC,L2,LLC,LLC,LLC,5	52
+LLC,LLC,L2,LLC,ZERO,ZERO,3	14
+LLC,LLC,L2,ZERO,ZERO,ZERO,0	331783
+LLC,LLC,L2,ZERO,ZERO,ZERO,1	348477
+LLC,LLC,L2,ZERO,ZERO,ZERO,2	401728
+LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,4	20
+LLC,LLC,LLC,MEMORY,MEMORY,MEMORY,5	13
+LLC,LLC,LLC,MEMORY,MEMORY,LLC,4	6
+LLC,LLC,LLC,MEMORY,MEMORY,LLC,5	7
+LLC,LLC,LLC,MEMORY,LLC,MEMORY,4	2
+LLC,LLC,LLC,MEMORY,LLC,MEMORY,5	11
+LLC,LLC,LLC,MEMORY,LLC,LLC,4	17
+LLC,LLC,LLC,MEMORY,LLC,LLC,5	19
+LLC,LLC,LLC,MEMORY,ZERO,ZERO,2	13
+LLC,LLC,LLC,MEMORY,ZERO,ZERO,3	9
+LLC,LLC,LLC,L2,L2,L2,4	1072
+LLC,LLC,LLC,L2,L2,L2,5	486
+LLC,LLC,LLC,L2,L2,LLC,4	4
+LLC,LLC,LLC,L2,L2,LLC,5	1
+LLC,LLC,LLC,L2,LLC,L2,4	6
+LLC,LLC,LLC,L2,LLC,L2,5	7
+LLC,LLC,LLC,L2,LLC,LLC,4	41
+LLC,LLC,LLC,L2,LLC,LLC,5	24
+LLC,LLC,LLC,L2,ZERO,ZERO,2	27
+LLC,LLC,LLC,L2,ZERO,ZERO,3	142
+LLC,LLC,LLC,LLC,MEMORY,MEMORY,4	16
+LLC,LLC,LLC,LLC,MEMORY,MEMORY,5	3
+LLC,LLC,LLC,LLC,MEMORY,LLC,4	18
+LLC,LLC,LLC,LLC,MEMORY,LLC,5	8
+LLC,LLC,LLC,LLC,L2,L2,4	5
+LLC,LLC,LLC,LLC,L2,L2,5	1
+LLC,LLC,LLC,LLC,L2,LLC,4	48
+LLC,LLC,LLC,LLC,L2,LLC,5	17
+LLC,LLC,LLC,LLC,LLC,MEMORY,4	26
+LLC,LLC,LLC,LLC,LLC,MEMORY,5	25
+LLC,LLC,LLC,LLC,LLC,L2,4	32
+LLC,LLC,LLC,LLC,LLC,L2,5	35
+LLC,LLC,LLC,LLC,LLC,LLC,4	982
+LLC,LLC,LLC,LLC,LLC,LLC,5	1164
+LLC,LLC,LLC,LLC,ZERO,ZERO,2	9
+LLC,LLC,LLC,LLC,ZERO,ZERO,3	568
+LLC,LLC,LLC,ZERO,ZERO,ZERO,0	3547119
+LLC,LLC,LLC,ZERO,ZERO,ZERO,1	3706213
+LLC,LLC,LLC,ZERO,ZERO,ZERO,2	3892914
+ZERO,ZERO,ZERO,MEMORY,ZERO,ZERO,3	1
+ZERO,ZERO,ZERO,L2,ZERO,ZERO,3	26
+ZERO,ZERO,ZERO,LLC,ZERO,ZERO,3	204
