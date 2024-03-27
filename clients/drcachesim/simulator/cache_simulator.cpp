@@ -1448,6 +1448,13 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
                 } else {
                     page_walk_res.push_back(ZERO);
                 }
+                /* In case, we want to implement Jovan's optimization where you only load the correct entry to cache + early return */
+                // if (i == pgtable_results.aux_info.selected_ecpt_way) {
+                //         // only touch the effective one
+                //     make_request(page_walk_res, TRACE_TYPE_PE1, pgtable_addr, core);
+                // } else {
+                //     page_walk_res.push_back(ZERO);
+                // } 
             } else {
                 page_walk_res.push_back(ZERO);
             }

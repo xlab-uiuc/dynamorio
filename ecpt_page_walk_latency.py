@@ -132,7 +132,8 @@ def calc_latency_with_way(line, cache_to_freq):
         if ele in access_to_latency:
             # cur_latency += access_to_latency[stat]
             stats.append(access_to_latency[ele])
-            cache_to_freq[ele] += frequency
+            if ele != "ZERO":
+                cache_to_freq[ele] += frequency
         else:
             print("Invalid stat: {}".format(ele))
     
@@ -291,7 +292,8 @@ if __name__ == "__main__":
     parser.add_argument('--file', type=str, help='An integer argument')
     parser.add_argument('--folder', type=str, help='folder of dynamorio logs. selected with ls | grep _dyna.log | grep -v png')
     parser.add_argument('--config', type=str, default='default', help='Option: default, asplos.')    
-    
+    parser.add_argument('--dry', type=bool, default=False, help='dry run')
+
     args = parser.parse_args()
 
     trailing_key = '_dyna.log'
@@ -301,6 +303,12 @@ if __name__ == "__main__":
     elif (args.config == 'asplos'):
         access_to_latency = asplos_access_to_latency
         trailing_key = '_dyna_asplos_config.log'
+    elif (args.config == 'asplos_smalltlb'):
+        access_to_latency = asplos_access_to_latency
+        trailing_key = '_dyna_asplos_smalltlb_config.log'
+    elif (args.config == 'one_access'):
+        access_to_latency = asplos_access_to_latency
+        trailing_key = '_dyna_asplos_smalltlb_config_oneacces.log'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
@@ -313,6 +321,10 @@ if __name__ == "__main__":
 
     bench_logs = get_dyna_results(folder, trailing_key)
     
+    if (args.dry):
+        print("bench_logs: {}".format('\n'.join(bench_logs)))
+        exit(0)
+
     print("bench_logs: {}".format(bench_logs))
 
     benches = []
