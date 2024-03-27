@@ -49,7 +49,7 @@ asplos_access_to_latency = {
     "L1": 2,
     "L2": 16,
     "LLC": 56,
-    "PWC": 4,
+    "PWC": 1,
     "ZERO": 0
 }
 
@@ -216,7 +216,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='An example script with arguments.')
     parser.add_argument('--file', type=str, help='An integer argument')
     parser.add_argument('--folder', type=str, help='folder of dynamorio logs. selected with ls | grep _dyna.log | grep -v png')
-    parser.add_argument('--config', type=str, default='default', help='Option: default, asplos.')    
+    parser.add_argument('--config', type=str, default='default', help='Option: default, asplos.')
+    parser.add_argument('--dry', type=bool, default=False, help='dry run')    
 
     args = parser.parse_args()
 
@@ -227,6 +228,12 @@ if __name__ == "__main__":
     elif (args.config == 'asplos'):
         access_to_latency = asplos_access_to_latency
         trailing_key = '_dyna_asplos_config.log'
+    elif (args.config == 'asplos_smalltlb'):
+        access_to_latency = asplos_access_to_latency
+        trailing_key = '_dyna_asplos_smalltlb_config.log'
+    elif (args.config == 'asplos_smalltlb_realpwc'):
+        access_to_latency = asplos_access_to_latency
+        trailing_key = '_dyna_asplos_smalltlb_realpwc_config.log'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
@@ -242,6 +249,9 @@ if __name__ == "__main__":
     # folder = os.path.join(parent_folder, arch)
     bench_logs = get_dyna_results(folder, trailing_key)
     
+    if (args.dry):
+        print("bench_logs: {}".format('\n'.join(bench_logs)))
+        exit(0)
 
     benches = []
     latencies = []
