@@ -49,7 +49,7 @@ asplos_access_to_latency = {
     "L1": 2,
     "L2": 16,
     "LLC": 56,
-    "PWC": 1,
+    "PWC": 4,
     "ZERO": 0
 }
 
