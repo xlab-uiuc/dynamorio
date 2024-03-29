@@ -53,6 +53,15 @@ asplos_access_to_latency = {
     "ZERO": 0
 }
 
+asplos_real_pwc_access_to_latency = {
+    "MEMORY": 200,
+    "L1": 2,
+    "L2": 16,
+    "LLC": 56,
+    "PWC": 1,
+    "ZERO": 0
+}
+
 access_to_latency = {}
 
 # paper reference: https://dl.acm.org/doi/pdf/10.1145/3489525.3511689
@@ -232,8 +241,10 @@ if __name__ == "__main__":
         access_to_latency = asplos_access_to_latency
         trailing_key = '_dyna_asplos_smalltlb_config.log'
     elif (args.config == 'asplos_smalltlb_realpwc'):
-        access_to_latency = asplos_access_to_latency
-        trailing_key = '_dyna_asplos_smalltlb_realpwc_config.log'
+        access_to_latency = asplos_real_pwc_access_to_latency
+        PUD_CWC_LATENCY = 1
+        PMD_CWC_LATENCY = 1
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
