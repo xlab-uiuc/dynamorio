@@ -189,11 +189,11 @@ def parse_page_walk_latency(file_name):
             # print("sub_latency: {} frequency: {}".format(sub_latency, frequency))
     avg_latency = total_latency / total_requests
 
-    for idx, layer in enumerate(per_layer_latency):
-        print("layer: {} latency: {}".format(idx, layer))
-        plot_histogram(layer, file_name + "_level_{}".format(idx))
+    # for idx, layer in enumerate(per_layer_latency):
+    #     print("layer: {} latency: {}".format(idx, layer))
+    #     plot_histogram(layer, file_name + "_level_{}".format(idx))
 
-    plot_histogram(latency_to_freq, file_name, log_scale=True, shape=(50, 10))
+    # plot_histogram(latency_to_freq, file_name, log_scale=True, shape=(50, 10))
     print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
     
     shutil.copy(file_name, OUTPUT_FOLDER)
@@ -244,6 +244,12 @@ if __name__ == "__main__":
         access_to_latency = asplos_real_pwc_access_to_latency
         PUD_CWC_LATENCY = 1
         PMD_CWC_LATENCY = 1
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
+    elif (args.config == 'asplos_smalltlb_realpwc_l2_20'):
+        access_to_latency = asplos_real_pwc_access_to_latency
+        PUD_CWC_LATENCY = 1
+        PMD_CWC_LATENCY = 1
+        access_to_latency['L2'] = 20
         trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
     else:
         print("Invalid config: {}".format(args.config))
