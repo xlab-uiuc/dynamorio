@@ -323,6 +323,12 @@ if __name__ == "__main__":
     elif (args.config == 'one_access'):
         access_to_latency = asplos_access_to_latency
         trailing_key = '_dyna_asplos_smalltlb_config_oneacces.log'
+    elif (args.config == 'asplos_smalltlb_realpwc_l2_20'):
+        access_to_latency = asplos_real_pwc_access_to_latency
+        PUD_CWC_LATENCY = 1
+        PMD_CWC_LATENCY = 1
+        access_to_latency['L2'] = 20
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
