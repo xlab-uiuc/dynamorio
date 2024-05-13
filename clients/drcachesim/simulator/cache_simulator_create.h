@@ -105,6 +105,8 @@ struct cache_simulator_knobs_t {
 
     trans_arch arch;
     bool ecpt_early_return;
+    bool ecpt_cache_correct_only;
+
     bool mmu_to_l2;
     bool pwc_asplos_config;
 };

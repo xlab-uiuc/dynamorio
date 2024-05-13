@@ -79,6 +79,9 @@ droption_t<bool> op_ecpt_early_return(
     DROPTION_SCOPE_ALL, "early_return", true, "Early return for ecpt support for ECPT, results not only include ECPT memory references, but also which way it selects",
     "Directs the simulator to use a trace file ");
 
+droption_t<bool> op_ecpt_cache_correct_only(
+    DROPTION_SCOPE_ALL, "cache_correct_only", false, "ECPT simulation cache cache correct entries only",
+    "Directs the simulator to use a trace file ");
 
 droption_t<bool> op_mmu_to_l2(
     DROPTION_SCOPE_ALL, "mmu_to_l2", false, "MMU connects to L2 cache instead of L1 cache",
