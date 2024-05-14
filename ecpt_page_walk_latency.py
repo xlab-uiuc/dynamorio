@@ -201,7 +201,7 @@ def plot_histogram(frequency_dict, file_name, log_scale=False, shape=(10, 6)):
     plt.grid(axis='y')
     
     # Show the plot
-    print("save to file: {}.png".format(file_name))
+    # print("save to file: {}.png".format(file_name))
     plt.savefig(file_name + '.png')
     plt.close()
     
@@ -329,6 +329,17 @@ if __name__ == "__main__":
         PMD_CWC_LATENCY = 1
         access_to_latency['L2'] = 20
         trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
+    elif (args.config == 'asplos_smalltlb_realpwc_correct_entry_only'):
+        access_to_latency = asplos_real_pwc_access_to_latency
+        PUD_CWC_LATENCY = 1
+        PMD_CWC_LATENCY = 1
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc_correct_entry_only.log'
+    elif (args.config == 'asplos_smalltlb_realpwc_correct_entry_only_l2_20'):
+        access_to_latency = asplos_real_pwc_access_to_latency
+        PUD_CWC_LATENCY = 1
+        PMD_CWC_LATENCY = 1
+        access_to_latency['L2'] = 20
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc_correct_entry_only.log'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
