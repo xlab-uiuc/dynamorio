@@ -121,6 +121,8 @@ private:
     void print_radix_trans_info(radix_trans_info & info);
     void print_ecpt_trans_info(ecpt_trans_info & info);
 
+    void set_entry_non_memory(uint8_t curr_header, uint8_t next_header);
+
     std::ifstream fstream;
     trace_entry_t entry_copy;
     int verbose;

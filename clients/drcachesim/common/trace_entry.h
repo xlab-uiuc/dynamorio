@@ -301,6 +301,7 @@ struct _memref_pgtable_results {
     ecpt_auxilaries_t aux_info;
     uint32_t num_steps;
     int success;
+    bool is_non_memory;
     /* add a type field to disingtuish radix from ECPT */
     void print() const;
 };

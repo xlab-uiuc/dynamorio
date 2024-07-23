@@ -76,5 +76,5 @@ void _memref_pgtable_results::print() const {
                aux_info.pud_header.byte);
     }
 
-    printf("success: %d\n", success);
+    printf("success: %d is_non_memory=%d\n", success, is_non_memory);
 }

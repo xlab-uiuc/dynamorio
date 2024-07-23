@@ -778,6 +778,9 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
         std::cerr << "core "<< core << "\n";
     }
     
+    perf_result_t perf_res = {0};
+    perf_res.core = core;
+
     uint64_t addr;
 
     uint64_t virtual_page_addr = 0;
@@ -789,11 +792,13 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
       virtual_page_addr = memref.instr.addr >> NUM_PAGE_OFFSET_BITS;
       page_offset       = memref.instr.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
       instrs_type       = 1;
+      perf_res.is_iftech = 1;
     } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
       addr              = memref.data.addr;
       virtual_page_addr = memref.data.addr >> NUM_PAGE_OFFSET_BITS;
       page_offset       = memref.data.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
       instrs_type       = 2;
+      perf_res.is_iftech = 0;
     }
 
     /* virtual_full_page_addr is the virtual address without page offset */
@@ -820,16 +825,17 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
         new_memref.instr.addr = memref.instr.pgtable_results.paddr;
         pgwalk_steps = memref.instr.pgtable_results.num_steps;
         walk_success = memref.instr.pgtable_results.success;
-        
+        perf_res.is_non_memory_exec = memref.instr.pgtable_results.is_non_memory;
     } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
         // new_memref.data.addr  = physical_page_addr + page_offset;
         new_memref.data.addr = memref.data.pgtable_results.paddr;
         pgwalk_steps = memref.data.pgtable_results.num_steps;
         walk_success = memref.data.pgtable_results.success;
-        
+        perf_res.is_non_memory_exec = memref.data.pgtable_results.is_non_memory;
     } else if (memref.flush.type == TRACE_TYPE_INSTR_FLUSH || memref.flush.type == TRACE_TYPE_DATA_FLUSH) {
         pgwalk_steps = memref.flush.pgtable_results.num_steps;
         walk_success = memref.flush.pgtable_results.success;
+        perf_res.is_non_memory_exec = memref.flush.pgtable_results.is_non_memory;
     }
 
     // issue a TLB request will also refill the TLB
@@ -843,6 +849,7 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
         }
     }
 
+    perf_res.tlb_hit = is_TLB_hit;
     // process TLB miss
     if (!is_TLB_hit) {
       if (knobs.verbose >= 2) {
@@ -880,6 +887,7 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
       }
 
        print_page_walk_res(page_walk_res, pwc_hit_level, pgwalk_steps);
+        perf_res.pgwalk_res = page_walk_res;
 
       // Update page walk trajectory statistics
       hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
@@ -904,7 +912,8 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
                         << " @" << (void *)new_memref.instr.addr << " instr x"
                         << new_memref.instr.size << "\n";
             }
-            l1_icaches[core]->request(new_memref);
+            search_res = l1_icaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
         } else if (new_memref.data.type == TRACE_TYPE_READ ||
                 new_memref.data.type == TRACE_TYPE_WRITE ||
                 // We may potentially handle prefetches differently.
@@ -920,6 +929,7 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
                         << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
             }
             search_res = l1_dcaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
         } else if (new_memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
             if (knobs.verbose >= 3) {
                 std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
@@ -949,7 +959,12 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
             error_string = "Unhandled memref type " + std::to_string(new_memref.data.type);
             return false;
         }
-    
+
+        if (IN_SET(this->perf_to_cnt, perf_res)) {
+            this->perf_to_cnt[perf_res]++;
+        } else {
+            this->perf_to_cnt[perf_res] = 1;
+        }
      
         // Simulate contetnion in caches 
         // Firstly, simulate conetion in LLC
@@ -1352,6 +1367,9 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         std::cerr << "core " << core << "\n";
     }
 
+    perf_result_t perf_res = {0};
+    perf_res.core = core;
+
     uint64_t addr;
 
     uint64_t virtual_page_addr = 0;
@@ -1364,6 +1382,8 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         virtual_page_addr = memref.instr.addr >> NUM_PAGE_OFFSET_BITS;
         page_offset = memref.instr.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
         instrs_type = 1;
+
+        perf_res.is_iftech = 1;
     } else if (memref.data.type == TRACE_TYPE_READ ||
                memref.data.type == TRACE_TYPE_WRITE ||
                type_is_prefetch(memref.data.type)) {
@@ -1371,6 +1391,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         virtual_page_addr = memref.data.addr >> NUM_PAGE_OFFSET_BITS;
         page_offset = memref.data.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
         instrs_type = 2;
+        perf_res.is_iftech = 0;
     }
 
     /* virtual_full_page_addr is the virtual address without page offset */
@@ -1415,6 +1436,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         pgtable_results = memref.flush.pgtable_results;
     }
 
+    perf_res.is_non_memory_exec = pgtable_results.is_non_memory;
     // issue a TLB request will also refill the TLB
     // we only refill it when the page walk is successful
     bool is_TLB_hit = false;
@@ -1428,6 +1450,9 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
     }
 
     hit_info_t hit_info = {false, false};
+
+    perf_res.tlb_hit = is_TLB_hit;
+
     // process TLB miss
     if (!is_TLB_hit) {
         if (knobs.verbose >= 2) {
@@ -1467,6 +1492,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         }
 
         print_page_walk_res_ecpt(page_walk_res, ways_to_visit);
+        perf_res.pgwalk_res = page_walk_res;
 
         // Update page walk trajectory statistics
         hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
@@ -1504,7 +1530,8 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
                           << " @" << (void *)new_memref.instr.addr << " instr x"
                           << new_memref.instr.size << "\n";
             }
-            l1_icaches[core]->request(new_memref);
+            search_res = l1_icaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
         } else if (new_memref.data.type == TRACE_TYPE_READ ||
                    new_memref.data.type == TRACE_TYPE_WRITE ||
                    // We may potentially handle prefetches differently.
@@ -1522,6 +1549,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
                           << "\n";
             }
             search_res = l1_dcaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
         } else if (new_memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
             if (knobs.verbose >= 3) {
                 std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid
@@ -1556,6 +1584,12 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
             error_string =
                 "Unhandled memref type " + std::to_string(new_memref.data.type);
             return false;
+        }
+
+        if (IN_SET(this->perf_to_cnt, perf_res)) {
+            this->perf_to_cnt[perf_res]++;
+        } else {
+            this->perf_to_cnt[perf_res] = 1;
         }
 
         if (!is_TLB_hit) {
@@ -1876,7 +1910,19 @@ cache_simulator_t::print_results()
             std::cerr << "\t" << it->second << std::endl;
         }
     }
-    
+
+    std::cerr << "~~~~~~ detailed perf stats ~~~~~~" << std::endl;
+    for (auto it = perf_to_cnt.begin(); it != perf_to_cnt.end(); it++) {
+        perf_result_t perf_res = it->first;
+        std::cerr << "core=" << perf_res.core << ",ifetch=" << perf_res.is_iftech << ",non_mem= " << perf_res.is_non_memory_exec
+            << ",tlb_hit= " << perf_res.tlb_hit << ",";
+        for (unsigned int i = 0; i < perf_res.pgwalk_res.size(); i++) {
+            std::cerr << print_hm_stats[perf_res.pgwalk_res[i]] << ",";
+        }
+        std::cerr << "data=" << print_hm_stats[perf_res.data_cache] << ',';
+        std::cerr << "\t" << it->second << std::endl;
+    }
+
     return true;
 }
 

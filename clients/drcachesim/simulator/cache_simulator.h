@@ -170,6 +170,41 @@ protected:
     page_walk_hm_result_t page_walk_res;
     hm_full_stats_with_way_t hm_full_stats_with_way;
 
+
+    struct perf_result_t{
+      int core;
+      bool is_iftech;
+      bool is_non_memory_exec;
+      bool tlb_hit;
+      page_walk_hm_result_t pgwalk_res;
+      cache_result_t data_cache;
+
+      bool operator<(const perf_result_t & other) const {
+        if (core != other.core) {
+          return core < other.core;
+        }
+
+        if (is_iftech != other.is_iftech) {
+          return is_iftech < other.is_iftech;
+        }
+
+        if (is_non_memory_exec != other.is_non_memory_exec) {
+          return is_non_memory_exec < other.is_non_memory_exec;
+        }
+
+        if (tlb_hit != other.tlb_hit) {
+          return tlb_hit < other.tlb_hit;
+        }
+        
+        if (pgwalk_res != other.pgwalk_res) {
+          return pgwalk_res < other.pgwalk_res;
+        }
+        return data_cache < other.data_cache;
+      }
+    };
+
+    std::map<perf_result_t, uint64_t> perf_to_cnt;
+
     bool process_memref_radix(const memref_t &memref);
     bool process_memref_ecpt(const memref_t &memref);
 

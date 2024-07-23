@@ -158,7 +158,7 @@ void qemu_file_reader_t::print_ecpt_trans_info(ecpt_trans_info &record)
 int get_entry_type(uint8_t header,  uint8_t access_rw, trace_entry_t & entry) 
 {
     if (header == BIN_RECORD_TYPE_MEM) {
-        entry.type = access_rw ? TRACE_TYPE_READ  : TRACE_TYPE_WRITE;
+        entry.type = access_rw ? TRACE_TYPE_READ : TRACE_TYPE_WRITE;
     } else if (header == BIN_RECORD_TYPE_FEC) {
         entry.type = TRACE_TYPE_INSTR;
     } else {
@@ -239,12 +239,21 @@ int qemu_file_reader_t::parse_qemu_line_ecpt(ecpt_trans_info & info)
     return 0;
 }
 
+void
+qemu_file_reader_t::set_entry_non_memory(uint8_t curr_header, uint8_t next_header)
+{
+    entry_copy.pgtable_results.is_non_memory =
+        curr_header == BIN_RECORD_TYPE_FEC && next_header == BIN_RECORD_TYPE_FEC;
+}
+
 static int64_t n_inst = 0;
 trace_entry_t *
 qemu_file_reader_t::read_next_entry()
 {
-    radix_trans_info radix_info;
-    ecpt_trans_info ecpt_info;
+    radix_trans_info radix_info = {0};
+    radix_trans_info radix_info_next  = {0};
+    ecpt_trans_info ecpt_info  = {0};
+    ecpt_trans_info ecpt_info_next  = {0};
 
     if (max_ref != -1 && n_inst++ >= max_ref) {
         return NULL;
@@ -254,15 +263,32 @@ qemu_file_reader_t::read_next_entry()
         
         if (arch == RADIX) {
             fstream.read((char *) &radix_info, sizeof(radix_info));
+            if (fstream) {
+                std::streampos originalPos = fstream.tellg();
+                fstream.read((char *)&radix_info_next, sizeof(radix_info_next));
+                fstream.seekg(originalPos);
+            }
+
             if (this->parse_qemu_line_radix(radix_info) < 0) {
                 return NULL;
             }
+
+            this->set_entry_non_memory(radix_info.header, radix_info_next.header);
             return &entry_copy;
         } else {
             fstream.read((char *) &ecpt_info, sizeof(ecpt_info));
+
+            if (fstream) {
+                std::streampos originalPos = fstream.tellg();
+                fstream.read((char *)&ecpt_info_next, sizeof(ecpt_info_next));
+                fstream.seekg(originalPos);
+            }
+
             if (this->parse_qemu_line_ecpt(ecpt_info) < 0) {
                 return NULL;
             }
+
+            this->set_entry_non_memory(radix_info.header, radix_info_next.header);
             return &entry_copy;
         }
     } else {
