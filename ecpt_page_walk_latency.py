@@ -277,7 +277,7 @@ def parse_page_walk_latency(file_name):
 
 def get_dyna_results(folder, trailing_key):
     print('folder: {}'.format(folder))
-    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(trailing_key) + ' | grep -v png' ]
+    command = ['bash', '-c', 'ls ' + folder + ' | grep {}'.format(trailing_key) + ' | grep -v png' + ' | grep -v always']
     print('command: {}'.format(' '.join(command)))
     try:
         # Run the grep command and capture the stdout and stderr
@@ -302,7 +302,8 @@ if __name__ == "__main__":
     parser.add_argument('--folder', type=str, help='folder of dynamorio logs. selected with ls | grep _dyna.log | grep -v png')
     parser.add_argument('--config', type=str, default='default', help='Option: default, asplos.')    
     parser.add_argument('--dry', type=bool, default=False, help='dry run')
-
+    parser.add_argument('--mem', type=int, default=200, help='memory access latency')
+    
     args = parser.parse_args()
 
     trailing_key = '_dyna.log'
@@ -329,6 +330,21 @@ if __name__ == "__main__":
         PMD_CWC_LATENCY = 1
         access_to_latency['L2'] = 20
         trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
+    elif (args.config == 'asplos_smalltlb_realpwc_change_mem'):
+        access_to_latency = asplos_real_pwc_access_to_latency
+        PUD_CWC_LATENCY = 1
+        PMD_CWC_LATENCY = 1
+        
+        # ecpt apply cache only
+        access_to_latency['L2'] = 16
+        access_to_latency['LLC'] = 56
+        access_to_latency['MEMORY'] = args.mem
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc_correct_entry_only.log'
+        
+        # access_to_latency['L2'] = 18
+        # access_to_latency['LLC'] = 64
+        # access_to_latency['MEMORY'] = 172
+        # trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
     elif (args.config == 'asplos_smalltlb_realpwc_correct_entry_only'):
         access_to_latency = asplos_real_pwc_access_to_latency
         PUD_CWC_LATENCY = 1
