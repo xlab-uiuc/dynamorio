@@ -57,6 +57,10 @@ struct hit_info_t {
   bool pud_hit;
 };
 
+#define FRONTEND_FETCH_SIZE (16UL)
+#define FRONTEND_FETCH_MASK (~(FRONTEND_FETCH_SIZE - 1))
+#define MAX_CPU_COUNT 64
+
 class cache_simulator_t : public simulator_t {
 public:
     // This constructor is used when the cache hierarchy is configured
@@ -173,7 +177,8 @@ protected:
 
     struct perf_result_t{
       int core;
-      bool is_iftech;
+      bool is_inst;
+      bool cached_ifb;
       bool is_non_memory_exec;
       bool tlb_hit;
       page_walk_hm_result_t pgwalk_res;
@@ -185,12 +190,16 @@ protected:
           return core < other.core;
         }
 
-        if (is_iftech != other.is_iftech) {
-          return is_iftech < other.is_iftech;
+        if (is_inst != other.is_inst) {
+          return is_inst < other.is_inst;
         }
 
         if (is_non_memory_exec != other.is_non_memory_exec) {
           return is_non_memory_exec < other.is_non_memory_exec;
+        }
+
+        if (cached_ifb != other.cached_ifb) {
+          return cached_ifb < other.cached_ifb;
         }
 
         if (tlb_hit != other.tlb_hit) {
@@ -241,6 +250,7 @@ protected:
     std::unordered_map<std::string, cache_t *> other_caches; // Non-L1, non-LLC caches
     std::unordered_map<std::string, cache_t *> all_caches;   // All caches.
 
+    uint64_t ins_fetched[MAX_CPU_COUNT];
 private:
     bool is_warmed_up;
 };

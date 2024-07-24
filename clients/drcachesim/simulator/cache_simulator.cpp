@@ -792,13 +792,13 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
       virtual_page_addr = memref.instr.addr >> NUM_PAGE_OFFSET_BITS;
       page_offset       = memref.instr.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
       instrs_type       = 1;
-      perf_res.is_iftech = 1;
+      perf_res.is_inst = 1;
     } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
       addr              = memref.data.addr;
       virtual_page_addr = memref.data.addr >> NUM_PAGE_OFFSET_BITS;
       page_offset       = memref.data.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
       instrs_type       = 2;
-      perf_res.is_iftech = 0;
+      perf_res.is_inst = 0;
     }
 
     /* virtual_full_page_addr is the virtual address without page offset */
@@ -826,6 +826,38 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
         pgwalk_steps = memref.instr.pgtable_results.num_steps;
         walk_success = memref.instr.pgtable_results.success;
         perf_res.is_non_memory_exec = memref.instr.pgtable_results.is_non_memory;
+
+        uint64_t ins_line = memref.instr.addr & FRONTEND_FETCH_MASK;
+
+        if (knobs.verbose >= 2) {
+            printf("ins_line %lx ins_fetched[%d] %lx\n", ins_line, core, ins_fetched[core]);
+        }
+
+        if (ins_fetched[core] == ins_line) {
+            /* no need for ifetch TLB */
+            perf_res.cached_ifb = 1;
+            perf_res.tlb_hit = 0;
+            perf_res.data_cache = ZERO;
+
+            if (knobs.verbose >= 2) {
+                std::cerr << "perf_res.cached_ifb " << perf_res.cached_ifb << "\n";
+            }
+
+            if (IN_SET(this->perf_to_cnt, perf_res)) {
+                this->perf_to_cnt[perf_res]++;
+            } else {
+                this->perf_to_cnt[perf_res] = 1;
+            }
+
+            return true;
+        }
+        
+        if (knobs.verbose >= 2) {
+            std::cerr << "perf_res.cached_ifb " << perf_res.cached_ifb << "\n";
+        }
+
+        ins_fetched[core] = ins_line;
+
     } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
         // new_memref.data.addr  = physical_page_addr + page_offset;
         new_memref.data.addr = memref.data.pgtable_results.paddr;
@@ -1383,7 +1415,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         page_offset = memref.instr.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
         instrs_type = 1;
 
-        perf_res.is_iftech = 1;
+        perf_res.is_inst = 1;
     } else if (memref.data.type == TRACE_TYPE_READ ||
                memref.data.type == TRACE_TYPE_WRITE ||
                type_is_prefetch(memref.data.type)) {
@@ -1391,7 +1423,7 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         virtual_page_addr = memref.data.addr >> NUM_PAGE_OFFSET_BITS;
         page_offset = memref.data.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
         instrs_type = 2;
-        perf_res.is_iftech = 0;
+        perf_res.is_inst = 0;
     }
 
     /* virtual_full_page_addr is the virtual address without page offset */
@@ -1916,7 +1948,9 @@ cache_simulator_t::print_results()
     std::cerr << "~~~~~~ detailed perf stats ~~~~~~" << std::endl;
     for (auto it = perf_to_cnt.begin(); it != perf_to_cnt.end(); it++) {
         perf_result_t perf_res = it->first;
-        std::cerr << "core=" << perf_res.core << ",ifetch=" << perf_res.is_iftech << ",non_mem= " << perf_res.is_non_memory_exec
+        std::cerr << "core=" << perf_res.core << ",is_inst=" << perf_res.is_inst
+            << ",is_non_memory_exec=" << perf_res.is_non_memory_exec 
+            <<",cached_ifb=" << perf_res.cached_ifb
             << ",tlb_hit= " << perf_res.tlb_hit << ",";
         for (unsigned int i = 0; i < perf_res.pgwalk_res.size(); i++) {
             std::cerr << print_hm_stats[perf_res.pgwalk_res[i]] << ",";
