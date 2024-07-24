@@ -1511,6 +1511,8 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
             } else {
                 hm_full_stats_with_way.insert(std::make_pair(res_way_pair, 1));
             }
+
+            perf_res.ecpt_selected_way = pgtable_results.aux_info.selected_ecpt_way;
         }
         
     }   
@@ -1918,6 +1920,9 @@ cache_simulator_t::print_results()
             << ",tlb_hit= " << perf_res.tlb_hit << ",";
         for (unsigned int i = 0; i < perf_res.pgwalk_res.size(); i++) {
             std::cerr << print_hm_stats[perf_res.pgwalk_res[i]] << ",";
+        }
+        if (knobs.arch == ECPT && knobs.ecpt_early_return) {
+            std::cerr << "selected_way=" << perf_res.ecpt_selected_way << ",";
         }
         std::cerr << "data=" << print_hm_stats[perf_res.data_cache] << ',';
         std::cerr << "\t" << it->second << std::endl;

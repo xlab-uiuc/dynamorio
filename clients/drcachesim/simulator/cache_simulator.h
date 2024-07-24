@@ -177,6 +177,7 @@ protected:
       bool is_non_memory_exec;
       bool tlb_hit;
       page_walk_hm_result_t pgwalk_res;
+      uint32_t ecpt_selected_way;
       cache_result_t data_cache;
 
       bool operator<(const perf_result_t & other) const {
@@ -199,6 +200,11 @@ protected:
         if (pgwalk_res != other.pgwalk_res) {
           return pgwalk_res < other.pgwalk_res;
         }
+
+        if (ecpt_selected_way != other.ecpt_selected_way) {
+          return ecpt_selected_way < other.ecpt_selected_way;
+        }
+
         return data_cache < other.data_cache;
       }
     };
