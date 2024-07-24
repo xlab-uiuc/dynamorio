@@ -127,7 +127,7 @@ void qemu_file_reader_t::print_ecpt_trans_info(ecpt_trans_info &record)
 {
     if (verbose >= 2) {
         if (record.header == BIN_RECORD_TYPE_MEM) {
-            printf("%s: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
+            printf("---[%s]: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
                    "pte=%016lx, leaves=",
                    record.access_rw ? "Load " : "Store", record.access_cpu,
                    record.access_sz, record.vaddr, record.paddr, record.pte);
@@ -138,7 +138,7 @@ void qemu_file_reader_t::print_ecpt_trans_info(ecpt_trans_info &record)
             print_leaves_helper(record.cwt_leaves, ECPT_CWT_LEAVES);
             printf("\n");
         } else if (record.header == BIN_RECORD_TYPE_FEC) {
-            printf("Fetch: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
+            printf("---[Fetch]: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
                    "pte=%016lx, leaves=",
                    record.access_cpu, record.access_sz, record.vaddr, record.paddr,
                    record.pte);
@@ -288,7 +288,7 @@ qemu_file_reader_t::read_next_entry()
                 return NULL;
             }
 
-            this->set_entry_non_memory(radix_info.header, radix_info_next.header);
+            this->set_entry_non_memory(ecpt_info.header, ecpt_info_next.header);
             return &entry_copy;
         }
     } else {

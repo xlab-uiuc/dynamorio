@@ -1451,6 +1451,38 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
         walk_success = memref.instr.pgtable_results.success;
 
         pgtable_results = memref.instr.pgtable_results;
+
+        uint64_t ins_line = memref.instr.addr & FRONTEND_FETCH_MASK;
+
+        if (knobs.verbose >= 2) {
+            printf("ins_line %lx ins_fetched[%d] %lx\n", ins_line, core, ins_fetched[core]);
+        }
+
+        if (ins_fetched[core] == ins_line) {
+            /* no need for ifetch TLB */
+            perf_res.cached_ifb = 1;
+            perf_res.is_non_memory_exec = pgtable_results.is_non_memory;
+            perf_res.tlb_hit = 0;
+            perf_res.data_cache = ZERO;
+
+            if (knobs.verbose >= 2) {
+                std::cerr << "perf_res.cached_ifb " << perf_res.cached_ifb << "\n";
+            }
+
+            if (IN_SET(this->perf_to_cnt, perf_res)) {
+                this->perf_to_cnt[perf_res]++;
+            } else {
+                this->perf_to_cnt[perf_res] = 1;
+            }
+
+            return true;
+        }
+        
+        if (knobs.verbose >= 2) {
+            std::cerr << "perf_res.cached_ifb " << perf_res.cached_ifb << "\n";
+        }
+
+        ins_fetched[core] = ins_line;
     } else if (memref.data.type == TRACE_TYPE_READ ||
                memref.data.type == TRACE_TYPE_WRITE ||
                type_is_prefetch(memref.data.type)) {
@@ -1552,20 +1584,35 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
     /* search result for data paddr */
     cache_result_t search_res;
     if (walk_success) {
+        std::vector<std::string> page_walk_res_str {
+            "MEMORY"
+            , "L1"
+            , "L2"
+            , "LLC"
+            , "WRONG"
+            , "RANGE_HIT"
+            , "RANGE_MISS"
+            , "PWC"
+            , "ZERO"
+        };
+
         if (type_is_instr(new_memref.instr.type) ||
             new_memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
             if (knobs.verbose >= 2) {
                 std::cerr << "Go to L1I\n";
             }
+            
+            search_res = l1_icaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
+            
             if (knobs.verbose >= 3) {
                 std::cerr << "Go to L1I\n";
                 std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid
                           << ":: "
                           << " @" << (void *)new_memref.instr.addr << " instr x"
-                          << new_memref.instr.size << "\n";
+                          << new_memref.instr.size 
+                          << "search_res" << page_walk_res_str[search_res]  << "\n";
             }
-            search_res = l1_icaches[core]->request(new_memref);
-            perf_res.data_cache = search_res;
         } else if (new_memref.data.type == TRACE_TYPE_READ ||
                    new_memref.data.type == TRACE_TYPE_WRITE ||
                    // We may potentially handle prefetches differently.
@@ -1574,16 +1621,18 @@ cache_simulator_t::process_memref_ecpt(const memref_t &memref)
             if (knobs.verbose >= 2) {
                 std::cerr << "Go to L1D\n";
             }
+            
+            search_res = l1_dcaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
+            
             if (knobs.verbose >= 3) {
                 std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid
                           << ":: "
                           << " @" << (void *)new_memref.data.pc << " "
                           << trace_type_names[new_memref.data.type] << " "
                           << (void *)new_memref.data.addr << " x" << new_memref.data.size
-                          << "\n";
+                          << "search_res" << page_walk_res_str[search_res]  << "\n";
             }
-            search_res = l1_dcaches[core]->request(new_memref);
-            perf_res.data_cache = search_res;
         } else if (new_memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
             if (knobs.verbose >= 3) {
                 std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid
