@@ -192,11 +192,11 @@ def parse_page_walk_latency(file_name):
             # print("sub_latency: {} frequency: {}".format(sub_latency, frequency))
     avg_latency = total_latency / total_requests
 
-    # for idx, layer in enumerate(per_layer_latency):
-    #     print("layer: {} latency: {}".format(idx, layer))
-    #     plot_histogram(layer, file_name + "_level_{}".format(idx))
+    for idx, layer in enumerate(per_layer_latency):
+        print("layer: {} latency: {}".format(idx, layer))
+        plot_histogram(layer, file_name + "_level_{}".format(idx))
 
-    # plot_histogram(latency_to_freq, file_name, log_scale=True, shape=(50, 10))
+    plot_histogram(latency_to_freq, file_name, log_scale=True, shape=(50, 10))
     print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
     
     shutil.copy(file_name, OUTPUT_FOLDER)
@@ -270,6 +270,16 @@ if __name__ == "__main__":
         # access_to_latency['LLC'] = 64
         # access_to_latency['MEMORY'] = 172
         # trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
+    elif (args.config == 'real_app'):
+        access_to_latency = asplos_real_pwc_access_to_latency
+        PUD_CWC_LATENCY = 1
+        PMD_CWC_LATENCY = 1
+        
+        # ecpt apply cache only
+        access_to_latency['L2'] = 16
+        access_to_latency['LLC'] = 56
+        access_to_latency['MEMORY'] = args.mem
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc_with_ifetch.log'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
