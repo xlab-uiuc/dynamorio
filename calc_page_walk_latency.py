@@ -177,6 +177,9 @@ def parse_page_walk_latency(file_name):
         for index, line in enumerate(file):
             if index <= start_line:
                 continue
+            if line.startswith("~~~~~~"):
+                break
+                     
             sub_latency, frequency = calc_latency(line, per_layer_latency)
             
             if sub_latency in latency_to_freq:

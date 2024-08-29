@@ -233,6 +233,9 @@ def parse_page_walk_latency(file_name):
         for index, line in enumerate(file):
             if index <= start_line:
                 continue
+            
+            if line.startswith("~~~~~~"):
+                break
             correct_latency, max_latency, parallel_latency, frequency = calc_latency_with_way(line, base_dict)
             # print("latency breakdown: {} frequency: {}".format(sub_latency / frequency, frequency))
             total_latency_max += max_latency * frequency
