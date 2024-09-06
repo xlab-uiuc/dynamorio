@@ -537,6 +537,16 @@ droption_t<int>::convert_from_string(const std::string s)
     value = atoi(s.c_str());
     return true;
 }
+
+template <>
+inline bool
+droption_t<int64_t>::convert_from_string(const std::string s)
+{
+    value = std::stoll(s);
+    return true;
+}
+
+
 template <>
 inline bool
 droption_t<unsigned int>::convert_from_string(const std::string s)
@@ -655,6 +665,16 @@ droption_t<unsigned int>::default_as_string() const
     stream << std::dec << defval;
     return stream.str();
 }
+
+template <>
+inline std::string
+droption_t<int64_t>::default_as_string() const
+{
+    std::ostringstream stream;
+    stream << std::dec << defval;
+    return stream.str();
+}
+
 template <>
 inline std::string
 droption_t<double>::default_as_string() const

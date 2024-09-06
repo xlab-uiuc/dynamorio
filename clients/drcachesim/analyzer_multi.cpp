@@ -61,10 +61,10 @@ analyzer_multi_t::analyzer_multi_t()
         
         if (op_trans_arch.get_value() == "radix") {
             trace_iter = new qemu_file_reader_t(
-                op_qemu_mem_trace.get_value().c_str(), op_verbose.get_value(), RADIX, op_max_ref.get_value());
+                op_qemu_mem_trace.get_value().c_str(), op_verbose.get_value(), RADIX, op_max_ref.get_value(), op_max_inst.get_value());
         } else if (op_trans_arch.get_value() == "ecpt") {
             trace_iter = new qemu_file_reader_t(
-                op_qemu_mem_trace.get_value().c_str(), op_verbose.get_value(), ECPT, op_max_ref.get_value());
+                op_qemu_mem_trace.get_value().c_str(), op_verbose.get_value(), ECPT, op_max_ref.get_value(), op_max_inst.get_value());
         } else {
             success = false;
             error_string = "invalid arch " + op_trans_arch.get_value();

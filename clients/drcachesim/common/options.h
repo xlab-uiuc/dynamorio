@@ -70,6 +70,7 @@ extern droption_t<bool> op_ecpt_cache_correct_only;
 extern droption_t<bool> op_mmu_to_l2;
 extern droption_t<bool> op_pwc_asplos_config;
 extern droption_t<int> op_max_ref;
+extern droption_t<int64_t> op_max_inst;
 extern droption_t<std::string> op_module_file;
 extern droption_t<unsigned int> op_num_cores;
 extern droption_t<unsigned int> op_line_size;

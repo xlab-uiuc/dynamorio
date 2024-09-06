@@ -92,7 +92,11 @@ droption_t<bool> op_pwc_asplos_config(
     "MMU cache connectivity");
 
 droption_t<int> op_max_ref(
-    DROPTION_SCOPE_ALL, "max_ref", -1, "max number of insts to simulate",
+    DROPTION_SCOPE_ALL, "max_ref", -1, "max number of references to simulate",
+    "MMU cache connectivity");
+
+droption_t<int64_t> op_max_inst(
+    DROPTION_SCOPE_ALL, "max_inst", -1, "max number of instructions to simulate",
     "MMU cache connectivity");
 
 

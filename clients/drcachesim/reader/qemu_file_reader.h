@@ -101,7 +101,8 @@ enum trans_arch {
 class qemu_file_reader_t : public reader_t {
 public:
     qemu_file_reader_t();
-    explicit qemu_file_reader_t(const char *file_name, int verbosity, trans_arch a, int max_ref);
+    explicit qemu_file_reader_t(const char *file_name, int verbosity, trans_arch a,
+                                int max_ref, int64_t max_inst);
     virtual ~qemu_file_reader_t();
     virtual bool
     init();
@@ -128,6 +129,7 @@ private:
     int verbose;
     trans_arch arch;
     int64_t max_ref;
+    int64_t max_inst;
 };
 
 #endif /* _QEMU_FILE_READER_H_ */
