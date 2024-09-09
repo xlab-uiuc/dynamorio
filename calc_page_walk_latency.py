@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import shutil
 
+import re
+import socket
+
 """
 CPU Caches:
   L1 Data 48K (x32)
@@ -200,7 +203,46 @@ def parse_page_walk_latency(file_name):
     print("avg_latency: {} total_request: {}".format(avg_latency, total_requests))
     
     shutil.copy(file_name, OUTPUT_FOLDER)
-    return avg_latency
+    return (avg_latency,), total_requests
+
+
+def get_num_request(dyna_log_path):
+    number = 0
+    with open(dyna_log_path, 'r') as file:
+        for _, line in enumerate(file):
+            if line.startswith('num_requests'):  
+                match = re.search(r'(\d+)', line)
+                if match:
+                    number = int(match.group(1))
+                    print(f"num_requests: {number}")
+                    break
+    return number
+
+def calculate_ipc(dyna_log_path):
+    latencies, total_pgwalk_requests = parse_page_walk_latency(dyna_log_path)
+    num_request = get_num_request(dyna_log_path)
+    
+    pgwalk_latency  = latencies[-1]
+    
+    ipc_df = pd.DataFrame()
+
+    
+    n_tlb_hit = num_request - total_pgwalk_requests
+    tlb_latency = 1
+    ipc = num_request / (n_tlb_hit * tlb_latency + total_pgwalk_requests * (pgwalk_latency + tlb_latency))
+    
+    ipc_df['# of memory request'] = [num_request]
+    ipc_df['# of tlb hit'] = [n_tlb_hit]
+    ipc_df['TLB hit rate'] = [n_tlb_hit / num_request]
+    ipc_df['TLB latency'] = [tlb_latency]
+    ipc_df['# of page walk'] = [total_pgwalk_requests]
+    ipc_df['page walk latency'] = [pgwalk_latency]
+    ipc_df['IPC'] = [ipc]
+    
+    ipc_df['machine'] = [socket.gethostname()]
+    ipc_df['path'] = [dyna_log_path]
+    print(ipc_df)
+    return ipc_df
 
 def get_dyna_results(folder, trailing_key):
     print('folder: {}'.format(folder))
@@ -279,13 +321,15 @@ if __name__ == "__main__":
         access_to_latency['L2'] = 16
         access_to_latency['LLC'] = 56
         access_to_latency['MEMORY'] = args.mem
-        trailing_key = '_dyna_asplos_smalltlb_config_realpwc_with_ifetch.log'
+        trailing_key = 'dyna_asplos_smalltlb_config_realpwc_with_ifetch'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
 
     if args.file:
-        parse_page_walk_latency(args.file)
+        df = calculate_ipc(args.file)
+        df.to_csv(args.file + ".ipc.csv")
+        print("save to file: {}".format(args.file + ".ipc.csv"))
         exit(0)
     
     folder = args.folder
