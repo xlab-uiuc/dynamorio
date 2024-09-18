@@ -146,11 +146,10 @@ run_sim() {
 # for thp in "${THPS[@]}"; do
 for BIN_DIR in "${BIN_DIRS[@]}"; do
     parent_path=${BIN_DIR}
-    echo "running for ${parent_path}"
     # prefix="${ARCH}_${thp}_${bench}"
     # run_sim ${parent_path}/${prefix}_walk_log.bin ${parent_path}/${prefix}_dyna_asplos_smalltlb_config_realpwc.log &
     # TODO --input-file not necessarily right arg name, better name would be --input-folder 
-    run_sim ${parent_path}/${prefix}_walk_log.bin ${parent_path}/${output_file} &
+    run_sim ${parent_path} ${output_file} &
     sleep 0.1
 done
 # done
