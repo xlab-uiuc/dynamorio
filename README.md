@@ -7,7 +7,7 @@ The trajectories data can be processed by a side script to calculate the page wa
 0. Build Docker environment
 ```bash
 sudo docker build -t dynamorio . 
-sudo docker run -it -v `pwd`:/dynamorio -v dynamorio:latest /bin/bash
+sudo docker run -it -v `pwd`:/dynamorio -v /:/start_point dynamorio:latest /bin/bash
 ```
 
 1. Set up environment variables
