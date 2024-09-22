@@ -8,11 +8,26 @@ fi
 # set -x
 cd build
 
+BENCHS=(
+    # "graphbig_bfs"
+    # "graphbig_cc"
+    # "graphbig_dc"
+    # "graphbig_dfs"
+    # "graphbig_pagerank"
+    # "graphbig_sssp"
+    # "graphbig_tc"
+    # "gups_8G"
+    # "sysbench_8G"
+	"run_Memcached64Gpure_20insertion"
+)
+
+THPS=(
+    "never"
+    # "always"
+)
+
 ARCH=""
 dry_run="false"
-
-input_file=""
-output_file=""
 
 while [[ $# -gt 0 ]]; do
 	key="$1"
@@ -31,24 +46,6 @@ while [[ $# -gt 0 ]]; do
 		dry_run="true"
         shift 1
 		;;
-    --input-file)
-		if [[ $# -gt 1 ]]; then
-			input_file=$2
-			shift 2
-		else
-			echo "Missing input file"
-			exit 1
-		fi
-		;; 
-	--output-file)
-		if [[ $# -gt 1 ]]; then
-			output_file=$2
-			shift 2
-		else
-			echo "Missing output file"
-			exit 1
-		fi
-		;; 
 	--default)
 		DEFAULT=YES
 		shift # past argument
@@ -70,6 +67,7 @@ BIN_DIRS=(
     # "/start_point/data1/collect_trace_fast/${ARCH}"
     # "/start_point/data2/collect_trace_fast/${ARCH}"
     "/start_point/hdd/collect_trace_fast/backup_ecpt"
+	"/start_point/data1/memcached_nonetwork"
 )
 
 SIMULATOR_DIR=/dynamorio
@@ -107,22 +105,19 @@ run_sim() {
             # -pwc_asplos_config \
 
         fi
-    else
-        echo "File not found: ${bin_path}"
     fi
 
 }
 
-# for bench in "${BENCHS[@]}"; do
-#     for thp in "${THPS[@]}"; do
-#         for BIN_DIR in "${BIN_DIRS[@]}"; do
-#             parent_path=${BIN_DIR}
-#             prefix="${ARCH}_${thp}_${bench}"
-#             run_sim ${parent_path}/${prefix}_walk_log.bin ${parent_path}/${prefix}_dyna_asplos_smalltlb_config_realpwc_correct_entry_only.log &
-#             sleep 0.1
-#         done
-#     done
-# done
+for bench in "${BENCHS[@]}"; do
+    for thp in "${THPS[@]}"; do
+        for BIN_DIR in "${BIN_DIRS[@]}"; do
+            parent_path=${BIN_DIR}
+            prefix="${ARCH}_${thp}_${bench}"
+            run_sim ${parent_path}/${prefix}.bin ${parent_path}/${prefix}_dyna_asplos_smalltlb_config_realpwc_correct_entry_only.log &
+            sleep 0.1
+        done
+    done
+done
 
-# wait
-run_sim ${input_file} ${output_file}
+wait

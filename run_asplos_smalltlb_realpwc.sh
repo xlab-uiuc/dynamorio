@@ -12,6 +12,9 @@ cd build
 ARCH=""
 dry_run="false"
 
+input_file=""
+output_file=""
+
 while [[ $# -gt 0 ]]; do
 	key="$1"
 
@@ -113,7 +116,8 @@ run_sim() {
 				-LL_assoc 16 \
 				>${dyna_log_path} 2>&1"
 		fi
-
+    else
+        echo "File not found: ${bin_path}"
 	fi
 }
 
