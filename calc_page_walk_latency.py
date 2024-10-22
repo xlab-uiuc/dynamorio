@@ -321,7 +321,8 @@ if __name__ == "__main__":
         access_to_latency['L2'] = 16
         access_to_latency['LLC'] = 56
         access_to_latency['MEMORY'] = args.mem
-        trailing_key = 'dyna_asplos_smalltlb_config_realpwc_with_ifetch'
+        trailing_key = '_dyna_asplos_smalltlb_config_realpwc.log'
+        # trailing_key = 'dyna_asplos_smalltlb_config_realpwc_with_ifetch'
     else:
         print("Invalid config: {}".format(args.config))
         exit(1)
@@ -350,10 +351,10 @@ if __name__ == "__main__":
     for log_name in bench_logs:
         bench = log_name[:log_name.find(trailing_key)]
         print("bench: {}".format(bench))
-        latency = parse_page_walk_latency(os.path.join(folder, "{}".format(log_name)))
+        latency, total_request = parse_page_walk_latency(os.path.join(folder, "{}".format(log_name)))
 
         benches.append(bench)
-        latencies.append(latency)
+        latencies.append(latency[0])
 
     df = pd.DataFrame({'latency': latencies}, index=benches)
     print('save to file: {}'.format(os.path.join(folder, args.config + "_radix_page_walk_latency.csv")))

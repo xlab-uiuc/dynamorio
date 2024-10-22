@@ -437,7 +437,7 @@ if __name__ == "__main__":
     for log_name in bench_logs:
         bench = log_name[:log_name.find(trailing_key)]
         print("bench: {}".format(bench))
-        latency = parse_page_walk_latency(os.path.join(folder, "{}".format(log_name)))
+        latency, total_requests = parse_page_walk_latency(os.path.join(folder, "{}".format(log_name)))
 
         benches.append(bench)
         latencies.append(latency)
