@@ -218,6 +218,42 @@ def get_num_request(dyna_log_path):
                     break
     return number
 
+# kernel memory references: 
+# 0,32106548
+# 1,23841443
+# 16,138715246
+# user memory references: 
+# 0,488116860
+# 1,431966284
+# 16,2000000000
+
+def get_inst_num(dyna_log_path):
+    number = 0
+    
+    kernel_inst = 0
+    user_inst = 0
+    current_section = ""
+    
+    with open(dyna_log_path, 'r') as file:
+        for _, line in enumerate(file):
+            
+            print(line)
+            if line.startswith("kernel memory references"):
+                current_section = "kernel"
+            elif line.startswith("user memory references"):
+                current_section = "user"
+            
+            
+            if current_section != "":
+                if line.startswith("16,"):
+                    n_inst = int(line.split(",")[1].strip())
+                    if current_section == "kernel":
+                        kernel_inst = n_inst
+                    elif current_section == "user":
+                        user_inst = n_inst 
+                        
+    return kernel_inst, user_inst
+
 def calculate_ipc(dyna_log_path):
     latencies, total_pgwalk_requests = parse_page_walk_latency(dyna_log_path)
     num_request = get_num_request(dyna_log_path)
@@ -238,6 +274,14 @@ def calculate_ipc(dyna_log_path):
     ipc_df['# of page walk'] = [total_pgwalk_requests]
     ipc_df['page walk latency'] = [pgwalk_latency]
     ipc_df['IPC'] = [ipc]
+
+    kernel_inst, user_inst = get_inst_num(dyna_log_path)
+    total_inst = kernel_inst + user_inst
+    
+    ipc_df['total inst'] = [total_inst]
+    ipc_df['user_inst'] = [user_inst]
+    ipc_df['kernel_inst'] = [kernel_inst]
+    ipc_df['E2E'] = [total_inst / ipc]
     
     ipc_df['machine'] = [socket.gethostname()]
     ipc_df['path'] = [dyna_log_path]
