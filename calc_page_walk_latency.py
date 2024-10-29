@@ -237,7 +237,7 @@ def get_inst_num(dyna_log_path):
     with open(dyna_log_path, 'r') as file:
         for _, line in enumerate(file):
             
-            print(line)
+            # print(line)
             if line.startswith("kernel memory references"):
                 current_section = "kernel"
             elif line.startswith("user memory references"):
