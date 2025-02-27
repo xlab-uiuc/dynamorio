@@ -9,9 +9,15 @@ The trajectories data can be processed by a side script to calculate the page wa
 sudo docker build -t dynamorio . 
 sudo docker run -it -v `pwd`:/dynamorio -v /:/start_point dynamorio:latest /bin/bash
 ```
+We recommend you to go through the following steps to understand how dynamorio is compiled and run.
+Other other hands, technically, after you have built the image, you should be able to use `./run_linux_free_cmd`
+in linux folder to run dynamorio automatically. 
+<!-- The script automate the installation for run.  -->
 
 1. Set up environment variables
 ```bash
+# Inside container
+cd /dynamorio
 source source.sh
 ```
 
