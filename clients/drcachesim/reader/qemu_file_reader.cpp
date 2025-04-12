@@ -169,6 +169,32 @@ qemu_file_reader_t::print_ecpt_trans_info(ecpt_trans_info &record)
     }
 }
 
+void
+qemu_file_reader_t::print_fpt_trans_info(fpt_trans_info &record)
+{
+    if (verbose >= 2) {
+        if (record.header == BIN_RECORD_TYPE_MEM) {
+            printf("%s: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
+                   "pte=%016lx, leaves=",
+                   record.access_rw ? "Load " : "Store", record.access_cpu,
+                   record.access_sz, record.vaddr, record.paddr, record.pte);
+
+            print_leaves_helper(record.leaves, PAGE_TABLE_LEAVES);
+            printf("\n");
+        } else if (record.header == BIN_RECORD_TYPE_FEC) {
+            printf("Fetch: access_cpu=%04x, access_sz=%02x, vaddr=%016lx, paddr=%016lx, "
+                   "pte=%016lx, leaves=",
+                   record.access_cpu, record.access_sz, record.vaddr, record.paddr,
+                   record.pte);
+
+            print_leaves_helper(record.leaves, PAGE_TABLE_LEAVES);
+            printf("\n");
+        } else {
+            printf("Unknown record type: %d\n", record.header);
+        }
+    }
+}
+
 int
 get_entry_type(uint8_t header, uint8_t access_rw, trace_entry_t &entry)
 {
@@ -256,6 +282,35 @@ qemu_file_reader_t::parse_qemu_line_ecpt(ecpt_trans_info &info)
     return 0;
 }
 
+int
+qemu_file_reader_t::parse_qemu_line_fpt(fpt_trans_info &info)
+{
+    print_fpt_trans_info(info);
+
+    if (get_entry_type(info.header, info.access_rw, entry_copy)) {
+        return -1;
+    }
+
+    entry_copy.addr = info.vaddr;
+    // /* TODO this may have to be fixed */
+    entry_copy.size = info.access_sz;
+    // entry_copy.pc = info.pc;
+    entry_copy.phys_addr = info.paddr;
+
+    entry_copy.pgtable_results.paddr = info.paddr;
+    int i = 0;
+    for (; i < MIN(MAX_MEMREF_STEPS, PAGE_TABLE_LEAVES); i++) {
+            entry_copy.pgtable_results.steps[i] = info.leaves[i];
+    }
+    entry_copy.pgtable_results.num_steps = i;
+    /* This by default will succeed if QEMU trace doesn't capture a failed page walk */
+    entry_copy.pgtable_results.success = 1;
+
+    print_entry_copy(entry_copy);
+
+    return 0;
+}
+
 void
 qemu_file_reader_t::set_entry_non_memory(uint8_t curr_header, uint8_t next_header)
 {
@@ -272,6 +327,8 @@ qemu_file_reader_t::read_next_entry()
     radix_trans_info radix_info_next = { 0 };
     ecpt_trans_info ecpt_info = { 0 };
     ecpt_trans_info ecpt_info_next = { 0 };
+    fpt_trans_info fpt_info = { 0 };
+    fpt_trans_info fpt_info_next = { 0 };
 
     if (max_ref != -1 && n_ref++ >= max_ref) {
         return NULL;
@@ -292,7 +349,7 @@ qemu_file_reader_t::read_next_entry()
             }
 
             this->set_entry_non_memory(radix_info.header, radix_info_next.header);
-        } else {
+        } else if (arch == ECPT) {
             fstream.read((char *)&ecpt_info, sizeof(ecpt_info));
 
             if (fstream) {
@@ -306,6 +363,20 @@ qemu_file_reader_t::read_next_entry()
             }
 
             this->set_entry_non_memory(ecpt_info.header, ecpt_info_next.header);
+        }
+        else {
+            fstream.read((char *)&fpt_info, sizeof(fpt_info));
+            if (fstream) {
+                std::streampos originalPos = fstream.tellg();
+                fstream.read((char *)&fpt_info_next, sizeof(fpt_info_next));
+                fstream.seekg(originalPos);
+            }
+
+            if (this->parse_qemu_line_fpt(fpt_info) < 0) {
+                return NULL;
+            }
+
+            this->set_entry_non_memory(fpt_info.header, fpt_info_next.header);
         }
 
         if (entry_copy.type == TRACE_TYPE_INSTR) {

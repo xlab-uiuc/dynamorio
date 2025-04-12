@@ -69,6 +69,17 @@ struct radix_trans_info {
 	uint64_t leaves[PAGE_TABLE_LEAVES];
 };
 
+struct fpt_trans_info {
+	uint8_t header;
+	uint8_t access_rw;
+	uint16_t access_cpu;
+	uint32_t access_sz;
+	uint64_t vaddr;
+	uint64_t paddr;
+	uint64_t pte;
+	uint64_t leaves[PAGE_TABLE_LEAVES];
+};
+
 
 #define ECPT_TABLE_LEAVES 6
 #define ECPT_CWT_LEAVES 4
@@ -95,7 +106,8 @@ union trans_info
 
 enum trans_arch {
     RADIX,
-    ECPT
+    ECPT, 
+    FPT
 };
 
 class qemu_file_reader_t : public reader_t {
@@ -116,11 +128,13 @@ protected:
 private:
     int parse_qemu_line_radix(radix_trans_info & info);
     int parse_qemu_line_ecpt(ecpt_trans_info & info);
+    int parse_qemu_line_fpt(fpt_trans_info & info);
 
     void print_entry_copy(trace_entry_t & entry);
     
     void print_radix_trans_info(radix_trans_info & info);
     void print_ecpt_trans_info(ecpt_trans_info & info);
+    void print_fpt_trans_info(fpt_trans_info & info);
 
     void set_entry_non_memory(uint8_t curr_header, uint8_t next_header);
 
