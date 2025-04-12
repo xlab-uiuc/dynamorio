@@ -122,8 +122,10 @@ get_cache_simulator_knobs()
         knobs->arch = RADIX;
     } else if (op_trans_arch.get_value() == "ecpt") {
         knobs->arch = ECPT;
+    } else if (op_trans_arch.get_value() == "fpt") {
+        knobs->arch = FPT;
     } else {
-        std::cerr << "invalid arch" + op_trans_arch.get_value();
+        std::cerr << ("invalid arch" + op_trans_arch.get_value());
     }
     knobs->ecpt_early_return = op_ecpt_early_return.get_value();
     knobs->ecpt_cache_correct_only = op_ecpt_cache_correct_only.get_value();
