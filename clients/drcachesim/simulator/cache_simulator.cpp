@@ -1328,7 +1328,7 @@ cache_simulator_t::process_memref_fpt(const memref_t &memref)
       for(unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS; i++) {
         level_present[i] = !!memref.data.pgtable_results.steps[i];
       }
-      is_huge_page = level_present[0];
+      is_huge_page = !level_present[0];
 
       for(unsigned int i = 0; i < NUM_PWC; i++) {
         should_request_pwc[i] = level_present[i+1]&&!is_huge_page;
