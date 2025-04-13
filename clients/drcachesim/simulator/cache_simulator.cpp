@@ -1330,9 +1330,9 @@ cache_simulator_t::process_memref_fpt(const memref_t &memref)
       }
       is_huge_page = !level_present[0];
 
-      for(unsigned int i = 0; i < NUM_PWC; i++) {
-        should_request_pwc[i] = level_present[i+1]&&!is_huge_page;
-        is_huge_page = is_huge_page && !level_present[i+1];
+      for(unsigned int i = NUM_PWC - 1; i >= 0; i++) {
+        should_request_pwc[i] = level_present[NUM_PWC - i] && !is_huge_page;
+        is_huge_page = is_huge_page && !level_present[NUM_PWC - i];
       }
       unsigned int pwc_hit_level = visit_pwc_fpt(virtual_full_page_addr, should_request_pwc);
 
