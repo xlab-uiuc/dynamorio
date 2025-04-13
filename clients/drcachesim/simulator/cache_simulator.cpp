@@ -1324,16 +1324,18 @@ cache_simulator_t::process_memref_fpt(const memref_t &memref)
       // PT levels are counted from the root of the radix tree
       //  Check PWCs
       /* get pwc hit level */
-      bool should_request_pwc[NUM_PWC], level_present[NUM_PAGE_TABLE_LEVELS], is_huge_page;
+      bool should_request_pwc[NUM_PWC], level_present[NUM_PAGE_TABLE_LEVELS], is_huge_page_2M, is_huge_page_1G;
       for(unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS; i++) {
         level_present[i] = !!memref.data.pgtable_results.steps[i];
       }
-      is_huge_page = !level_present[0];
 
-      for(unsigned int i = NUM_PWC - 1; i >= 0; i++) {
-        should_request_pwc[i] = level_present[NUM_PWC - i] && !is_huge_page;
-        is_huge_page = is_huge_page && !level_present[NUM_PWC - i];
-      }
+      is_huge_page_2M = !level_present[3];
+      is_huge_page_1G = !level_present[2] && !level_present[3];
+
+      should_request_pwc[2] = level_present[2] && !is_huge_page_2M;
+      should_request_pwc[1] = level_present[1] && !is_huge_page_1G;
+      should_request_pwc[0] = level_present[0];
+
       unsigned int pwc_hit_level = visit_pwc_fpt(virtual_full_page_addr, should_request_pwc);
 
       for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
