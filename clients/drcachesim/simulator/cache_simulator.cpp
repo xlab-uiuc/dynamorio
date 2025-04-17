@@ -258,7 +258,7 @@ cache_simulator_t::cache_simulator_t(const cache_simulator_knobs_t &knobs_, cons
         all_caches[cache_name] = l1_dcaches[i];
     }
 
-    if (knobs.arch == RADIX) {
+    if (knobs.arch == RADIX || knobs.arch == FPT) {
         pw_caches =  new cache_t *[NUM_PWC];
         const unsigned int *PWC_ASSOC;
         const unsigned int *PWC_SIZE;
@@ -681,6 +681,54 @@ cache_simulator_t::visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps)
     return pwc_hit_level;
 }
 
+unsigned int
+cache_simulator_t::visit_pwc_fpt(uint64_t full_vaddr, bool* should_request_pwc)
+{
+    cache_result_t pwc_search_res = NOT_FOUND;
+    unsigned int pwc_hit_level = 0;
+    memref_t pwc_check_memref;
+    pwc_check_memref.data.type = TRACE_TYPE_READ;
+
+    /**
+     * Checks from the deepest level of PWC to the shallowest level. (level 3 -> 1)
+     * If it hits, memorize the level and stop searching.
+     * If it does not hit, continue searching.
+     * pwc_hit_level will be the highest level PWC that gives PWC hit
+     * For huge pages, pgwalk_steps == 3 or 2. For 4KB pages, pgwalk_steps == 4.
+     * For huge pages,  PWC only caches directory entries but not data page entries.
+     * For example, if pgwalk_steps == 3, it cannot reside in PWC level 3,
+     * we have to start search from PWC level 2.
+     */
+
+    unsigned int pwc_level_start = NUM_PWC;
+
+    for (unsigned int pwc_level = pwc_level_start; pwc_level >= 1; pwc_level--) {
+        if(!should_request_pwc[pwc_level - 1])
+            continue;
+
+        pwc_check_memref.data.addr = (full_vaddr & VIRTUAL_ADDR_MASK) >>
+            (NUM_PAGE_OFFSET_BITS +
+             ((NUM_PAGE_TABLE_LEVELS - pwc_level) * NUM_PAGE_INDEX_BITS));
+        pwc_check_memref.data.size = 1;
+                
+        pwc_search_res = pw_caches[pwc_level - 1]->request(pwc_check_memref);
+        
+        // if found, memorize the pwc_level and stop searching
+        if (knobs.verbose >= 2) {
+            printf("full_addr %016lx addr %lx pw_caches[%d] pwc_search_res %d\n",
+                   full_vaddr, pwc_check_memref.data.addr, pwc_level - 1, pwc_search_res);
+        }
+
+        if (pwc_search_res == FOUND_L1) {
+            if (pwc_hit_level == 0) {
+                pwc_hit_level = pwc_level;
+                break;
+            }
+        }
+    }
+    return pwc_hit_level;
+}
+
 bool
 cache_simulator_t::process_memref(const memref_t &memref)
 {
@@ -688,7 +736,10 @@ cache_simulator_t::process_memref(const memref_t &memref)
         return this->process_memref_radix(memref);
     } else if (knobs.arch == ECPT) {
         return this->process_memref_ecpt(memref);
-    } else {
+    } else if (knobs.arch == FPT) {
+        return this->process_memref_fpt(memref);
+    }
+    else {
         std::cerr << "Unknown architecture " << knobs.arch << std::endl;
         return false;
     }
@@ -910,6 +961,396 @@ cache_simulator_t::process_memref_radix(const memref_t &memref)
         } else if (level_host > pwc_hit_level) {
           // if not found in the PWC, then make a memory req
           if (level_host <= pgwalk_steps) {
+            make_request(page_walk_res, TRACE_TYPE[level_host], memref.data.pgtable_results.steps[level_host - 1], core);
+          } else {
+            /* huge page last level skipped */
+            page_walk_res.push_back(ZERO);
+          }
+        }
+      }
+
+       print_page_walk_res(page_walk_res, pwc_hit_level, pgwalk_steps);
+        perf_res.pgwalk_res = page_walk_res;
+
+      // Update page walk trajectory statistics
+      hm_full_statistic_t::iterator it = hm_full_statistic.find(page_walk_res);
+      if (it != hm_full_statistic.end()) {
+        it->second++;
+      } else {
+        hm_full_statistic.insert(std::make_pair(page_walk_res, 1));
+      }
+    }
+
+    /* search result for data paddr */
+    cache_result_t search_res;
+    if (walk_success) {
+        if (type_is_instr(new_memref.instr.type) ||
+            new_memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+            if (knobs.verbose >= 2) {
+                std::cerr << "Go to L1I\n";
+            }
+            if (knobs.verbose >= 3) {
+                std::cerr << "Go to L1I\n";
+                std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                        << " @" << (void *)new_memref.instr.addr << " instr x"
+                        << new_memref.instr.size << "\n";
+            }
+            search_res = l1_icaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
+        } else if (new_memref.data.type == TRACE_TYPE_READ ||
+                new_memref.data.type == TRACE_TYPE_WRITE ||
+                // We may potentially handle prefetches differently.
+                // TRACE_TYPE_PREFETCH_INSTR is handled above.
+                type_is_prefetch(new_memref.data.type)) {
+            if (knobs.verbose >= 2) {
+                std::cerr << "Go to L1D\n";
+            }
+            if (knobs.verbose >= 3) {
+                std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                        << " @" << (void *)new_memref.data.pc << " "
+                        << trace_type_names[new_memref.data.type] << " "
+                        << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
+            }
+            search_res = l1_dcaches[core]->request(new_memref);
+            perf_res.data_cache = search_res;
+        } else if (new_memref.flush.type == TRACE_TYPE_INSTR_FLUSH) {
+            if (knobs.verbose >= 3) {
+                std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                        << " @" << (void *)new_memref.data.pc << " iflush "
+                        << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
+            }
+            l1_icaches[core]->flush(new_memref);
+        } else if (new_memref.flush.type == TRACE_TYPE_DATA_FLUSH) {
+            if (knobs.verbose >= 3) {
+                std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                        << " @" << (void *)new_memref.data.pc << " dflush "
+                        << (void *)new_memref.data.addr << " x" << new_memref.data.size << "\n";
+            }
+            l1_dcaches[core]->flush(new_memref);
+        } else if (new_memref.exit.type == TRACE_TYPE_THREAD_EXIT) {
+            handle_thread_exit(new_memref.exit.tid);
+            last_thread = 0;
+        } else if (new_memref.marker.type == TRACE_TYPE_INSTR_NO_FETCH) {
+            // Just ignore.
+            if (knobs.verbose >= 3) {
+                std::cerr << "::" << new_memref.data.pid << "." << new_memref.data.tid << ":: "
+                        << " @" << (void *)new_memref.instr.addr << " non-fetched instr x"
+                        << new_memref.instr.size << "\n";
+            }
+        } else {
+            std::cout << __FILE__ << " " << __func__ << std::endl;
+            error_string = "Unhandled memref type " + std::to_string(new_memref.data.type);
+            return false;
+        }
+
+        if (IN_SET(this->perf_to_cnt, perf_res)) {
+            this->perf_to_cnt[perf_res]++;
+        } else {
+            this->perf_to_cnt[perf_res] = 1;
+        }
+     
+        // Simulate contetnion in caches 
+        // Firstly, simulate conetion in LLC
+        if (op_contention_L1.get_value() != 0) {
+        unsigned int num_req_expected = op_contention_L1.get_value(); //This is an expected number of L1 contention 
+                                                            //requests (multiplied by 100 and roundedd to integer, 
+                                                            //for example, value 560 would correspond to 5.6 requests on
+                                                            //average) 
+        if (num_req_expected >= 100) { //If more than one trashing request expected
+            unsigned int req_count = 0;
+            for(; (req_count+100) <= num_req_expected; req_count+=100) {
+            cache_result_t res = issue_contention_request(l1_dcaches[core], TRACE_TYPE_CONT_L1);
+            if (knobs.verbose >= 2) {
+                std::cerr << "Contention L1: res" << res << std::endl;
+            }
+            }
+            num_req_expected = num_req_expected - req_count;
+        }
+        if (num_req_expected >= 0) {
+            unsigned int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
+            if (num_req_expected >= draw_a_dice) {
+            cache_result_t res = issue_contention_request(l1_dcaches[core], TRACE_TYPE_CONT_L1);
+            if (knobs.verbose >= 2) {
+                std::cerr << "Contention L1: res" << res << std::endl;
+            }
+            }
+        }
+        } //end if L1 contention
+
+
+        //Secondly, simulate contention in LLC
+        if ((op_contention_LLC.get_value() != 0) && 
+        ((search_res == FOUND_LLC) || (search_res == NOT_FOUND))) { //Only make a request if LLC was accessed
+            unsigned int num_req_expected = op_contention_LLC.get_value(); 
+            if (num_req_expected >= 100) { //If more than one request expected
+                unsigned int req_count = 0;
+                for(; (req_count+100) <= num_req_expected; req_count+=100) {
+                    cache_result_t res = issue_contention_request(llc1, TRACE_TYPE_CONT_LLC);
+                    if (knobs.verbose >= 2) {
+                        std::cerr << "Contention L1: res" << res << std::endl;
+                    }
+                }
+                num_req_expected = num_req_expected - req_count;
+            }
+            if (num_req_expected >= 0) {
+                unsigned int draw_a_dice = rand() % 100; //To achieve an expected num_req sent this req probabalistically 
+                if (num_req_expected >= draw_a_dice) {
+                    cache_result_t res = issue_contention_request(llc1, TRACE_TYPE_CONT_LLC);
+                    if (knobs.verbose >= 2) {
+                        std::cerr << "Contention L1: res" << res << std::endl;
+                    }
+                }
+            }
+        } //end if LLC contention
+    
+    }
+
+    // reset cache stats when warming up is completed
+    if (!is_warmed_up && check_warmed_up()) {
+        for (auto &cache_it : all_caches) {
+            cache_t *cache = cache_it.second;
+            cache->get_stats()->reset();
+        }
+        if (knobs.verbose >= 0) {
+            std::cerr << "Cache simulation warmed up\n";
+        }
+        //clear the hm_statistic_map
+        hm_full_statistic.clear(); 
+    } else {
+        knobs.sim_refs--;
+    }
+
+    return true;
+}
+
+bool
+cache_simulator_t::process_memref_fpt(const memref_t &memref)
+{
+    num_request++;
+    num_request_shifted++;
+
+    if ((num_request_shifted >> SIMULATOR_HEARTBEAT_FREQ) > 0) {
+      num_request_shifted = 0;
+      std::cerr << "Heartbeat. " << num_request << " references processed.\n";
+    //   print_results();
+    }
+
+    if (knobs.skip_refs > 0) {
+        knobs.skip_refs--;
+        return true;
+    }
+
+    // If no warmup is specified and we have simulated sim_refs then
+    // we are done.
+    if ((knobs.warmup_refs == 0 && knobs.warmup_fraction == 0.0) && knobs.sim_refs == 0) {
+        if (knobs.verbose >= 3) {
+            std::cerr << "No warmup, but have simulation refs -> Done " << memref.data.pid << "." << memref.data.tid << ":: "
+                      << "marker type " << memref.marker.marker_type << " value "
+                      << memref.marker.marker_value << "\n";
+        }
+        return true;
+    }
+
+    // The references after warmup and simulated ones are dropped.
+    if (check_warmed_up() && knobs.sim_refs == 0) {
+        if (knobs.verbose >= 3) {
+            std::cerr << "The references after warmup and simulated ones are dropped " << memref.data.pid << "." << memref.data.tid << ":: "
+                      << "marker type " << memref.marker.marker_type << " value "
+                      << memref.marker.marker_value << "\n";
+        }
+        return true;
+    }
+
+    // Both warmup and simulated references are simulated.
+
+    if (!simulator_t::process_memref(memref)) {
+        if (knobs.verbose >= 3) {
+            std::cerr << "Both warmup and simulated references are simulated " << memref.data.pid << "." << memref.data.tid << ":: "
+                      << "marker type " << memref.marker.marker_type << " value "
+                      << memref.marker.marker_value << "\n";
+        }
+        return false;
+    }
+
+    if (memref.marker.type == TRACE_TYPE_MARKER) {
+        // We ignore markers before we ask core_for_thread, to avoid asking
+        // too early on a timestamp marker.
+        if (knobs.verbose >= 3) {
+            std::cerr << "::" << memref.data.pid << "." << memref.data.tid << ":: "
+                      << "marker type " << memref.marker.marker_type << " value "
+                      << memref.marker.marker_value << "\n";
+        }
+        return true;
+    }
+    
+    print_memref(memref);
+    stats_memref(memref);
+    // We use a static scheduling of threads to cores, as it is
+    // not practical to measure which core each thread actually
+    // ran on for each memref.
+    int core;
+
+    if (knobs.verbose >= 3) {
+        std::cerr << "last_thread " << last_thread << " memref.data.tid " << memref.data.tid << "\n";
+        std::cerr << "last_core " << last_core << "\n";
+    }
+
+    if (memref.data.tid == last_thread)
+        core = last_core;
+    else {
+        core = core_for_thread(memref.data.tid);
+        last_thread = memref.data.tid;
+        last_core = core;
+    }
+
+    if (knobs.verbose >= 3) {
+        std::cerr << "core "<< core << "\n";
+    }
+    
+    perf_result_t perf_res = {0};
+    perf_res.core = core;
+
+    uint64_t addr;
+
+    uint64_t virtual_page_addr = 0;
+    uint64_t page_offset = 0;
+    uint64_t instrs_type = 0;
+
+    if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+      addr              = memref.instr.addr;
+      virtual_page_addr = memref.instr.addr >> NUM_PAGE_OFFSET_BITS;
+      page_offset       = memref.instr.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
+      instrs_type       = 1;
+      perf_res.is_inst = 1;
+    } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
+      addr              = memref.data.addr;
+      virtual_page_addr = memref.data.addr >> NUM_PAGE_OFFSET_BITS;
+      page_offset       = memref.data.addr & ((1 << NUM_PAGE_OFFSET_BITS) - 1);
+      instrs_type       = 2;
+      perf_res.is_inst = 0;
+    }
+
+    /* virtual_full_page_addr is the virtual address without page offset */
+    uint64_t virtual_full_page_addr = virtual_page_addr << NUM_PAGE_OFFSET_BITS;
+
+    
+
+    memref_t new_memref; 
+    new_memref = memref;
+    new_memref.marker.type = memref.marker.type;
+    new_memref.marker.pid = memref.marker.pid;
+    new_memref.marker.tid = memref.marker.tid;
+    // page_table_t::iterator it = page_table.find(virtual_full_page_addr);
+    // if found 
+    // if (it != page_table.end()) {
+      
+    /* TODO: now we don't have to process page table dump */
+    uint64_t pgwalk_steps = 0;
+    int walk_success = 0;
+
+
+    if (type_is_instr(memref.instr.type) || memref.instr.type == TRACE_TYPE_PREFETCH_INSTR) {
+        // new_memref.instr.addr = physical_page_addr + page_offset;
+        new_memref.instr.addr = memref.instr.pgtable_results.paddr;
+        pgwalk_steps = memref.instr.pgtable_results.num_steps;
+        walk_success = memref.instr.pgtable_results.success;
+        perf_res.is_non_memory_exec = memref.instr.pgtable_results.is_non_memory;
+
+        uint64_t ins_line = memref.instr.addr & FRONTEND_FETCH_MASK;
+
+        if (knobs.verbose >= 2) {
+            printf("ins_line %lx ins_fetched[%d] %lx\n", ins_line, core, ins_fetched[core]);
+        }
+
+        if (ins_fetched[core] == ins_line) {
+            /* no need for ifetch TLB */
+            perf_res.cached_ifb = 1;
+            perf_res.tlb_hit = 0;
+            perf_res.data_cache = ZERO;
+
+            if (knobs.verbose >= 2) {
+                std::cerr << "perf_res.cached_ifb " << perf_res.cached_ifb << "\n";
+            }
+
+            if (IN_SET(this->perf_to_cnt, perf_res)) {
+                this->perf_to_cnt[perf_res]++;
+            } else {
+                this->perf_to_cnt[perf_res] = 1;
+            }
+
+            return true;
+        }
+        
+        if (knobs.verbose >= 2) {
+            std::cerr << "perf_res.cached_ifb " << perf_res.cached_ifb << "\n";
+        }
+
+        ins_fetched[core] = ins_line;
+
+    } else if (memref.data.type == TRACE_TYPE_READ || memref.data.type == TRACE_TYPE_WRITE || type_is_prefetch(memref.data.type)) {
+        // new_memref.data.addr  = physical_page_addr + page_offset;
+        new_memref.data.addr = memref.data.pgtable_results.paddr;
+        pgwalk_steps = memref.data.pgtable_results.num_steps;
+        walk_success = memref.data.pgtable_results.success;
+        perf_res.is_non_memory_exec = memref.data.pgtable_results.is_non_memory;
+    } else if (memref.flush.type == TRACE_TYPE_INSTR_FLUSH || memref.flush.type == TRACE_TYPE_DATA_FLUSH) {
+        pgwalk_steps = memref.flush.pgtable_results.num_steps;
+        walk_success = memref.flush.pgtable_results.success;
+        perf_res.is_non_memory_exec = memref.flush.pgtable_results.is_non_memory;
+    }
+
+    // issue a TLB request will also refill the TLB
+    // we only refill it when the page walk is successful
+    bool is_TLB_hit = false;
+    if (walk_success) {
+        std::pair<bool, bool> res = tlb_sim->process_memref_tlb(memref);
+        is_TLB_hit = res.second;
+        if (knobs.verbose >= 2) {
+            std::cerr << __FUNCTION__ << " Received TLB result: " << is_TLB_hit << std::endl;
+        }
+    }
+
+    perf_res.tlb_hit = is_TLB_hit;
+    // process TLB miss
+    if (!is_TLB_hit) {
+      if (knobs.verbose >= 2) {
+        std::cerr << "TLB miss \n";
+      }
+          
+      // reset page walk trajectory path 
+      page_walk_res.clear();// Accumulates sources for each access during a page walk
+
+      // BEGIN PAGE WALK
+      // PT levels are counted from the root of the radix tree
+      //  Check PWCs
+      /* get pwc hit level */
+      bool should_request_pwc[NUM_PWC], level_present[NUM_PAGE_TABLE_LEVELS], is_huge_page_2M, is_huge_page_1G;
+      for(unsigned int i = 0; i < NUM_PAGE_TABLE_LEVELS; i++) {
+        level_present[i] = !!memref.data.pgtable_results.steps[i];
+      }
+
+      is_huge_page_2M = !level_present[3];
+      is_huge_page_1G = !level_present[2] && !level_present[3];
+
+      should_request_pwc[2] = level_present[2] && !is_huge_page_2M;
+      should_request_pwc[1] = level_present[1] && !is_huge_page_1G;
+      should_request_pwc[0] = level_present[0];
+
+      unsigned int pwc_hit_level = visit_pwc_fpt(virtual_full_page_addr, should_request_pwc);
+
+      for (unsigned int level_host = 1; level_host <= NUM_PAGE_TABLE_LEVELS; level_host++) {
+        if (level_host < pwc_hit_level) {
+          // ignore these levels as they are bypassed due to PWC hit
+          // if skipped due to a PWC hit, indicate ZERO_LAT
+          page_walk_res.push_back(ZERO);
+
+        } else if (level_host == pwc_hit_level) {
+          // if found in the PWC, indicate PWC_LAT
+          page_walk_res.push_back(PWC);
+
+        } else if (level_host > pwc_hit_level) {
+          // if not found in the PWC, then make a memory req
+          if (level_present[level_host - 1]) {
             make_request(page_walk_res, TRACE_TYPE[level_host], memref.data.pgtable_results.steps[level_host - 1], core);
           } else {
             /* huge page last level skipped */
@@ -1922,7 +2363,7 @@ cache_simulator_t::print_results()
         }
     } 
     
-    if (knobs.arch == RADIX) {
+    if (knobs.arch == RADIX || knobs.arch == FPT) {
         // Print PWC stats.
         
         for (unsigned int i = 0; i < NUM_PWC; i++) {

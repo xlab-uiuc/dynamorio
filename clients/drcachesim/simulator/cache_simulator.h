@@ -222,6 +222,7 @@ protected:
 
     bool process_memref_radix(const memref_t &memref);
     bool process_memref_ecpt(const memref_t &memref);
+    bool process_memref_fpt(const memref_t &memref);
 
     hit_info_t visit_cwc(uint64_t full_vaddr, const _memref_pgtable_results &pgtable_result,
               std::set<uint32_t> &ways_to_visit);
@@ -230,6 +231,7 @@ protected:
     bool pmd_cwc_query(uint64_t full_vaddr);
 
     unsigned int visit_pwc(uint64_t full_vaddr, uint64_t pgwalk_steps);
+    unsigned int visit_pwc_fpt(uint64_t full_vaddr, bool* should_request_pwc);
     void cwt_back_fill_one_way(page_walk_hm_result_t & res, uint64_t cwt_entry_addr, int core);
     void cwt_back_fill(hit_info_t hit_info, const _memref_pgtable_results &pgtable_result, int core);
 
