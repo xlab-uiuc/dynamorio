@@ -838,10 +838,46 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--flavor', help='description for option1')
+    parser.add_argument('--single', help='add this to get single result, no comparation')
+    parser.add_argument('--arch')
+    parser.add_argument('--out')
+    # parser.add_argument('--')
     args = parser.parse_args()
 
     if args.flavor is not None:
         FPT_FLAVOR = args.flavor
+
+    if args.single is not None:
+        if args.arch is None or args.out is None:
+            assert(False)
+
+        if args.arch == "fpt" and args.flavor is None:
+            assert(False)
+
+        arch = args.arch
+        out_name = args.out
+        file_name = args.single
+        lines = readAllLines(file_name)
+        stats = detailed_stats_base.copy()
+        
+        for line in lines:
+            parseOneLine(line, stats, arch)
+
+        stats["kernel_inst"], stats["user_inst"] = get_inst_num(file_name)
+
+        post_parsing_process(stats)
+        
+        # stats["machine"] = machine
+        if arch == "fpt":
+            arch = f"fpt {args.flavor}"
+        stats["arch"] = arch
+        stats["path"] = file_name
+
+        with open(out_name, 'w') as f:
+            pd.DataFrame([stats]).drop(columns=['bench']).to_csv(f, index=False)
+        
+        import sys
+        sys.exit(0)
 
     radix_running, ecpt_running, running_out_file = calc_running_ipc()
     radix_loading_end, ecpt_loading_end, loading_end_out_file = calc_loading_end_ipc()
