@@ -233,7 +233,7 @@ def get_page_walk_latency_fpt(pgwk_str: str, freq, stats) -> float:
 
 
     # cur_latency += LATENCY[accesses[0]] + LATENCY[accesses[2]] + LATENCY[accesses[3]]
-    if FPT_FLAVOR == "L4L3andL2L1":
+    if FPT_FLAVOR == "L4L3_L2L1":
         step1 = 0
         step2 = 0
         if accesses[1] == "ZERO" or accesses[2] == "PWC":
@@ -480,6 +480,27 @@ def scp_from_remote(host, remote_path, local_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def process_one_file_ipc_single(input_name, arch, flavor, output_name):
+    lines = readAllLines(input_name)
+    stats = detailed_stats_base.copy()
+    
+    for line in lines:
+        parseOneLine(line, stats, arch)
+
+    stats["kernel_inst"], stats["user_inst"] = get_inst_num(file_name)
+
+    post_parsing_process(stats)
+    
+    # stats["flavor"] = args.flavor
+    stats["path"] = file_name
+    stats["bench"] = file_name
+
+    df = pd.DataFrame([stats])
+    df.insert(0, 'arch', [arch])
+    df.insert(1, 'flavor', [flavor])
+    
+    with open(output_name, 'w') as f:
+        df.to_csv(f, index=False)
     
 def process_one_file_ipc(bench, machine, path, arch):
     
@@ -857,24 +878,8 @@ if __name__ == "__main__":
         arch = args.arch
         out_name = args.out
         file_name = args.single
-        lines = readAllLines(file_name)
-        stats = detailed_stats_base.copy()
-        
-        for line in lines:
-            parseOneLine(line, stats, arch)
 
-        stats["kernel_inst"], stats["user_inst"] = get_inst_num(file_name)
-
-        post_parsing_process(stats)
-        
-        # stats["machine"] = machine
-        if arch == "fpt":
-            arch = f"fpt {args.flavor}"
-        stats["arch"] = arch
-        stats["path"] = file_name
-
-        with open(out_name, 'w') as f:
-            pd.DataFrame([stats]).drop(columns=['bench']).to_csv(f, index=False)
+        process_one_file_ipc_single(file_name, arch, args.flavor, out_name)
         
         import sys
         sys.exit(0)
