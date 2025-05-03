@@ -881,7 +881,7 @@ if __name__ == "__main__":
 
         process_one_file_ipc_single(file_name, arch, args.flavor, output_name)
 
-        print(os.path.realpath(output_name))
+        print(f'Statistics: {os.path.realpath(output_name)}')
         
         import sys
         sys.exit(0)
