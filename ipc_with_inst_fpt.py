@@ -876,10 +876,12 @@ if __name__ == "__main__":
             assert(False)
 
         arch = args.arch
-        out_name = args.out
+        output_name = args.out
         file_name = args.single
 
-        process_one_file_ipc_single(file_name, arch, args.flavor, out_name)
+        process_one_file_ipc_single(file_name, arch, args.flavor, output_name)
+
+        print(os.path.realpath(output_name))
         
         import sys
         sys.exit(0)
