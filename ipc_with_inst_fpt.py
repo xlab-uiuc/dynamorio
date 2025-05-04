@@ -57,7 +57,7 @@ per_layer_latency = [
 #     "INST": 0.25,
 # }
 
-FPT_FLAVOR = "L4L3andL2L1"
+FPT_FLAVOR = "L4L3_L2L1"
 
 detailed_stats_base = {
     "bench": "",
