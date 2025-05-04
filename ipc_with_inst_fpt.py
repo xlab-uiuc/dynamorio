@@ -57,7 +57,7 @@ per_layer_latency = [
 #     "INST": 0.25,
 # }
 
-FPT_FLAVOR = "L4L3andL2L1"
+FPT_FLAVOR = "L4L3_L2L1"
 
 detailed_stats_base = {
     "bench": "",
@@ -233,7 +233,7 @@ def get_page_walk_latency_fpt(pgwk_str: str, freq, stats) -> float:
 
 
     # cur_latency += LATENCY[accesses[0]] + LATENCY[accesses[2]] + LATENCY[accesses[3]]
-    if FPT_FLAVOR == "L4L3andL2L1":
+    if FPT_FLAVOR == "L4L3_L2L1":
         step1 = 0
         step2 = 0
         if accesses[1] == "ZERO" or accesses[2] == "PWC":
@@ -480,6 +480,27 @@ def scp_from_remote(host, remote_path, local_path):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def process_one_file_ipc_single(input_name, arch, flavor, output_name):
+    lines = readAllLines(input_name)
+    stats = detailed_stats_base.copy()
+    
+    for line in lines:
+        parseOneLine(line, stats, arch)
+
+    stats["kernel_inst"], stats["user_inst"] = get_inst_num(file_name)
+
+    post_parsing_process(stats)
+    
+    # stats["flavor"] = args.flavor
+    stats["path"] = file_name
+    stats["bench"] = file_name
+
+    df = pd.DataFrame([stats])
+    df.insert(0, 'arch', [arch])
+    df.insert(1, 'flavor', [flavor])
+    
+    with open(output_name, 'w') as f:
+        df.to_csv(f, index=False)
     
 def process_one_file_ipc(bench, machine, path, arch):
     
@@ -838,10 +859,32 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--flavor', help='description for option1')
+    parser.add_argument('--single', help='add this to get single result, no comparation')
+    parser.add_argument('--arch')
+    parser.add_argument('--out')
+    # parser.add_argument('--')
     args = parser.parse_args()
 
     if args.flavor is not None:
         FPT_FLAVOR = args.flavor
+
+    if args.single is not None:
+        if args.arch is None or args.out is None:
+            assert(False)
+
+        if args.arch == "fpt" and args.flavor is None:
+            assert(False)
+
+        arch = args.arch
+        output_name = args.out
+        file_name = args.single
+
+        process_one_file_ipc_single(file_name, arch, args.flavor, output_name)
+
+        print(f'Statistics: {os.path.realpath(output_name)}')
+        
+        import sys
+        sys.exit(0)
 
     radix_running, ecpt_running, running_out_file = calc_running_ipc()
     radix_loading_end, ecpt_loading_end, loading_end_out_file = calc_loading_end_ipc()

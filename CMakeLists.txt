@@ -446,7 +446,7 @@ else (EXISTS "${PROJECT_SOURCE_DIR}/.svn")
         ERROR_VARIABLE git_err
         OUTPUT_VARIABLE git_out)
       if (git_result OR git_err)
-        message("*** ${GIT} log failed: ***\n${git_err}")
+        # message("*** ${GIT} log failed: ***\n${git_err}")
       else (git_result OR git_err)
         math(EXPR daycount "${git_out} / (60*60*24)")
       endif (git_result OR git_err)
